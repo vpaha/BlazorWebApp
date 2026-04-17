@@ -1,0 +1,41 @@
+﻿@rendermode InteractiveAuto
+
+@inject IJSRuntime jSRuntime
+
+<gmp-map id="gmpMap" aria-labelledby="map-label"></gmp-map>
+
+<style>
+    #gmpMap {
+        height: 160px;
+    }
+</style>
+
+@code {
+    [Parameter] public double? Latitude { get; set; }
+    [Parameter] public double? Longitude { get; set; }
+
+    private double? _latitude;
+    private double? _longitude;
+    private bool _mapNeedsUpdate;
+
+    protected override void OnParametersSet()
+    {
+        if (Latitude == _latitude && Longitude == _longitude)
+            return;
+
+        _latitude = Latitude;
+        _longitude = Longitude;
+        _mapNeedsUpdate = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_mapNeedsUpdate) return;
+
+        if (!_latitude.HasValue || !_longitude.HasValue) return;
+
+        _mapNeedsUpdate = false;
+
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "gmpMap", _latitude.Value, _longitude.Value, 16);
+    }
+}

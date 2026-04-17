@@ -1,0 +1,23 @@
+
+
+$signature-border: 1px solid !default;
+$signature-border-color: $gray-300 !default;
+$signature-background-color: $content-bg !default;
+
+@include export-module('signature-layout') {
+  .e-signature.e-control {
+    border: $signature-border;
+    @if $skin-name == 'tailwind3' {
+      box-shadow: $shadow-xl;
+    }
+  }
+}
+
+
+@include export-module('signature-theme') {
+  .e-signature.e-control {
+    background-color: $signature-background-color;
+    border: $signature-border;
+    border-color: $signature-border-color;
+  }
+}

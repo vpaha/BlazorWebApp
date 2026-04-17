@@ -1,0 +1,28 @@
+﻿<SfCard id="navContainer" role="link">
+    <CardContent>
+        <div>
+            <a href="" class="e-btn e-primary e-outline" title="Home page">Home</a>
+        </div>
+        <div>
+            <a href="damage" class="e-btn e-primary e-outline" title="Damage Report">Damage Report</a>
+        </div>
+        <div>
+            <a href="tracking" class="e-btn e-primary e-outline" title="Damage Tracking">Tracking</a>
+        </div>
+        <AuthorizeView>
+            <NotAuthorized>
+                <div>
+                    <a href="claim" class="e-btn e-primary e-outline" title="sign in">Sign in</a>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CardContent>
+</SfCard>
+<style>
+    #navContainer .e-card-content {
+        display: flex;
+        flex-flow: wrap;
+        justify-content: space-around;
+        align-items: center;
+    }
+</style>

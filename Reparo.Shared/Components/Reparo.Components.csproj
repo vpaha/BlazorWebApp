@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+		<StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+		<IsPublishable>True</IsPublishable>
+		<RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
+		<EnableNETAnalyzers>True</EnableNETAnalyzers>
+		<RootNamespace>Reparo.Shared.Components</RootNamespace>
+	</PropertyGroup>
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.2" />
+		<PackageReference Include="Syncfusion.Blazor.Notifications" Version="32.1.23" />
+		<PackageReference Include="Syncfusion.Blazor.Themes" Version="32.1.23" />
+		<PackageReference Include="Syncfusion.Blazor.Buttons" Version="32.1.23" />
+
+		<PackageReference Include="Syncfusion.Blazor.Core" Version="32.1.23" />
+		<PackageReference Include="Syncfusion.Blazor.DropDowns" Version="32.1.23" />
+		<PackageReference Include="Syncfusion.Blazor.Grid" Version="32.1.23" />
+		<PackageReference Include="Syncfusion.Blazor.Cards" Version="32.1.23" />
+		<PackageReference Include="Syncfusion.Blazor.RichTextEditor" Version="32.1.23" />
+		<PackageReference Include="Syncfusion.Blazor.ProgressBar" Version="32.1.23" />
+		<PackageReference Include="Syncfusion.Blazor.Layouts" Version="32.1.23" />
+		<PackageReference Include="Syncfusion.Blazor.Inputs" Version="32.1.23" />
+		<PackageReference Include="Syncfusion.Blazor.DataForm" Version="32.1.23" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Models\Reparo.Models.csproj" />
+		<ProjectReference Include="..\Services\Reparo.Services.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Resource\SharedResource.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>SharedResource.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Resource\SharedResource.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>SharedResource.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+</Project>

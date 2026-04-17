@@ -1,0 +1,116 @@
+﻿@page "/settings"
+@attribute [AllowAnonymous]
+
+@using Microsoft.JSInterop
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using System.Globalization
+@using System.Net.Http.Json
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager nav
+@inject HttpClient _httpClient
+
+<PageTitle>Settings</PageTitle>
+
+<section>
+    <SfCard role="region">
+        <CardHeader>Settings</CardHeader>
+        <CardContent EnableSeparator="true">
+            <div class="settings-row">
+                <label for="isdark-check">Switch to dark mode:</label>
+                <SfSwitch id="isdark-check" TChecked="bool" Checked="@Theme.IsDarkMode" ValueChange="OnDarkModeChange" />
+            </div>
+        </CardContent>
+        <CardContent EnableSeparator="true">
+            <div style="width: fit-content;">
+                <label for="culture-select">Language and Region:</label>
+                <SfDropDownList id="culture-select" TValue="string" TItem="CultureOption" DataSource="@SupportedCultures" Value="@SelectedCulture">
+                    <DropDownListFieldSettings Text="Country" Value="Culture" />
+                    <DropDownListEvents TValue="string" TItem="CultureOption" ValueChange="OnCultureChanged" />
+                </SfDropDownList>
+            </div>
+        </CardContent>
+    </SfCard>
+</section>
+<style>
+    .settings-row {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+</style>
+
+@code {
+    private sealed record CultureOption(string Country, string Culture);
+    private sealed record ThemeSettings(string ThemeName, bool IsDarkMode, string Culture);
+
+    private IReadOnlyList<CultureOption> SupportedCultures =
+    [
+        new("United States", "en-US"),
+        new("United Kingdom", "en-GB"),
+        new("Germany", "de-DE"),
+        new("France", "fr-FR"),
+        new("Spain", "es-ES"),
+        new("Brazil", "pt-BR"),
+        new("Russia", "ru-RU"),
+        new("China", "zh-CN"),
+        new("Japan", "ja-JP")
+    ];
+
+    private string SelectedCulture = CultureInfo.CurrentCulture.Name;
+    private ThemeSettings Theme = new("custom1", false, "ru-RU");
+
+    protected override void OnInitialized()
+    {
+        if (!SupportedCultures.Any(c => c.Culture.Equals(SelectedCulture, StringComparison.OrdinalIgnoreCase)))
+        {
+            SelectedCulture = SupportedCultures.First().Culture;
+        }
+        Theme = Theme with { Culture = SelectedCulture };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var stored = await JSRuntime.InvokeAsync<ThemeSettings?>("getTheme");
+        if (stored is null) return;
+        Theme = stored with { Culture = SelectedCulture };
+        StateHasChanged();
+    }
+
+    private async Task OnDarkModeChange(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
+    {
+        Theme = Theme with
+        {
+            IsDarkMode = args.Checked
+        };
+
+        await JSRuntime.InvokeVoidAsync("setTheme", Theme);
+        await _httpClient.PostAsJsonAsync(nav.ToAbsoluteUri("config/theme"), new ThemeSettings(
+                Theme.ThemeName,
+                Theme.IsDarkMode,
+                Theme.Culture));
+    }
+
+    private async Task OnCultureChanged(ChangeEventArgs<string, CultureOption> args)
+    {
+        var culture = args?.Value;
+
+        if (string.IsNullOrWhiteSpace(culture) || culture.Equals(SelectedCulture, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        SelectedCulture = culture;
+
+        Theme = Theme with
+        {
+            Culture = culture
+        };
+
+        await JSRuntime.InvokeVoidAsync("setCulture", culture);
+        await JSRuntime.InvokeVoidAsync("setTheme", Theme);
+
+        nav.NavigateTo(nav.Uri, forceLoad: true);
+    }
+}

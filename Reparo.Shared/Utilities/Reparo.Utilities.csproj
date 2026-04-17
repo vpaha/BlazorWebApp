@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+		<StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+		<IsPublishable>True</IsPublishable>
+		<RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
+		<EnableNETAnalyzers>True</EnableNETAnalyzers>
+		<RootNamespace>Reparo.Shared.Utilities</RootNamespace>
+	</PropertyGroup>
+</Project>

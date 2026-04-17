@@ -1,0 +1,71 @@
+﻿@rendermode InteractiveAuto
+
+<SfCard role="link" CssClass="zoom-in">
+    <CardContent>
+        <div id="spacebetween">
+            <SfButton type="button" title="Click to open" CssClass="@btnStyle" IconPosition="IconPosition.Right" IconCss="e-icons e-resizer-right" OnClick="toggleTop">
+                @(topExpanded ? "Hide" : DamageContext.DamageSectionType?.Name)
+            </SfButton>
+            <SfButton type="button" title="Get help" CssClass="e-link" OnClick="toggleInfo">
+                @(infoExpanded ? "Collapse" : "More info")
+            </SfButton>
+        </div>
+    </CardContent>
+    @if (topExpanded)
+    {
+        <CardContent EnableSeparator="true">
+            <div class="wdr-container">
+                <div style="flex-grow: 1;">
+                    <SfTextBox @bind-Value="DamageContext.Entry" Multiline="true"
+                               CssClass="@(DamageContext.DamageSectionType?.IsEmergency == true ? "e-warning" : null)"
+                               ShowClearButton="true" Placeholder="@DamageContext.DamageSectionType?.Name" FloatLabelType="FloatLabelType.Auto"
+                               InputAttributes="@(new Dictionary<string, object> {{ "rows", "5" }})" />
+                    <ValidationMessage For="@(() => DamageContext.Entry)" />
+                </div>
+                <div @onclick:preventDefault>
+                    <SfSpeechToText @bind-Transcript="DamageContext.Entry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnTranscriptChanged" />
+                </div>
+            </div>
+        </CardContent>
+    }
+    @if (infoExpanded)
+    {
+        <CardContent EnableSeparator="true">
+            @if (DamageContext.DamageSectionType?.IsEmergency == true)
+            {
+                <div class="e-warning">Emergency</div>
+            }
+            @DamageContext.DamageSectionType?.Description
+        </CardContent>
+    }
+</SfCard>
+
+<style>
+    #spacebetween {
+        display: flex;
+        justify-content: space-between;
+    }
+
+        #spacebetween .e-large-button {
+            height: 48px;
+        }
+</style>
+    @code {
+    [CascadingParameter]
+    private EditContext EditContext { get; set; } = default!;
+
+    [Parameter] public DamageEntrySection DamageContext { get; set; } = default!;
+
+    private string btnStyle => DamageContext.DamageSectionId == 1 ? "e-large-button e-primary" : "e-large-button  e-primary e-outline";
+
+    private void OnTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
+    {
+        DamageContext.Entry = args.Transcript;
+        EditContext.NotifyFieldChanged(new FieldIdentifier(DamageContext, nameof(DamageContext.Entry)));
+    }
+
+    private bool topExpanded { get; set; }
+    private bool infoExpanded { get; set; }
+    private void toggleTop() => topExpanded = !topExpanded;
+    private void toggleInfo() => infoExpanded = !infoExpanded;
+}

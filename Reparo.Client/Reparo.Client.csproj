@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<TypeScriptTarget>ES6</TypeScriptTarget>
+	</PropertyGroup>
+	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<TypeScriptTarget>ES6</TypeScriptTarget>
+	</PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+		<Nullable>enable</Nullable>
+		<StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+		<RootNamespace>Reparo.Client</RootNamespace>
+		<PublishAot>False</PublishAot>
+		<UserSecretsId>3e5403eb-dfc7-4fbd-aa44-da97279cfb5b</UserSecretsId>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<RunAOTCompilation>False</RunAOTCompilation>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="10.0.2" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Reparo.Shared\Components\Reparo.Components.csproj" />
+		<ProjectReference Include="..\Reparo.Shared\Models\Reparo.Models.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="wwwroot\" />
+	</ItemGroup>
+</Project>

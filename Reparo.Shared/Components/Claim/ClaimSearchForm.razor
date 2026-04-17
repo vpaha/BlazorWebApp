@@ -1,0 +1,94 @@
+﻿@rendermode InteractiveAuto
+
+<SfDataForm EditContext="FormContext" OnValidSubmit="HandleSubmit"
+            ButtonsAlignment="FormButtonsAlignment.Center" LabelPosition="FormLabelPosition.Top">
+    <FormValidator>
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+    </FormValidator>
+    <FormTemplate>
+        <div id="form-container">
+            <SfTextBox @bind-Value="ClaimFilter.ProvId" CssClass="e-small" Placeholder="Provider ID/Name" ShowClearButton="true"
+                       FloatLabelType="FloatLabelType.Always" />
+            <div class="validation-message">
+                <ValidationMessage For="@(() => ClaimFilter.ProvId)" />
+            </div>
+            <div class="wdr-container">
+                <SfTextBox @bind-Value="ClaimFilter.MemId" CssClass="e-small" Placeholder="Member ID/Name" ShowClearButton="true"
+                           FloatLabelType="FloatLabelType.Always" />
+                <div @onclick:preventDefault>
+                    <SfSpeechToText @bind-Transcript="ClaimFilter.MemId" CssClass="e-info e-outline" SpeechRecognitionStopped="OnTranscriptChanged" />
+                </div>
+            </div>
+            <div class="validation-message">
+                <ValidationMessage For="@(() => ClaimFilter.MemId)" />
+            </div>
+            <SfDatePicker CssClass="e-small" TValue="DateOnly?" @bind-Value="@ClaimFilter.EffDate" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern"
+                          Placeholder="Effective Date" FloatLabelType="FloatLabelType.Always" EnableMask=true>
+                <DatePickerMaskPlaceholder Day="dd" Month="mm" Year="yyyy"></DatePickerMaskPlaceholder>
+            </SfDatePicker>
+            <div class="validation-message">
+                <ValidationMessage ID="errMsgAttributeEffectiveDate" For="@(() => ClaimFilter.EffDate)" />
+            </div>
+        </div>
+    </FormTemplate>
+    <FormButtons>
+        <SfButton type="submit" aria-label="Search Claims" CssClass="e-primary" Disabled="@(IsFormValid == false)">@SharedResource.Execute</SfButton>
+        <SfButton type="reset" aria-label="Clear Fields" CssClass="e-outline" OnClick="@HandleReset">Clear Fields</SfButton>
+    </FormButtons>
+</SfDataForm>
+<div id="hint-container">
+    <div>QCSPR000094</div>
+    <div>QMXPR0041017</div>
+    <div>QMP000002299176</div>
+</div>
+<style>
+
+    #form-container {
+        padding: 5px;
+    }
+
+    #hint-container {
+        margin: 10px;
+        display: flex;
+        gap: 15px;
+        color: gray;
+    }
+</style>
+
+@code {
+    [Parameter] public EventCallback<ClaimSearchFilter> OnFilterEvent { get; set; }
+    ClaimSearchFilter ClaimFilter { get; set; } = new ClaimSearchFilter();
+
+    EditContext FormContext { get; set; } = default!;
+
+    bool IsFormValid { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        FormContext = new EditContext(ClaimFilter);
+        FormContext.OnFieldChanged += HandleFieldChanged;
+    }
+
+    void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        IsFormValid = FormContext.Validate();
+    }
+
+    void HandleReset()
+    {
+        IsFormValid = false;
+    }
+
+    async Task HandleSubmit()
+    {
+        if (FormContext.Validate())
+        {
+            await OnFilterEvent.InvokeAsync(ClaimFilter);
+        }
+    }
+
+    void OnTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
+    {
+        ClaimFilter.MemId = args.Transcript;
+    }
+}

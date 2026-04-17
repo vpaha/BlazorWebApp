@@ -1,0 +1,18 @@
+﻿<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Shell.NotFound)" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(Reparo.Shell._Layout)">
+            <NotAuthorized>
+                <RedirectToLogin />
+            </NotAuthorized>
+            <Authorizing>
+                <p id="authorizing-view-content">Please wait, We're verifying your identity...</p>
+            </Authorizing>
+        </AuthorizeRouteView>
+        <FocusOnNavigate RouteData="routeData" Selector="h3" />
+    </Found>
+</Router>
+<style>
+    #authorizing-view-content {
+        margin-left: 16px;
+    }
+</style>

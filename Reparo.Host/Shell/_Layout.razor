@@ -1,0 +1,27 @@
+﻿@inherits LayoutComponentBase
+<BreakpointProvider>
+    @Body
+</BreakpointProvider>
+<article id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</article>
+
+<style>
+    #blazor-error-ui {
+        background-color: red;
+        color: white;
+        display: none;
+        padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+        position: fixed;
+        width: 100%;
+        z-index: 1000;
+    }
+
+        #blazor-error-ui .dismiss {
+            cursor: pointer;
+            margin-left: 100px;
+            color: black;
+        }
+</style>

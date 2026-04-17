@@ -1,0 +1,103 @@
+﻿@inject NavigationManager nav
+@inject HttpClient httpClient
+@inject ToastService toastService
+
+<SfCard CssClass="zoom-in" role="article">
+    <CardContent>
+        <div class="wdr-container">
+            <div style="flex-grow: 1;">
+                <SfTextBox @bind-Value="DamageContext.AddressEntry" Placeholder="Property Address" ShowClearButton="true"
+                           FloatLabelType="FloatLabelType.Auto" OnChange="onChanged" />
+                <ValidationMessage For="@(() => DamageContext.AddressEntry)" />
+            </div>
+            <div @onclick:preventDefault>
+                <SfSpeechToText @bind-Transcript="DamageContext.AddressEntry" CssClass="e-info e-outline e-primary" SpeechRecognitionStopped="OnTranscriptChanged" />
+            </div>
+        </div>
+        <div style="margin-top:5px;">
+            Explore repair services for this address
+            <SfButton type="button" title="Verify Address" CssClass="e-round e-outline e-primary" OnClick="VerifyLocation">
+                <SfIcon Size="IconSize.Medium" Name="IconName.Reset" Title="Verify Address"></SfIcon>
+            </SfButton>
+        </div>
+    </CardContent>
+</SfCard>
+@if (_isMapEnabled)
+{
+    @if (ShowMap)
+    {
+        <SfCard CssClass="zoom-in" role="region">
+            <CardContent>
+                <label id="map-label">
+                    Serving @DamageContext.Placename and surrounding areas
+                </label>
+                @if (IsDesktopView)
+                {
+                    <Map Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude"></Map>
+                }
+            </CardContent>
+        </SfCard>
+    }
+}
+else
+{
+    <AddressLookup AddressResolved="OnAddressResolved"></AddressLookup>
+}
+@code {
+    [CascadingParameter(Name = CascadingParams.MediaQuery)] public bool IsDesktopView { get; set; }
+
+    [Parameter] public DamageEntry DamageContext { get; set; } = default!;
+    [Parameter] public EventCallback<bool> AddressChanged { get; set; }
+    [Parameter] public bool ShowMap { get; set; } = default!;
+
+    private bool _isMapEnabled = false;
+
+    protected override void OnInitialized()
+    {
+        if (DamageContext.AddressEntry != null) _isMapEnabled = true;
+    }
+
+    private async Task OnTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
+    {
+        DamageContext.AddressEntry = args.Transcript;
+
+        await AddressChanged.InvokeAsync(false);
+    }
+
+    private async Task OnAddressResolved(LocationDto location)
+    {
+        DamageContext.GoogleId = location.PlaceId;
+        DamageContext.Latitude = location.Latitude;
+        DamageContext.Longitude = location.Longitude;
+        DamageContext.AddressEntry = location.Address;
+
+        DamageContext.Region = location.Region;
+        DamageContext.Placename = location.Placename;
+
+        _isMapEnabled = true;
+
+        await AddressChanged.InvokeAsync(false);
+    }
+
+    private async Task onChanged()
+    {
+        await AddressChanged.InvokeAsync(true);
+    }
+
+    private async Task VerifyLocation()
+    {
+        var absoluteUrl = nav.ToAbsoluteUri($"googlemap/geocode/lookup?address={DamageContext.AddressEntry}");
+
+        using var response = await httpClient.GetAsync(absoluteUrl);
+        if (response.IsSuccessStatusCode)
+        {
+            var place = await response.Content.ReadFromJsonAsync<LocationDto>();
+            if (place != null) await OnAddressResolved(place);
+        }
+        else
+        {
+            _isMapEnabled = false;
+            toastService.ShowWarning("Address not found", "Location");
+        }
+    }
+}

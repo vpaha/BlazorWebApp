@@ -1,0 +1,37 @@
+﻿@page "/accessdenied"
+
+<PageTitle>Access Denied</PageTitle>
+
+<section id="access-denied-container">
+    <SfCard CssClass="access-denied-card" role="alert">
+        <CardHeader>
+            <h2>
+                Access Denied
+            </h2>
+        </CardHeader>
+        <CardContent>
+            <h1>You do not have permission to access this page.</h1>
+            <AuthorizeView>
+                <Authorized Context="auth">
+                    <h3>
+                        Signed in as @auth.User?.Identity?.Name
+                    </h3>
+                </Authorized>
+            </AuthorizeView>
+        </CardContent>
+    </SfCard>
+</section>
+
+<style>
+    #access-denied-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 60px;
+    }
+
+        #access-denied-container .access-denied-card {
+            max-width: 500px;
+            width: 100%;
+        }
+</style>

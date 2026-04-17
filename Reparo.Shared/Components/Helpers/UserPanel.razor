@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization;
+
+<AuthorizeView>
+    <Authorized Context="auth">
+        <div id="user-container">
+            @{
+                var user = auth.User;
+            }
+            <div title="@(user.IsInRole("Admin") ? "You are an Admin." : "You are a regular user.")">
+                Welcome, @user.Identity?.Name!
+            </div>
+            <div title="User ID @user.FindFirst("app_user_id")?.Value">
+                Signed in with @user.Identity?.AuthenticationType
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div>
+            Welcome, guest! Please sign in
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+<style>
+    #user-container {
+        display: flex;
+        gap: 10px;
+    }
+</style>

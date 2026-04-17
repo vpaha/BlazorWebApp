@@ -1,0 +1,167 @@
+﻿@page "/tracking"
+@attribute [AllowAnonymous]
+
+@using Microsoft.JSInterop
+@using Syncfusion.Blazor.SmartComponents
+
+@inject IJSRuntime jSRuntime
+@inject ToastService toastService
+@inject IDamageRepo damageService
+
+<PageTitle>Track Property Damage Claim Status | Repair Progress & Claim Updates | Property Claims</PageTitle>
+
+<HeadContent>
+    <meta name="description" content="Track your property damage claim online, review repair progress, and stay updated throughout the insurance claim process with Property Claims." />
+
+    <link rel="canonical" href="https://www.propertyclaims.com/tracking" />
+
+    <meta property="og:title" content="Track Property Damage Claim Status | Repair Progress & Claim Updates | Property Claims" />
+    <meta property="og:description" content="Track your property damage claim online, review repair progress, and stay updated throughout the insurance claim process with Property Claims." />
+    <meta property="og:url" content="https://www.propertyclaims.com/tracking" />
+</HeadContent>
+
+<section>
+    <SfAppBar role="region">
+        <h1>Track Your Property Damage Claim</h1>
+    </SfAppBar>
+    <SfAppBar role="region">
+        <h2>
+            Review claim status and repair progress
+        </h2>
+        <SfButton type="button" CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleBar">
+            <SfIcon Name="IconName.AIChat" Title="AI Assistance"></SfIcon>
+        </SfButton>
+    </SfAppBar>
+    <div id="main-container">
+        <div id="data-container">
+            @if (damageList != null)
+            {
+                foreach (var item in damageList)
+                {
+                    <DamageInfo DamageContext="@item" OnToggleBladeEvent="ToggleBlade" IsBladeOpen="isSideBarOpen"></DamageInfo>
+                }
+            }
+        </div>
+    </div>
+    <SfSidebar ID="side-bar-blade" @bind-IsOpen="isSideBarOpen" Type="(IsDesktopView ? SidebarType.Push : SidebarType.Over)" Target="#main-container" Position="SidebarPosition.Right">
+        <ChildContent>
+            @if (EditContext != null)
+            {
+                <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top">
+                    <FormValidator>
+                        <DataAnnotationsValidator></DataAnnotationsValidator>
+                    </FormValidator>
+                    <FormTemplate>
+                        <div id="form-buttons">
+                            <SfButton type="button" Content="Run AI Review"
+                                      IconCss="e-icons e-bullet-6" IconPosition="IconPosition.Right"
+                                      CssClass="@((damageContext?.IsProcessed == true ? "e-outline" : "e-primary"))"
+                                      OnClick="RunCustomSmartPaste" />
+                            <SfSmartPasteButton type="button"
+                                                OnClick="OnSubmit"
+                                                CssClass="@(isRunProcessed ? "e-outline" : "e-outline e-info")"
+                                                Content="Update">
+                            </SfSmartPasteButton>
+                        </div>
+                        <Reparo.Shared.Components.Damage.DamageBar DamageContext="@damageContext"></Reparo.Shared.Components.Damage.DamageBar>
+                    </FormTemplate>
+                    <FormButtons></FormButtons>
+                </SfDataForm>
+            }
+        </ChildContent>
+    </SfSidebar>
+</section>
+<style>
+    #side-bar-blade {
+        border: solid 1px grey;
+        border-radius: 8px;
+        max-width: 324px;
+        padding: 10px 15px 10px 15px;
+    }
+
+        #side-bar-blade #form-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid gray;
+        }
+
+    #main-container #damage-brief {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #main-container {
+        padding-right: 5px;
+    }
+
+        #main-container #data-container {
+            min-height: 500px;
+        }
+
+            #main-container #data-container .e-card {
+                margin-bottom: 8px;
+                box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.25);
+            }
+
+</style>
+
+@code {
+    [CascadingParameter(Name = CascadingParams.MediaQuery)] public bool IsDesktopView { get; set; }
+
+    public EditContext EditContext { get; set; } = default!;
+
+    private bool isSideBarOpen { get; set; } = false;
+    private void toggleBar() => isSideBarOpen = !isSideBarOpen;
+
+    private bool isRunProcessed;
+
+    IReadOnlyList<DamageEntry> damageList { get; set; } = default!;
+    DamageEntry? damageContext { get; set; } = default!;
+
+    string? clipboardData { get; set; }
+
+    private async Task RunCustomSmartPaste()
+    {
+        try
+        {
+            damageContext?.IsProcessed = true;
+            isRunProcessed = true;
+
+            clipboardData = damageContext?.BuildCombinedDescription();
+            await jSRuntime.InvokeVoidAsync("setClipboard", clipboardData);
+        } catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        damageList = await damageService.ListDamageEntriesAsync(CancellationToken.None);
+        isRunProcessed = false;
+    }
+
+    private async Task ToggleBlade(DamageEntry damage)
+    {
+        damageContext = damage;
+        EditContext = new EditContext(damageContext);
+
+        toggleBar();
+    }
+
+    private async Task OnSubmit()
+    {
+        if (!EditContext.Validate()) return;
+        if (!EditContext.IsModified()) return;
+
+        if (damageContext != null)
+        {
+            damageContext.IsProcessed = true;
+            await damageService.UpdateEntryAsync(damageContext, CancellationToken.None);
+        }
+        toggleBar();
+    }
+}

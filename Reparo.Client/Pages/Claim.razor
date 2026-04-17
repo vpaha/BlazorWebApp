@@ -1,0 +1,34 @@
+﻿@page "/claim"
+
+@attribute [Authorize(Policy = "SignedInUser")]
+@inject SfDialogService dialogService
+
+<section>
+    <SfCard>
+        <CardContent>
+            <SfButton CssClass="e-primary e-outline" Title="Old Claims" OnClick="ShowDialog">Claims</SfButton>
+        </CardContent>
+    </SfCard>
+</section>
+
+@code {
+    [CascadingParameter(Name = CascadingParams.MediaQuery)] public bool IsDesktopView { get; set; }
+
+    private async Task ShowDialog()
+    {
+        await dialogService.AlertAsync(null, "Search claims", new DialogOptions
+        {
+            ShowCloseIcon = true,
+            PrimaryButtonOptions = new DialogButtonOptions
+            {
+                Content = "Close"
+            },
+            ChildContent = builder =>
+            {
+                builder.OpenComponent<Shared.Components.Claim.SearchView>(0);
+                builder.AddAttribute(1, nameof(Shared.Components.Claim.SearchView.ForceDesktopView), IsDesktopView);
+                builder.CloseComponent();
+            }
+        });
+    }
+}

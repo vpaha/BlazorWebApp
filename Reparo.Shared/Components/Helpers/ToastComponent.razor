@@ -1,0 +1,52 @@
+﻿@inject ToastService toastService
+
+<SfToast @ref="toast" ID="toast-default">
+    <ToastPosition X="Center" Y="Top"></ToastPosition>
+    <ToastAnimationSettings>
+        <ToastShowAnimationSettings Effect="ToastEffect.SlideDown"></ToastShowAnimationSettings>
+        <ToastHideAnimationSettings Effect="ToastEffect.SlideUp"></ToastHideAnimationSettings>
+    </ToastAnimationSettings>
+</SfToast>
+@code {
+    private SfToast toast = default!;
+    private string cssClass { get; set; } = default!;
+    private int timeout { get; set; }
+
+    protected override void OnInitialized()
+    {
+        toastService.ShowToastTrigger += (ToastOption options) =>
+        {
+            InvokeAsync(() =>
+            {
+                timeout = ToastConstants.TimeoutSuccess;
+                switch (options.ToastType)
+                {
+                    case ToastType.Success:
+                        cssClass = "e-toast-success";
+                        break;
+                    case ToastType.Information:
+                        cssClass = "e-toast-info";
+                        break;
+                    case ToastType.Warning:
+                        cssClass = "e-toast-warning";
+                        timeout = ToastConstants.TimeoutWarning;
+                        break;
+                    case ToastType.Error:
+                        cssClass = "e-toast-danger";
+                        timeout = ToastConstants.TimeoutError;
+                        break;
+                }
+                // Update the toast model
+                this.toast.ShowAsync(new ToastModel()
+                {
+                    Title = options.Title,
+                    Content = options.Content,
+                    CssClass = cssClass,
+                    ShowCloseButton = true,
+                    Timeout = timeout
+                });
+            });
+        };
+        base.OnInitialized();
+    }
+}

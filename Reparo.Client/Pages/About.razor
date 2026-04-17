@@ -1,0 +1,44 @@
+﻿@page "/about"
+@attribute [AllowAnonymous]
+
+<PageTitle>About Property Claims | Property Damage Repair | Insurance Claim Platform</PageTitle>
+
+<HeadContent>
+    <meta name="description" content="Learn about Property Claims, a platform that helps homeowners manage property damage repair, connect with local contractors, and simplify the insurance claim process." />
+
+    <link rel="canonical" href="https://www.propertyclaims.com/about" />
+
+    <meta property="og:title" content="About Property Claims | Property Damage Repair | Insurance Claim Platform" />
+    <meta property="og:description" content="Learn how Property Claims helps homeowners with property damage repair, local contractors, and insurance claim assistance." />
+    <meta property="og:url" content="https://www.propertyclaims.com/about" />
+</HeadContent>
+
+<section>
+    <SfAppBar role="region">
+        <h1>
+            About PropertyClaims
+        </h1>
+    </SfAppBar>
+    <SfAppBar role="region">
+        <h2>
+            Your trusted platform for property damage repair
+        </h2>
+    </SfAppBar>
+    <SfAppBar role="region">
+        <h3>
+            local contractors, and insurance claim assistance
+        </h3>
+    </SfAppBar>
+    <SfCard>
+        <CardContent>
+            <UserInfo></UserInfo>
+        </CardContent>
+    </SfCard>
+</section>
+<style>
+    .header-container .e-card-content {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+</style>

@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization;
+
+<AuthorizeView Policy="SignedInUser">
+    <Authorized Context="auth">
+        <div>
+            <strong>User:</strong> @auth.User.Identity?.Name
+        </div>
+        <div>
+            <strong>Auth Type:</strong> @auth.User.Identity?.AuthenticationType
+        </div>
+        <h3>Claims:</h3>
+        @if (auth.User.Claims?.Any() == true)
+        {
+            <ul>
+                @foreach (var claim in auth.User.Claims.OrderBy(c => c.Type))
+                {
+                    <li>
+                        <strong>@claim.Type</strong>: @claim.Value
+                    </li>
+                }
+            </ul>
+        }
+    </Authorized>
+</AuthorizeView>

@@ -1,0 +1,91 @@
+﻿@inject ToastService toastService
+@inject IChatClient client
+@inject IDamageRepo damageService
+
+<section id="ai-container">
+    <SfAppBar id="switch-container">
+        <h4>
+            AI assistant.
+        </h4>
+        <h5>
+            Include damage details?
+        </h5>
+        <SfSwitch @bind-Checked="@isDamageIncluded" TChecked="bool" title="Include damage info"></SfSwitch>
+    </SfAppBar>
+    <div class="wdr-container">
+        <div style="flex-grow: 1;">
+            <SfTextBox @bind-Value="MessageText" Multiline="true" CssClass="my-text"
+                       Placeholder="Start asking..." FloatLabelType="FloatLabelType.Always" ShowClearButton="true"
+                       InputAttributes="@(new Dictionary<string, object> {{ "rows", "8" }})" />
+        </div>
+        <div @onclick:preventDefault>
+            <SfSpeechToText @bind-Transcript="MessageText" CssClass="e-info e-outline" />
+        </div>
+    </div>
+    <div>
+        <SfButton type="button" CssClass="e-primary" OnClick="Communicate" style="height:64px;">
+            <span>Ask</span>
+            <SfIcon Name="IconName.AIChat" Title="AI Agent"></SfIcon>
+        </SfButton>
+    </div>
+    <SfCard Id="pre-line">
+        <CardContent>
+            @messageResponse.ToString()
+        </CardContent>
+    </SfCard>
+</section>
+<style>
+    #ai-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+        #ai-container .my-text {
+            min-width: 300px;
+        }
+
+        #ai-container #switch-container {
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid gray;
+        }
+
+        #ai-container #pre-line .e-card-content {
+            white-space: pre-line;
+        }
+</style>
+
+@code {
+    private string MessageText { set; get; } = default!;
+    private readonly StringBuilder messageResponse = new();
+
+    bool isDamageIncluded { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task Communicate()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(MessageText)) MessageText = "I need help with my home repair claim.";
+
+            string summaries = string.Empty;
+            if (isDamageIncluded)
+            {
+                var DamageList = await damageService.ListDamageEntriesAsync(CancellationToken.None);
+                summaries = string.Join(". ", DamageList.Select(d => d.BuildCombinedDescription()).Where(s => !string.IsNullOrWhiteSpace(s)));
+            }
+
+            var response = await client.GetResponseAsync(summaries + " Here is my question: " + MessageText);
+
+            messageResponse.Clear();
+            messageResponse.Append(response);
+        } catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+        }
+    }
+}

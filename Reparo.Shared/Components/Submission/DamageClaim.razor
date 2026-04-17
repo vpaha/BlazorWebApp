@@ -1,0 +1,283 @@
+﻿@rendermode InteractiveAuto
+
+@inject IJSRuntime jSRuntime
+@inject NavigationManager nav
+@inject SfDialogService dialogService
+@inject ToastService toastService
+@inject IDamageRepo damageService
+@inject IVendorRepo vendorService
+
+<SfDialog Width="90vw" ShowCloseIcon="true" @bind-Visible="IsSearchDialogOpen">
+    <DialogTemplates>
+        <Header>Search contractors</Header>
+        <Content>
+            <GoogleMap Latitude="DamageContext.Latitude" Longitude="DamageContext.Longitude" OnSelectionEvent="SelectedVendor" />
+        </Content>
+    </DialogTemplates>
+</SfDialog>
+@if (EditContext is not null)
+{
+    <CascadingValue Value="EditContext" IsFixed="false">
+        <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top"
+                    ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
+            <FormValidator>
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+            </FormValidator>
+            <FormTemplate>
+                <div id="data-container">
+                    <div class="@(IsDesktopView ? "desktop-view" : "mobile-view")">
+                        @if (currentStep == 0)
+                        {
+                            <SfAppBar>
+                                @if (DamageContext.Vendor is not null)
+                                {
+                                    <SfButton CssClass="e-success e-outline"
+                                              OnClick="ShowVendor" IconCss="sf-icon-transport">Contractor</SfButton>
+                                    <span style="margin-left:10px;">@DamageContext.Vendor.Name</span>
+                                    <div style="flex-grow:1"></div>
+                                    <SfButton CssClass="e-link" OnClick="RemoveVendor" IconCss="e-icons e-close" title="Clear"></SfButton>
+                                }
+                                else
+                                {
+                                    <h3>No Contractor is selected</h3>
+                                    <SfButton type="button" CssClass="e-success e-outline" OnClick="toggleSearch"
+                                              Content="Find a local contractor" IconCss="e-icons e-search"
+                                              IconPosition="IconPosition.Right"></SfButton>
+                                }
+                            </SfAppBar>
+                            foreach (var item in DamageContext.Sections)
+                            {
+                                <DamageDetails DamageContext="item"></DamageDetails>
+                            }
+                        }
+                        else if (currentStep == 1)
+                        {
+                            <Connection DamageContext="DamageContext"></Connection>
+                        }
+                        <SfCard role="article" CssClass="zoom-in">
+                            <CardContent>
+                                <ValidationSummary></ValidationSummary>
+                            </CardContent>
+                        </SfCard>
+                    </div>
+                    <div id="sideBar-container" class="@slideClass">
+                        <SfStepper ID="stepper-container" ActiveStep="currentStep" Orientation="StepperOrientation.Vertical"
+                                   LabelPosition="StepperLabelPosition.Bottom" StepClicked="@StepClicked">
+                            <ChildContent>
+                                <StepperSteps>
+                                    <StepperStep @ref="stepperStep1" Label="Damage" IconCss="sf-icon-transport"></StepperStep>
+                                    <StepperStep @ref="stepperStep3" Label="Connect" IconCss="sf-icon-success"></StepperStep>
+                                </StepperSteps>
+                            </ChildContent>
+                        </SfStepper>
+                    </div>
+                </div>
+            </FormTemplate>
+            <FormButtons>
+                <SfButton type="submit" CssClass="e-primary" OnClick="TriggerSubmit" Content="Submit the Report">
+                </SfButton>
+                <SfButton type="reset" title="Clear Fields" CssClass="e-outline">Clear</SfButton>
+            </FormButtons>
+        </SfDataForm>
+    </CascadingValue>
+}
+<style>
+    #data-container,
+    #sideBar-container {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    #sideBar-container {
+        min-height: 440px;
+    }
+
+    #stepper-container,
+    #data-container {
+        border: solid 1px white;
+        border-radius: 8px;
+        padding: 5px;
+    }
+
+        #data-container .desktop-view {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            flex-basis: 100%;
+            column-gap: 12px;
+            row-gap: 8px;
+        }
+
+            #data-container .desktop-view .e-card {
+                flex-basis: 49%;
+            }
+
+        #data-container .mobile-view {
+            display: flex;
+            flex-direction: column;
+            flex-basis: 100%;
+            row-gap: 2px;
+        }
+
+    #group-container .e-card {
+        box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.25);
+    }
+
+    .sf-icon-transport:before {
+        content: "\e702";
+    }
+
+    .sf-icon-user:before {
+        content: "\e708";
+    }
+
+    .sf-icon-success:before {
+        content: "\e715";
+    }
+</style>
+@code {
+    [CascadingParameter(Name = CascadingParams.MediaQuery)] public bool IsDesktopView { get; set; }
+    [Parameter] public bool IsSideMenuOpen { get; set; } = default!;
+
+    [Inject]
+    private DamageState DamageState { get; set; } = default!;
+    public DamageEntry DamageContext => DamageState.Context;
+
+    public EditContext EditContext { get; set; } = default!;
+
+    private string slideClass => IsSideMenuOpen ? "slide-in-right" : "slide-out-right";
+
+    private StepperStep? stepperStep1;
+    private StepperStep? stepperStep3;
+
+    private int currentStep { get; set; } = 0;
+
+    private bool IsSearchDialogOpen;
+
+    public void StepClicked(StepperClickedEventArgs args)
+    {
+        currentStep = args.ActiveStep;
+
+        if (currentStep == 1)
+        {
+            var isStepValid = EditContext.Validate();
+
+            stepperStep1?.IsValid = isStepValid;
+            stepperStep3?.IsValid = isStepValid;
+        }
+        else
+        {
+            stepperStep1?.IsValid = null;
+            stepperStep3?.IsValid = null;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            DamageContext.DateOfLoss = DateTime.UtcNow;
+            DamageContext.IsProcessed = false;
+            DamageContext.UserId = 1;
+
+            IReadOnlyList<DamageSectionType> types = await damageService.ListSectionTypesAsync(CancellationToken.None);
+
+            DamageContext.Sections = types.Select(t => new DamageEntrySection
+            {
+                DamageSectionId = t.Id,
+                DamageSectionType = new DamageSectionType
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Description = t.Description,
+                    IsEmergency = t.IsEmergency
+                },
+                CreatedAt = DateTimeOffset.UtcNow,
+                Entry = null
+            })
+            .ToList();
+
+            EditContext = new EditContext(DamageContext);
+        } catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+        }
+    }
+
+    private async Task TriggerSubmit()
+    {
+        if (EditContext is null) return;
+        var isValid = EditContext.Validate();
+
+        var sectionsField = new FieldIdentifier(DamageContext, nameof(DamageEntry.Sections));
+        if (EditContext.GetValidationMessages(sectionsField).Any())
+        {
+            currentStep = 0;
+            return;
+        }
+        else if (!isValid)
+        {
+            currentStep = 1;
+            return;
+        }
+
+        try
+        {
+            DamageContext.Sections.RemoveAll(s => string.IsNullOrWhiteSpace(s.Entry));
+            DamageContext.Vendor = null;
+
+            var claimId = await damageService.AddEntryAsync(DamageContext, CancellationToken.None);
+
+            toastService.ShowSuccess($"Claim #{claimId} has been saved.", "System");
+            nav.NavigateTo("tracking");
+        } catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+        }
+    }
+
+    private async Task ShowVendor()
+    {
+        await dialogService.AlertAsync(null, DamageContext.Vendor?.Name, new DialogOptions
+        {
+            ShowCloseIcon = true,
+            PrimaryButtonOptions = new DialogButtonOptions
+            {
+                Content = "Close"
+            },
+            ChildContent = builder =>
+            {
+                builder.OpenComponent<Vendor>(0);
+                builder.AddAttribute(1, "PlaceId", DamageContext.Vendor?.PlaceId);
+                builder.CloseComponent();
+            }
+        });
+    }
+
+    private async Task RemoveVendor()
+    {
+        DamageContext.Vendor = null;
+        DamageContext.VendorId = null;
+        StateHasChanged();
+    }
+
+    private async Task toggleSearch()
+    {
+        IsSearchDialogOpen = true;
+    }
+
+    private async Task SelectedVendor(string placeId)
+    {
+        try
+        {
+            DamageState.Context.Vendor = await vendorService.GetVendorByPlaceIdAsync(placeId);
+            DamageState.Context.VendorId = DamageState.Context.Vendor?.Id;
+        } catch (Exception)
+        {
+        } finally
+        {
+            IsSearchDialogOpen = false;
+        }
+    }
+}

@@ -1,0 +1,77 @@
+﻿@page "/damage"
+@attribute [AllowAnonymous]
+
+<PageTitle>Start Property Damage Claim | Repair Estimates & Insurance Claim Assistance | Property Claims</PageTitle>
+
+<HeadContent>
+    <meta name="description" content="Start your property damage claim online, provide damage details, connect with local contractors, and move through the insurance claim process with PropertyClaims." />
+
+    <link rel="canonical" href="https://www.propertyclaims.com/damage" />
+
+    <meta property="og:title" content="Start Property Damage Claim | Repair Estimates & Insurance Claim Assistance | Property Claims" />
+    <meta property="og:description" content="Start your property damage claim online, provide damage details, connect with local contractors, and move through the insurance claim process with Property Claims." />
+    <meta property="og:url" content="https://www.propertyclaims.com/damage" />
+</HeadContent>
+
+<section>
+    <SfAppBar role="region">
+        <h1>Start Your Property Damage Claim</h1>
+    </SfAppBar>
+    <SfAppBar role="region" id="headerAppBar">
+        <div>
+            @if (IsDesktopView)
+            {
+                <h2>
+                    Provide a few details below to get repair estimates and connect with local contractors
+                </h2>
+            }
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+            <SfButton CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleMenu">
+                <SfIcon Name="IconName.ListOrderedRTL" Title="Steps to Follow"></SfIcon>
+            </SfButton>
+            <AppBarSeparator></AppBarSeparator>
+            <SfButton CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleBar">
+                <SfIcon Name="IconName.AIChat" Title="AI Assistance"></SfIcon>
+            </SfButton>
+        </div>
+    </SfAppBar>
+    <div id="main-container">
+        <DamageClaim IsSideMenuOpen="@isSideMenuOpen"></DamageClaim>
+        <SfSidebar Target="#main-container" ID="side-bar-blade" @bind-IsOpen="isSideBarOpen" Type="SidebarType.Over" Position="SidebarPosition.Right">
+            <ChildContent>
+                <Reparo.Shell.AIChat></Reparo.Shell.AIChat>
+            </ChildContent>
+        </SfSidebar>
+    </div>
+</section>
+<style>
+    #headerAppBar {
+        justify-content: space-between;
+    }
+
+    #side-bar-blade {
+        border: solid 1px grey;
+        border-radius: 8px;
+        max-width: 424px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 15px 10px 15px;
+    }
+
+    #main-container {
+        padding-left: 2px;
+        padding-right: 2px;
+        padding-bottom: 20px;
+    }
+</style>
+@code {
+    [CascadingParameter(Name = CascadingParams.MediaQuery)] public bool IsDesktopView { get; set; }
+
+    private bool isSideMenuOpen { get; set; } = true;
+    private bool isSideBarOpen { get; set; } = false;
+
+    private void toggleMenu() => isSideMenuOpen = !isSideMenuOpen;
+    private void toggleBar() => isSideBarOpen = !isSideBarOpen;
+}

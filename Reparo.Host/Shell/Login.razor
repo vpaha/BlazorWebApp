@@ -1,0 +1,52 @@
+﻿@page "/login"
+
+@inject IAuthenticationSchemeProvider SchemeProvider
+@inject NavigationManager navigationManager
+
+<PageTitle>Sign in</PageTitle>
+
+<form action="authentication/signin" method="post">
+    <AntiforgeryToken />
+    <input type="hidden" value="@ReturnUrl" name="returnUrl" />
+    <SfCard id="provider-container">
+        <CardContent>
+            @foreach (var provider in externalLogins)
+            {
+                <div>
+                    <Syncfusion.Blazor.Buttons.SfButton CssClass="e-outline e-primary" type="submit" name="provider" value="@provider.Name">
+                        Connect with @provider.DisplayName
+                    </Syncfusion.Blazor.Buttons.SfButton>
+                </div>
+            }
+            <div>
+                <input type="checkbox" name="rememberMe" value="true" checked />
+                <label>Remember this device</label>
+            </div>
+            <div>
+                <a href="" title="Do not connect me">Do not connect me</a>
+            </div>
+        </CardContent>
+    </SfCard>
+</form>
+<style>
+    #provider-container .e-card-content {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+</style>
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private AuthenticationScheme[] externalLogins = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var schemes = await SchemeProvider.GetAllSchemesAsync();
+        externalLogins = schemes.Where(s => !string.IsNullOrEmpty(s.DisplayName)).ToArray();
+    }
+}

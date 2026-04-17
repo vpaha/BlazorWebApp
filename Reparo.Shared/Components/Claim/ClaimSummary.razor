@@ -1,0 +1,34 @@
+@rendermode InteractiveAuto
+
+@if (claim is not null)
+{
+    <SfCard ID="claim-container" role="region">
+        <CardContent>
+            <div>
+                <input type="button" class="e-success e-outline" value="Attachments" onclick="Attachment('@claim.ClaimId')" />
+            </div>
+            <h4>Claim Details:</h4>
+            @foreach (var prop in claim.GetType().GetProperties())
+            {
+                <div>@prop.Name: @prop.GetValue(claim)</div>
+            }
+        </CardContent>
+    </SfCard>
+}
+<style>
+    #claim-container .e-card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 5px;
+    }
+</style>
+<script>
+    async function Attachment(claimId)
+    {
+        await renderAttachment('Claim', claimId);
+    }
+</script>
+@code {
+    [Parameter] public ClaimSearchResponse claim { set; get; } = default!;
+}

@@ -1,0 +1,52 @@
+﻿@rendermode InteractiveAuto
+
+<SfCard CssClass="zoom-in" role="region">
+    <CardContent>
+        <div class="wdr-container">
+            <div style="flex-grow: 1;">
+                <SfTextBox @bind-Value="DamageContext.ContactEntry" Placeholder="Your name and how we can contact you (phone or email)" Multiline="true" ShowClearButton="true"
+                           FloatLabelType="FloatLabelType.Auto" InputAttributes="@(new Dictionary<string, object> {{ "rows", "4" }})" />
+                <ValidationMessage For="@(() => DamageContext.ContactEntry)" />
+            </div>
+            <div @onclick:preventDefault>
+                <SfSpeechToText @bind-Transcript="DamageContext.ContactEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnContactTranscriptChanged" />
+            </div>
+        </div>
+    </CardContent>
+</SfCard>
+<SfCard CssClass="zoom-in" role="region">
+    <CardContent>
+        <div class="wdr-container">
+            <div style="flex-grow: 1;">
+                <SfTextBox @bind-Value="DamageContext.InsuranceEntry" Placeholder="Your insurance carrier, policy number, and claim number" Multiline="true" ShowClearButton="true"
+                           FloatLabelType="FloatLabelType.Auto" InputAttributes="@(new Dictionary<string, object> {{ "rows", "4" }})" />
+                <ValidationMessage For="@(() => DamageContext.InsuranceEntry)" />
+            </div>
+            <div @onclick:preventDefault>
+                <SfSpeechToText @bind-Transcript="DamageContext.InsuranceEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnInsuranceTranscriptChanged" />
+            </div>
+        </div>
+    </CardContent>
+</SfCard>
+<AddressEntry DamageContext="DamageContext" AddressChanged="AddressChanged"></AddressEntry>
+@code {
+    [CascadingParameter] private EditContext EditContext { get; set; } = default!;
+    [Parameter] public DamageEntry DamageContext { get; set; } = default!;
+
+    private void OnContactTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
+    {
+        DamageContext.ContactEntry = args.Transcript;
+        EditContext.NotifyFieldChanged(new FieldIdentifier(DamageContext, nameof(DamageContext.ContactEntry)));
+    }
+
+    private void OnInsuranceTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
+    {
+        DamageContext.InsuranceEntry = args.Transcript;
+        EditContext.NotifyFieldChanged(new FieldIdentifier(DamageContext, nameof(DamageContext.InsuranceEntry)));
+    }
+
+    private void AddressChanged(bool isValid)
+    {
+        EditContext.NotifyFieldChanged(new FieldIdentifier(DamageContext, nameof(DamageContext.AddressEntry)));
+    }
+}

@@ -1,0 +1,179 @@
+﻿@page "/"
+@attribute [AllowAnonymous]
+
+<PageTitle>Property Damage Repair Services | Insurance Claim Assistance | Property Claims</PageTitle>
+<HeadContent>
+    <meta name="description" content="Get property damage repair services, connect with licensed local contractors, and simplify your insurance claim process with Property Claims." />
+    <link rel="canonical" href="https://www.propertyclaims.com" />
+
+    <meta property="og:title" content="Property Damage Repair Services | Insurance Claim Assistance" />
+    <meta property="og:description" content="Get property damage repair services. Connect with licensed local contractors and simplify your insurance claim process." />
+    <meta property="og:url" content="https://www.propertyclaims.com" />
+
+    @if (!string.IsNullOrWhiteSpace(DamageContext.Region))
+    {
+        <meta name="geo.region" content="@DamageContext.Region" />
+    }
+    @if (!string.IsNullOrWhiteSpace(DamageContext.Placename))
+    {
+        <meta name="geo.placename" content="@DamageContext.Placename" />
+    }
+</HeadContent>
+
+<section id="search-container">
+    <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top"
+                ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
+        <FormValidator>
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+        </FormValidator>
+        <FormTemplate>
+            <div class="@(IsDesktopView ? "desktop-view" : "mobile-view")">
+                <AddressEntry DamageContext="DamageContext" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
+            </div>
+        </FormTemplate>
+        <FormButtons>
+            <SfButton type="submit" CssClass="e-primary" Disabled="_isValid" OnClick="TriggerSubmit" Content="@(isMapView ? "Hide this Map" : "Local Contractors")">
+            </SfButton>
+        </FormButtons>
+    </SfDataForm>
+    @if (isMapView)
+    {
+        <SfCard role="region">
+            <CardContent>
+                <GoogleMap Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude"></GoogleMap>
+            </CardContent>
+        </SfCard>
+    }
+    else
+    {
+        @if (IsDesktopView)
+        {
+            <SfAppBar role="region">
+                <h1>
+                    Property Damage Repair Services
+                </h1>
+            </SfAppBar>
+        }
+        <div id="info-container">
+            <div class="@(IsDesktopView ? "desktop-view" : "mobile-view")">
+                <SfCard CssClass="zoom-in" role="region">
+                    <CardHeader>
+                        What We Do
+                    </CardHeader>
+                    <CardContent EnableSeparator="true">
+                        We help homeowners recover from property damage by connecting them with trusted local contractors and guiding them through the insurance claim process - from inspection to full restoration.
+                    </CardContent>
+                </SfCard>
+                <SfCard CssClass="zoom-in" role="region">
+                    <CardHeader>
+                        How It Works
+                    </CardHeader>
+                    <CardContent EnableSeparator="true">
+                        <ul style="padding-left:10px;margin:auto;">
+                            <li>
+                                Report your property damage
+                            </li>
+                            <li>
+                                Get matched with licensed contractors near you
+                            </li>
+                            <li>
+                                Receive repair estimates and start restoration
+                            </li>
+                            <li>
+                                Navigate your insurance claim with guided support
+                            </li>
+                        </ul>
+                    </CardContent>
+                </SfCard>
+                <SfCard CssClass="zoom-in" role="region">
+                    <CardHeader>
+                        Who We Serve
+                    </CardHeader>
+                    <CardContent EnableSeparator="true">
+                        <ul style="padding-left:10px;margin:auto;">
+                            <li>
+                                Homeowners dealing with property damage or home repairs
+                            </li>
+                            <li>
+                                Landlords and property managers handling rental property damage
+                            </li>
+                            <li>
+                                HOAs and community associations managing residential claims
+                            </li>
+                        </ul>
+                    </CardContent>
+                </SfCard>
+                <SfCard CssClass="flex-container zoom-in" role="region">
+                    <CardContent>
+                        Provide details about your property damage and we'll connect you with qualified local contractors while helping you navigate the insurance claim and repair process.
+                    </CardContent>
+                    <CardContent EnableSeparator="true">
+                        <a href="damage" class="e-btn e-primary e-outline" title="Add damage details to continue">Get Repair Estimates</a>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    }
+</section>
+<style>
+    #search-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: center;
+        column-gap: 12px;
+        row-gap: 8px;
+    }
+
+    #info-container .desktop-view {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: center;
+        column-gap: 12px;
+        row-gap: 8px;
+    }
+
+    #info-container .mobile-view {
+        display: flex;
+        flex-direction: column;
+        flex-basis: 100%;
+        row-gap: 2px;
+    }
+
+    #info-container .desktop-view .e-card {
+        flex-basis: 49%;
+    }
+
+    #info-container .flex-container .e-card-content {
+        display: flex;
+    }
+</style>
+@code {
+    [CascadingParameter(Name = CascadingParams.MediaQuery)] public bool IsDesktopView { get; set; }
+
+    [Inject]
+    private DamageState DamageState { get; set; } = default!;
+    public DamageEntry DamageContext => DamageState.Context;
+
+    public EditContext EditContext { get; set; } = default!;
+    private bool isMapView { get; set; }
+
+    private bool _isValid;
+
+    private void AddressChanged(bool isValid)
+    {
+        _isValid = isValid;
+        if (!isValid) EditContext.Validate();
+    }
+
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(DamageContext);
+    }
+
+    private async Task TriggerSubmit()
+    {
+        isMapView = !isMapView;
+    }
+}

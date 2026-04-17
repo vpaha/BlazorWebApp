@@ -1,0 +1,13 @@
+﻿<CascadingValue Value="IsDesktopView" Name="@CascadingParams.MediaQuery" IsFixed="false">
+    <SfMediaQuery MediaBreakpoints="breakpoints.Default" @bind-ActiveBreakpoint="activeBreakpoint" />
+    @ChildContent
+</CascadingValue>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private Breakpoints breakpoints { get; set; } = new Breakpoints();
+    private string? activeBreakpoint;
+
+    private bool IsDesktopView => breakpoints.IsDesktop(activeBreakpoint);
+}

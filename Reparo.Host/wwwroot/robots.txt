@@ -1,0 +1,17 @@
+﻿User-agent: *
+
+# Block low-value or non-indexable pages
+Disallow: /settings
+Disallow: /claim
+Disallow: /accessdenied
+Disallow: /notfound
+Disallow: /error
+Disallow: /login
+
+Disallow: /authentication/
+Disallow: /damage/
+
+# Block query-based URLs (important for Blazor apps)
+Disallow: /*?*
+
+Sitemap: https://propertyclaims.com/sitemap.xml

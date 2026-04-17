@@ -1,0 +1,92 @@
+﻿using Microsoft.EntityFrameworkCore;
+
+internal static class ModelBuilderExtensions
+{
+    internal static ModelBuilder ConfigureDamageDomain(this ModelBuilder modelBuilder, string schema)
+    {
+        modelBuilder.Entity<DamageSectionType>(e =>
+        {
+            e.ToTable("damage_section_types", schema);
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("id").ValueGeneratedOnAdd();
+            e.Property(x => x.Name).HasColumnName("name");
+            e.Property(x => x.Description).HasColumnName("description");
+            e.Property(x => x.IsEmergency).HasColumnName("is_emergency");
+        });
+
+        modelBuilder.Entity<DamageEntry>(e =>
+        {
+            e.ToTable("damage_entries", schema);
+            e.Property(x => x.UserId).HasColumnName("user_id");
+            e.Property(x => x.VendorId).HasColumnName("vendor_id");
+            e.HasKey(x => x.Id);
+
+            e.Property(x => x.Id).HasColumnName("id").ValueGeneratedOnAdd();
+            e.Property(x => x.IsProcessed).HasColumnName("is_processed");
+
+            e.Property(x => x.AddressEntry).HasColumnName("address_entry");
+            e.Property(x => x.Street).HasColumnName("street");
+            e.Property(x => x.City).HasColumnName("city");
+            e.Property(x => x.State).HasColumnName("state");
+            e.Property(x => x.Zip).HasColumnName("zip");
+
+            e.Property(x => x.Placename).HasColumnName("placename");
+            e.Property(x => x.Region).HasColumnName("region");
+
+            e.Property(x => x.GoogleId).HasColumnName("google_id");
+            e.Property(x => x.Latitude).HasColumnName("latitude");
+            e.Property(x => x.Longitude).HasColumnName("longitude");
+
+            e.Property(x => x.InsuranceEntry).HasColumnName("insurance_entry");
+            e.Property(x => x.InsuranceCarrier).HasColumnName("insurance_carrier");
+            e.Property(x => x.PolicyNumber).HasColumnName("policy_number");
+            e.Property(x => x.ClaimNumber).HasColumnName("claim_number");
+
+            e.Property(x => x.ContactEntry).HasColumnName("contact_entry");
+            e.Property(x => x.FullName).HasColumnName("full_name");
+            e.Property(x => x.Phone).HasColumnName("phone");
+            e.Property(x => x.Email).HasColumnName("email");
+
+            e.Property(x => x.DateOfLoss).HasColumnName("date_of_loss");
+            e.Property(x => x.CreatedAt).HasColumnName("created_at");
+            e.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+
+            e.HasMany(x => x.Sections)
+                .WithOne()
+                .HasForeignKey(x => x.DamageEntryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(d => d.User).WithMany().HasForeignKey(d => d.UserId).IsRequired();
+            e.HasOne(d => d.Vendor).WithMany().HasForeignKey(d => d.VendorId);
+        });
+
+        modelBuilder.Entity<DamageEntrySection>(e =>
+        {
+            e.ToTable("damage_entry_sections", schema);
+            e.HasKey(x => x.Id);
+
+            e.Property(x => x.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            e.Property(x => x.DamageEntryId)
+                .HasColumnName("damage_entry_id");
+
+            e.Property(x => x.DamageSectionId)
+                .HasColumnName("damage_section_id");
+
+            e.Property(x => x.Entry)
+                .HasColumnName("entry");
+
+            e.Property(x => x.CreatedAt)
+                .HasColumnName("created_at");
+
+            e.HasOne(x => x.DamageSectionType)
+                .WithMany()
+                .HasForeignKey(x => x.DamageSectionId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        return modelBuilder;
+    }
+}

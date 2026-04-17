@@ -1,0 +1,48 @@
+﻿@rendermode InteractiveAuto
+
+@inject NavigationManager nav
+@inject HttpClient httpClient
+@inject IJSRuntime jSRuntime
+@inject ToastService toastService
+
+@if (location is null)
+{
+    <SfCard role="region">
+        <CardContent>
+            <progress></progress>
+            <div>Looking up your location</div>
+        </CardContent>
+    </SfCard>
+}
+@code {
+    [Parameter] public EventCallback<LocationDto> AddressResolved { get; set; }
+
+    private LatLng? location;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        try
+        {
+            location = await jSRuntime.InvokeAsync<LatLng>("getBrowserLocation");
+            if (location is null) return;
+
+            var lat = location.Latitude.ToString(CultureInfo.InvariantCulture);
+            var lng = location.Longitude.ToString(CultureInfo.InvariantCulture);
+            var absoluteUrl = nav.ToAbsoluteUri($"googlemap/geocode/reverse?lat={lat}&lng={lng}");
+
+            using var response = await httpClient.GetAsync(absoluteUrl);
+            if (!response.IsSuccessStatusCode) return;
+
+            var place = await response.Content.ReadFromJsonAsync<LocationDto>();
+            if (place != null) await AddressResolved.InvokeAsync(place);
+        } catch (Exception ex)
+        {
+            toastService.ShowWarning(ex.Message, "System");
+
+            location = new();
+            StateHasChanged();
+        }
+    }
+}

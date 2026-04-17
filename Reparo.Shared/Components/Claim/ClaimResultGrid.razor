@@ -1,0 +1,186 @@
+@rendermode InteractiveAuto
+
+@inject IClaimService claimService
+
+<div id="claim-container">
+    <div style="padding-bottom:8px;">
+        <SfButton CssClass="e-round e-primary" OnClick="@OpenFilter">
+            <SfIcon Name="IconName.Adjustment" Title="Toggle the filter"></SfIcon>
+        </SfButton>
+        <span style="margin-left:10px">Filter</span>
+    </div>
+    @if (apiConflictMessages.Count > 0)
+    {
+        <div id="error-container">
+            @foreach (var message in apiConflictMessages)
+            {
+                <SfMessage Variant="MessageVariant.Outlined" Severity="Syncfusion.Blazor.Notifications.MessageSeverity.Error" ShowIcon="false" ShowCloseIcon="true">
+                    @message
+                </SfMessage>
+            }
+        </div>
+    }
+
+    <SfGrid ID="claim-grid" TValue="ClaimSearchResponse" @ref="claimGrid" Height="512px"
+            Toolbar="@(new List<string>() { "Search" })"
+            AllowPaging="true" AllowReordering="true" AllowSorting="true" AllowFiltering="true" ShowColumnMenu="true"
+            DataSource="@Claims">
+        <GridPageSettings PageSize="GridConstants.RowCount"></GridPageSettings>
+        <GridTemplates>
+            <EmptyRecordTemplate>
+                <div>@SharedResource.NoResult</div>
+            </EmptyRecordTemplate>
+        </GridTemplates>
+        <GridEvents RowSelected="OnRowSelected" RowDeselected="OnRowDeSelected" TValue="ClaimSearchResponse"></GridEvents>
+        <GridSearchSettings Fields="@(new string[] { "ClaimId" })" Operator=Syncfusion.Blazor.Operator.StartsWith IgnoreCase="true" IgnoreAccent="true"></GridSearchSettings>
+        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
+        <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple" CheckboxOnly="true" PersistSelection="true"></GridSelectionSettings>
+        <GridColumns>
+            <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="50"></GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.Status) HeaderText="Status" Type="ColumnType.None" AllowEditing=false TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center">
+                <Template>
+                    @{
+                        var item = (context as ClaimSearchResponse);
+                        var status = item?.Status;
+                        if (string.Equals(status, "adjucated", StringComparison.OrdinalIgnoreCase)) status = "ADJUDICATED";
+                        <SfButton CssClass="@GetStatusCssClass(item)" type="button" aria-label="@($"Claim status: {status}")" OnClick="@(() => ShowTheRecord(item))">@status</SfButton>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.ClaimId) HeaderText="Claim" Type="ColumnType.String" IsPrimaryKey="true">
+                <Template>
+                    @{
+                        var item = (context as ClaimSearchResponse);
+                        <SfButton CssClass="e-link" type="button" aria-label="@item?.ClaimId" OnClick="OnClaimClicked">@item?.ClaimId</SfButton>
+                        <SfButton CssClass="e-flat e-icon e-small" type="button" OnClick="OnClaimClicked">
+                            @if (item?.IsProcessRestricted == "Y")
+                            {
+                                <SfIcon Size="IconSize.Medium" Name="IconName.IncreaseIndent" Title="Process Restricted"></SfIcon>
+                            }
+                            else
+                            {
+                                <SfIcon Size="IconSize.Medium" Name="IconName.DecreaseIndent" Title="Click to copy claim #"></SfIcon>
+                            }
+                        </SfButton>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.ProvName) Visible="@IsDesktopView" HeaderText="Provider" Type="ColumnType.None" AllowEditing=false>
+                <Template>
+                    @{
+                        var item = context as ClaimSearchResponse;
+                        <span>@item?.ProvName</span>
+                        <SfButton CssClass="e-flat e-icon e-small" type="button" OnClick="OnProviderClicked">
+                            <SfIcon Size="IconSize.Medium" Name="IconName.Justify"></SfIcon>
+                        </SfButton>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.MemId) Visible="@IsDesktopView" HeaderText="Mem Id" Type="ColumnType.None" AllowEditing=false>
+                <Template>
+                    @{
+                        var item = context as ClaimSearchResponse;
+                        <SfButton CssClass="e-link" type="button" aria-label="@item?.EnrollId" OnClick="OnEnrollmentClicked">@item?.EnrollId</SfButton>
+                        <SfButton CssClass="e-flat e-icon e-small" type="button" OnClick="OnEnrollmentClicked">
+                            <SfIcon Name="IconName.Adjustment" Title="Enrollment home"></SfIcon>
+                        </SfButton>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.StartDate) Visible="@IsDesktopView" HeaderText="DOS" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern" Type="ColumnType.Date" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center"></GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.TotalPaid) Visible="@IsDesktopView" HeaderText="Amount Paid" Type="ColumnType.Decimal" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Format="C"></GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.TotalAmt) HeaderText="Total Charges" Type="ColumnType.Decimal" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Format="C"></GridColumn>
+        </GridColumns>
+    </SfGrid>
+</div>
+<style>
+    #claim-container {
+        padding: 10px;
+    }
+
+        #claim-container #claim-grid {
+            border: solid 1px white;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        #claim-container #error-container {
+            padding: 5px;
+        }
+
+</style>
+
+@code {
+    [CascadingParameter(Name = CascadingParams.MediaQuery)] public bool IsDesktopView { get; set; }
+
+    [Parameter] public EventCallback<ClaimSearchResponse?> OnOpenBladeEvent { get; set; }
+    [Parameter] public EventCallback OnFilterEvent { get; set; }
+
+    public Task OpenFilter() => OnFilterEvent.InvokeAsync();
+
+    private readonly List<string> apiConflictMessages = [];
+
+    public IEnumerable<ClaimSearchResponse> Claims { get; private set; } = default!;
+
+    private bool isExpanded = false;
+
+    public SfGrid<ClaimSearchResponse>? claimGrid;
+
+    public async Task ApplyFilterAsync(ClaimSearchFilter filter, CancellationToken ct = default)
+    {
+        if (claimGrid is null) return;
+
+        await claimGrid.GoToPageAsync(1);
+
+        filter.Skip = 0;
+        filter.Take = 100;
+
+        try
+        {
+            apiConflictMessages.Clear();
+            await claimGrid.ShowSpinnerAsync();
+
+            Claims = Array.Empty<ClaimSearchResponse>();
+            var result = await claimService.SearchAsync(filter, ct);
+            Claims = result.Results ?? Array.Empty<ClaimSearchResponse>();
+        } catch (ConflictException ex)
+        {
+            var messages = ex.Conflicts.Select(c => $"{c.Message} ({c.MessageId})").ToList();
+            apiConflictMessages.AddRange(messages);
+        } catch (HttpRequestException ex)
+        {
+            apiConflictMessages.Add(ex.Message);
+        } finally
+        {
+            await claimGrid.HideSpinnerAsync();
+            StateHasChanged();
+        }
+    }
+
+    public async Task ShowTheRecord(ClaimSearchResponse? claim)
+    {
+        isExpanded = !isExpanded;
+
+        if (isExpanded)
+            await OnOpenBladeEvent.InvokeAsync(claim);
+        else
+            await OnOpenBladeEvent.InvokeAsync(null);
+    }
+
+    public string GetStatusCssClass(ClaimSearchResponse? claim) => claim?.Status?.ToLower() switch
+    {
+        ClaimStatusConstants.Pend => "e-block e-info",
+        ClaimStatusConstants.Open or ClaimStatusConstants.Log or ClaimStatusConstants.Adjudicated or ClaimStatusConstants.WaitPrice or ClaimStatusConstants.Priced => "e-block e-primary",
+        ClaimStatusConstants.WaitDeny or ClaimStatusConstants.Deny or ClaimStatusConstants.Denied => "e-block e-danger",
+        ClaimStatusConstants.WaitPay or ClaimStatusConstants.Pay or ClaimStatusConstants.Paid => "e-block e-success",
+        ClaimStatusConstants.WaitRev or ClaimStatusConstants.Rev or ClaimStatusConstants.RevSynch or ClaimStatusConstants.Reversed => "e-block e-warning",
+        _ => "e-block"
+    };
+
+    // Placeholder event handlers for future use
+    public void OnProviderClicked(MouseEventArgs e) { }
+    public void OnEnrollmentClicked(MouseEventArgs e) { }
+    public void OnClaimClicked(MouseEventArgs e) { }
+    public void OnRowSelected(RowSelectEventArgs<ClaimSearchResponse> args) { }
+    public void OnRowDeSelected(RowDeselectEventArgs<ClaimSearchResponse> args) { }
+}

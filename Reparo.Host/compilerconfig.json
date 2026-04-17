@@ -1,0 +1,30 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/custom1.css",
+    "inputFile": "wwwroot/css/custom1.scss",
+    "minify": {
+      "enabled": false
+    },
+    "options": {
+      "loadPaths": "node_modules/@syncfusion"
+    }
+  },
+  {
+    "outputFile": "wwwroot/css/custom1-dark.css",
+    "inputFile": "wwwroot/css/custom1-dark.scss",
+    "minify": {
+      "enabled": true
+    },
+    "options": {
+      "loadPaths": "node_modules/@syncfusion"
+    }
+  },
+  {
+    "outputFile": "wwwroot/css/base.css",
+    "inputFile": "wwwroot/css/base.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/animation.css",
+    "inputFile": "wwwroot/css/animation.scss"
+  }
+]
