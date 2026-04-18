@@ -26,11 +26,9 @@
     </SfAppBar>
     <SfAppBar role="region">
         <h2>
-            Review claim status and repair progress
+            Review repair progress and claim status
         </h2>
-        <SfButton type="button" CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleBar">
-            <SfIcon Name="IconName.AIChat" Title="AI Assistance"></SfIcon>
-        </SfButton>
+        <SfButton type="button" CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleBar" IconCss="e-icons e-drag-and-drop-indicator"></SfButton>
     </SfAppBar>
     <div id="main-container">
         <div id="data-container">
@@ -54,12 +52,13 @@
                     <FormTemplate>
                         <div id="form-buttons">
                             <SfButton type="button" Content="Run AI Review"
-                                      IconCss="e-icons e-bullet-6" IconPosition="IconPosition.Right"
+                                      IconCss="e-icons e-smart-paste" IconPosition="IconPosition.Right"
                                       CssClass="@((damageContext?.IsProcessed == true ? "e-outline" : "e-primary"))"
-                                      OnClick="RunCustomSmartPaste" />
+                                      OnClick="RunCustomSmartPaste">
+                            </SfButton>
                             <SfSmartPasteButton type="button"
                                                 OnClick="OnSubmit"
-                                                CssClass="@(isRunProcessed ? "e-outline" : "e-outline e-info")"
+                                                CssClass="@(isRunProcessed && damageContext?.IsProcessed==true ? "e-primary" : "e-outline e-info")"
                                                 Content="Update">
                             </SfSmartPasteButton>
                         </div>
@@ -98,7 +97,7 @@
     }
 
         #main-container #data-container {
-            min-height: 500px;
+            min-height: 70vh;
         }
 
             #main-container #data-container .e-card {
@@ -155,7 +154,6 @@
     private async Task OnSubmit()
     {
         if (!EditContext.Validate()) return;
-        if (!EditContext.IsModified()) return;
 
         if (damageContext != null)
         {

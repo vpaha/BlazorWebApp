@@ -44,7 +44,8 @@
                 <ValidationMessage For="@(() => DamageContext.ClaimNumber)" />
             </div>
             <SfDatePicker CssClass="e-small" Width="auto" TValue="DateTimeOffset" @bind-Value="@DamageContext.DateOfLoss" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern"
-                          FloatLabelType="FloatLabelType.Auto" ShowClearButton="true" Placeholder="Loss Date">
+                          FloatLabelType="FloatLabelType.Auto" Placeholder="Loss Date" EnableMask=true>
+                <DatePickerMaskPlaceholder Day="dd" Month="mm" Year="yyyy"></DatePickerMaskPlaceholder>
             </SfDatePicker>
             <ValidationMessage For="@(() => DamageContext.DateOfLoss)" />
         </CardContent>

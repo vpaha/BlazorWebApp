@@ -6,10 +6,12 @@
 @using Syncfusion.Blazor.DropDowns
 @using System.Globalization
 @using System.Net.Http.Json
+@using Syncfusion.Blazor.Grids
 
 @inject IJSRuntime JSRuntime
 @inject NavigationManager nav
 @inject HttpClient _httpClient
+@inject IUserRepo userService
 
 <PageTitle>Settings</PageTitle>
 
@@ -31,6 +33,34 @@
                 </SfDropDownList>
             </div>
         </CardContent>
+        <AuthorizeView>
+            <Authorized Context="auth">
+                <CardContent EnableSeparator="true">
+                    <h3>Vendor-specific settings will go here.</h3>
+                    <SfGrid ID="claim-grid" TValue="AppUser" Height="512px"
+                            Toolbar="@(new List<string>() { "Search" })"
+                            AllowPaging="true" AllowReordering="true" AllowSorting="true" AllowFiltering="true" ShowColumnMenu="true"
+                            DataSource="@AppUsers">
+                        <GridPageSettings PageSize="GridConstants.RowCount"></GridPageSettings>
+                        @*                         <GridTemplates>
+                            <EmptyRecordTemplate>
+                                <div>@Reparo.Shared.Components.Resource.SharedResource.NoResult</div>
+                            </EmptyRecordTemplate>
+                        </GridTemplates> *@
+                        <GridSearchSettings Fields="@(new string[] { "ClaimId" })" Operator=Syncfusion.Blazor.Operator.StartsWith IgnoreCase="true" IgnoreAccent="true"></GridSearchSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
+                        <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple" CheckboxOnly="true" PersistSelection="true"></GridSelectionSettings>
+                        <GridColumns>
+                            <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(AppUser.Id) HeaderText="ID" Type="ColumnType.Integer"></GridColumn>
+                            <GridColumn Field=@nameof(AppUser.UserName) HeaderText="User name"></GridColumn>
+                            <GridColumn Field=@nameof(AppUser.Email) HeaderText="Email"></GridColumn>
+                            <GridColumn Field=@nameof(AppUser.PhoneNumber) HeaderText="Phone number"></GridColumn>
+                        </GridColumns>
+                    </SfGrid>
+                </CardContent>
+            </Authorized>
+        </AuthorizeView>
     </SfCard>
 </section>
 <style>
@@ -44,6 +74,8 @@
 @code {
     private sealed record CultureOption(string Country, string Culture);
     private sealed record ThemeSettings(string ThemeName, bool IsDarkMode, string Culture);
+
+    public IReadOnlyList<AppUser>? AppUsers { get; set; }
 
     private IReadOnlyList<CultureOption> SupportedCultures =
     [
@@ -61,13 +93,15 @@
     private string SelectedCulture = CultureInfo.CurrentCulture.Name;
     private ThemeSettings Theme = new("custom1", false, "ru-RU");
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (!SupportedCultures.Any(c => c.Culture.Equals(SelectedCulture, StringComparison.OrdinalIgnoreCase)))
         {
             SelectedCulture = SupportedCultures.First().Culture;
         }
         Theme = Theme with { Culture = SelectedCulture };
+
+        AppUsers = await userService.GetUsersAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

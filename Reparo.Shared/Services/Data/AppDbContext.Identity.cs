@@ -10,6 +10,9 @@ internal static class IdentityModelBuilderExtensions
             e.ToTable("aspnet_users", schema);
             e.HasKey(x => x.Id);
             e.Property(x => x.Id).ValueGeneratedOnAdd();
+            e.Property(x => x.UserName).HasColumnName("UserName");
+            e.Property(x => x.Email).HasColumnName("Email");
+            e.Property(x => x.PhoneNumber).HasColumnName("PhoneNumber");
             e.Property(x => x.LockoutEnd).HasColumnType("timestamp with time zone");
         });
 

@@ -102,6 +102,7 @@ public partial class Program
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("SignedInUser", p => p.RequireRole("user", "admin"));
+            options.AddPolicy("Vendor", p => p.RequireRole("vendor"));
         });
 
         builder.Services.AddHttpContextAccessor();
@@ -128,6 +129,7 @@ public partial class Program
         // Repos
         builder.Services.AddScoped<IDamageService, DamageService>();
         builder.Services.AddScoped<IVendorService, VendorService>();
+        builder.Services.AddScoped<IUserService, UserService>();
         // Local API
         builder.Services.AddHttpClient<IDamageRepo, DamageRepo>((sp, client) =>
         {
@@ -135,6 +137,11 @@ public partial class Program
             client.BaseAddress = BuildBaseAddressFromRequest(ctx.Request, configuredPathBase);
         });
         builder.Services.AddHttpClient<IVendorRepo, VendorRepo>((sp, client) =>
+        {
+            var ctx = sp.GetRequiredService<IHttpContextAccessor>().HttpContext ?? throw new InvalidOperationException("HttpContext is not available (request scope required).");
+            client.BaseAddress = BuildBaseAddressFromRequest(ctx.Request, configuredPathBase);
+        });
+        builder.Services.AddHttpClient<IUserRepo, UserRepo>((sp, client) =>
         {
             var ctx = sp.GetRequiredService<IHttpContextAccessor>().HttpContext ?? throw new InvalidOperationException("HttpContext is not available (request scope required).");
             client.BaseAddress = BuildBaseAddressFromRequest(ctx.Request, configuredPathBase);
@@ -168,7 +175,6 @@ public partial class Program
         });
 
         builder.Services.AddIdentityCore<AppUser>().AddRoles<AppRole>().AddEntityFrameworkStores<AppDbContext>();
-        builder.Services.AddScoped<IUserProvisioningService, UserProvisioningService>();
     }
 
     private void ConfigureOpenAI(WebApplicationBuilder builder, IConfiguration config)

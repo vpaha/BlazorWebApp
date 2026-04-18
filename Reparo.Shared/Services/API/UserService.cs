@@ -1,16 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-public interface IUserProvisioningService
+public interface IUserService
 {
     Task ProvisionAsync(ClaimsPrincipal principal, string accessToken, CancellationToken ct = default);
+    Task<IReadOnlyList<AppUser>?> GetUsersAsync(CancellationToken cancellationToken = default);
 }
 
-public sealed class UserProvisioningService : BaseService, IUserProvisioningService
+public sealed class UserService : BaseService, IUserService
 {
     private readonly AppDbContext _context;
 
-    public UserProvisioningService(AppDbContext context) : base()
+    public UserService(AppDbContext context) : base()
     {
         _context = context;
     }
@@ -35,5 +36,10 @@ public sealed class UserProvisioningService : BaseService, IUserProvisioningServ
             foreach (var claim in identity.FindAll(identity.RoleClaimType).ToList()) identity.RemoveClaim(claim);
             foreach (var role in roleNames) identity.AddClaim(new Claim(identity.RoleClaimType, role));
         }
+    }
+
+    public async Task<IReadOnlyList<AppUser>?> GetUsersAsync(CancellationToken ct = default)
+    {
+        return await _context.Users.AsNoTracking().ToListAsync(ct);
     }
 }

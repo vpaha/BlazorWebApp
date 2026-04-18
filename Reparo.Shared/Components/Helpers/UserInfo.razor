@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization;
 
-<AuthorizeView Policy="SignedInUser">
+<AuthorizeView>
     <Authorized Context="auth">
         <div>
             <strong>User:</strong> @auth.User.Identity?.Name

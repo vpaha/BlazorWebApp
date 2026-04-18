@@ -243,6 +243,13 @@ internal static class RouteExtensions
             return Results.Ok(entries);
         });
 
+        group.MapGet("user-list-get", async ([FromServices] IUserService repo, CancellationToken ct) =>
+        {
+            var entries = await repo.GetUsersAsync(ct);
+            if (entries == null) return Results.NotFound();
+            return Results.Ok(entries);
+        });
+
         return group;
     }
 }

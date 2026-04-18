@@ -106,7 +106,7 @@ public static class AuthExtensions
                         var scopeFactory = ctx.HttpContext.RequestServices.GetRequiredService<IServiceScopeFactory>();
                         await using var scope = scopeFactory.CreateAsyncScope();
 
-                        var provisioner = scope.ServiceProvider.GetRequiredService<IUserProvisioningService>();
+                        var provisioner = scope.ServiceProvider.GetRequiredService<IUserService>();
                         await provisioner.ProvisionAsync(principal, accessToken, ctx.HttpContext.RequestAborted);
                     }
                 };
