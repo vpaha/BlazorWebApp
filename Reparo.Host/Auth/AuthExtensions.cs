@@ -98,16 +98,16 @@ public static class AuthExtensions
                     OnTokenValidated = async ctx =>
                     {
                         var principal = ctx.Principal;
-                        var accessToken = ctx.TokenEndpointResponse?.AccessToken;
+                        //var accessToken = ctx.TokenEndpointResponse?.AccessToken;
 
                         if (principal is null) throw new InvalidOperationException("Principal is not available.");
-                        if (string.IsNullOrWhiteSpace(accessToken)) throw new InvalidOperationException("Access token is not available.");
+                        //if (string.IsNullOrWhiteSpace(accessToken)) throw new InvalidOperationException("Access token is not available.");
 
                         var scopeFactory = ctx.HttpContext.RequestServices.GetRequiredService<IServiceScopeFactory>();
                         await using var scope = scopeFactory.CreateAsyncScope();
 
                         var provisioner = scope.ServiceProvider.GetRequiredService<IUserService>();
-                        await provisioner.ProvisionAsync(principal, accessToken, ctx.HttpContext.RequestAborted);
+                        await provisioner.ProvisionAsync(principal, ctx.HttpContext.RequestAborted);
                     }
                 };
             });

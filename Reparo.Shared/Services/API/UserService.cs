@@ -3,8 +3,8 @@ using System.Security.Claims;
 
 public interface IUserService
 {
-    Task ProvisionAsync(ClaimsPrincipal principal, string accessToken, CancellationToken ct = default);
-    Task<IReadOnlyList<AppUser>?> GetUsersAsync(CancellationToken cancellationToken = default);
+    Task ProvisionAsync(ClaimsPrincipal principal, CancellationToken ct = default);
+    Task<IReadOnlyList<AppUser>> GetUsersAsync(CancellationToken cancellationToken = default);
 }
 
 public sealed class UserService : BaseService, IUserService
@@ -16,7 +16,7 @@ public sealed class UserService : BaseService, IUserService
         _context = context;
     }
 
-    public async Task ProvisionAsync(ClaimsPrincipal principal, string accessToken, CancellationToken ct = default)
+    public async Task ProvisionAsync(ClaimsPrincipal principal, CancellationToken ct = default)
     {
         if (principal?.Identity?.IsAuthenticated != true) return;
 
@@ -38,7 +38,7 @@ public sealed class UserService : BaseService, IUserService
         }
     }
 
-    public async Task<IReadOnlyList<AppUser>?> GetUsersAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<AppUser>> GetUsersAsync(CancellationToken ct = default)
     {
         return await _context.Users.AsNoTracking().ToListAsync(ct);
     }
