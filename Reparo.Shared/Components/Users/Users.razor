@@ -1,0 +1,45 @@
+﻿@if (UsersData is not null)
+{
+    <SfGrid TValue="AppUser" Toolbar="@(new List<string> { "Search" })"
+            AllowPaging="true"
+            AllowReordering="true"
+            AllowSorting="true"
+            AllowFiltering="true"
+            ShowColumnMenu="true" DataSource="@UsersData">
+        <GridPageSettings PageSize="GridConstants.RowCount"></GridPageSettings>
+        <GridSearchSettings Fields="@(new[] { nameof(AppUser.UserName) })"
+                            Operator="Syncfusion.Blazor.Operator.StartsWith"
+                            IgnoreCase="true"
+                            IgnoreAccent="true">
+        </GridSearchSettings>
+        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
+        <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple" CheckboxOnly="true" PersistSelection="true"></GridSelectionSettings>
+        <GridTemplates>
+            <DetailTemplate Context="item">
+                <UserRoles User="(AppUser)item" AvailableRoles="AvailableRoles" OnRolesChanged="RefreshRequested" />
+            </DetailTemplate>
+        </GridTemplates>
+        <GridColumns>
+            <GridColumn Type="ColumnType.CheckBox"
+                        AllowFiltering="false"
+                        AllowSorting="false"
+                        Width="50">
+            </GridColumn>
+            <GridColumn Field="@nameof(AppUser.UserName)" HeaderText="User name"></GridColumn>
+            <GridColumn Field="@nameof(AppUser.Email)" HeaderText="Email"></GridColumn>
+            <GridColumn Field="@nameof(AppUser.PhoneNumber)" HeaderText="Phone number"></GridColumn>
+            <GridColumn Field="@nameof(AppUser.ProviderDisplayName)" HeaderText="Provider"></GridColumn>
+            <GridColumn Field="@nameof(AppUser.RoleNames)" HeaderText="Roles"></GridColumn>
+        </GridColumns>
+    </SfGrid>
+}
+@code {
+    [Parameter, EditorRequired]
+    public IReadOnlyList<AppUser> UsersData { get; set; } = [];
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<AppRole> AvailableRoles { get; set; } = [];
+
+    [Parameter]
+    public EventCallback RefreshRequested { get; set; }
+}
