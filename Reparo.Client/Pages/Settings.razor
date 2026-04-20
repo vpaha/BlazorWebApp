@@ -20,6 +20,11 @@
             </div>
         </CardContent>
         <CardContent EnableSeparator="true">
+            <div>
+                <a href="authentication/clear" class="e-btn e-primary e-outline" title="browser Cache">Clear browser Cache</a>
+            </div>
+        </CardContent>
+        <CardContent EnableSeparator="true">
             <div style="width: fit-content;">
                 <label for="culture-select">Language and Region:</label>
                 <SfDropDownList id="culture-select" TValue="string" TItem="CultureOption" DataSource="@cultures.Options" Value="@selected">
@@ -38,7 +43,7 @@
             </div>
         </CardContent>
         <AuthorizeView>
-@*             <AuthorizeView Policy="Admin"> *@
+            @*             <AuthorizeView Policy="Admin"> *@
             <Authorized>
                 <CardContent EnableSeparator="true">
                     <UserInfo></UserInfo>
