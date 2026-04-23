@@ -8,9 +8,6 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-COPY ["nuget.config", "."]
-COPY ["artifacts", "artifacts"]
-
 COPY ["Reparo.Host/Reparo.Host.csproj", "Reparo.Host/"]
 COPY ["Reparo.Client/Reparo.Client.csproj", "Reparo.Client/"]
 COPY ["Reparo.Shared/Components/Reparo.Components.csproj", "Reparo.Shared/Components/"]
