@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.Twitter;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 public static class AuthExtensions
@@ -119,12 +118,6 @@ public static class AuthExtensions
                 options.MapInboundClaims = false;
 
                 options.PushedAuthorizationBehavior = PushedAuthorizationBehavior.Disable;
-
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    NameClaimType = "name",
-                    RoleClaimType = "role"
-                };
 
                 options.Events = new OpenIdConnectEvents
                 {

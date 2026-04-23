@@ -6,7 +6,7 @@
 
 @inject IJSRuntime jSRuntime
 @inject ToastService toastService
-@inject IDamageRepo damageService
+@inject IDamageRepo damageRepo
 
 <PageTitle>Track Property Damage Claim Status | Repair Progress & Claim Updates | Property Claims</PageTitle>
 
@@ -139,7 +139,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        damageList = await damageService.ListDamageEntriesAsync(CancellationToken.None);
+        damageList = await damageRepo.ListDamageEntriesAsync(CancellationToken.None);
         isRunProcessed = false;
     }
 
@@ -158,7 +158,7 @@
         if (damageContext != null)
         {
             damageContext.IsProcessed = true;
-            await damageService.UpdateEntryAsync(damageContext, CancellationToken.None);
+            await damageRepo.UpdateEntryAsync(damageContext, CancellationToken.None);
         }
         toggleBar();
     }

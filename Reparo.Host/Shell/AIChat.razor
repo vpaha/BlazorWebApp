@@ -1,6 +1,6 @@
 ﻿@inject ToastService toastService
 @inject IChatClient client
-@inject IDamageRepo damageService
+@inject IDamageRepo damageRepo
 
 <section id="ai-container">
     <SfAppBar id="switch-container">
@@ -75,7 +75,7 @@
             string summaries = string.Empty;
             if (isDamageIncluded)
             {
-                var DamageList = await damageService.ListDamageEntriesAsync(CancellationToken.None);
+                var DamageList = await damageRepo.ListDamageEntriesAsync(CancellationToken.None);
                 summaries = string.Join(". ", DamageList.Select(d => d.BuildCombinedDescription()).Where(s => !string.IsNullOrWhiteSpace(s)));
             }
 

@@ -22,7 +22,7 @@ public sealed class UserRepo : IUserRepo
         return await _http.GetFromJsonAsync<IReadOnlyList<AppUser>>($"damage/user-list-get", ct) ?? Array.Empty<AppUser>();
     }
 
-   public async Task<IReadOnlyList<AppRole>> GetRolesAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<AppRole>> GetRolesAsync(CancellationToken ct = default)
     {
         return await _http.GetFromJsonAsync<IReadOnlyList<AppRole>>($"damage/roles-get", ct) ?? Array.Empty<AppRole>();
     }

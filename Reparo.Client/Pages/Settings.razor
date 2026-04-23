@@ -2,11 +2,11 @@
 @attribute [Authorize]
 
 @using Microsoft.JSInterop
+@using System.Security.Claims
 
 @inject IJSRuntime JSRuntime
 @inject NavigationManager nav
 @inject HttpClient _httpClient
-@inject IUserRepo userService
 
 <PageTitle>Settings</PageTitle>
 
@@ -24,6 +24,21 @@
                 <a href="authentication/clear" class="e-btn e-primary e-outline" title="browser Cache">Clear browser Cache</a>
             </div>
         </CardContent>
+        <AuthorizeView>
+            <Authorized Context="auth">
+                <div>Authenticated: @auth.User.Identity?.IsAuthenticated</div>
+                <div>Auth type: @auth.User.Identity?.AuthenticationType</div>
+                <div>RoleClaimType: @((auth.User.Identity as ClaimsIdentity)?.RoleClaimType)</div>
+                <div>Is vendor: @auth.User.IsInRole("vendor")</div>
+
+                <ul>
+                    @foreach (var claim in auth.User.Claims)
+                    {
+                        <li>@claim.Type : @claim.Value</li>
+                    }
+                </ul>
+            </Authorized>
+        </AuthorizeView>
         <AuthorizeView Policy="Admin">
             <Authorized>
                 <CardContent EnableSeparator="true">
@@ -49,8 +64,7 @@
         <AuthorizeView>
             <Authorized>
                 <CardContent EnableSeparator="true">
-                    <h3>User list</h3>
-                    <Users UsersData="appUsers" AvailableRoles="availableRoles" RefreshRequested="RefreshUsersAsync" />
+                    <UserList RefreshRequested="RefreshUsersAsync"></UserList>
                 </CardContent>
                 <CardContent EnableSeparator="true">
                     <UserInfo></UserInfo>
@@ -77,27 +91,10 @@
     private string selected = string.Empty;
     private ThemeSettings theme { get; set; } = default!;
 
-    private IReadOnlyList<AppUser> appUsers { get; set; } = [];
-    private IReadOnlyList<AppRole> availableRoles { get; set; } = [];
-
     protected override async Task OnInitializedAsync()
     {
         selected = GetInitialCulture();
         theme = CreateTheme(selected);
-
-        await LoadDataAsync();
-    }
-
-    private async Task LoadDataAsync()
-    {
-        appUsers = await userService.GetUsersAsync();
-        availableRoles = await userService.GetRolesAsync();
-    }
-
-    private async Task RefreshUsersAsync()
-    {
-        appUsers = await userService.GetUsersAsync();
-        StateHasChanged();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -155,5 +152,10 @@
     {
         await JSRuntime.InvokeVoidAsync("setTheme", theme);
         await _httpClient.PostAsJsonAsync(nav.ToAbsoluteUri("config/theme"), theme);
+    }
+
+    private async Task RefreshUsersAsync()
+    {
+        StateHasChanged();
     }
 }

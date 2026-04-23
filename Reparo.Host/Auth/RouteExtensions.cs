@@ -260,7 +260,7 @@ internal static class RouteExtensions
         group.MapPost("roles-update", async ([FromServices] IUserService repo, [FromBody] AppUser user, CancellationToken ct) =>
         {
             await repo.UpdateRolesAsync(user, ct);
-            return Results.Ok;
+            return Results.Ok();
         });
 
         return group;

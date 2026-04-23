@@ -1,6 +1,6 @@
 ﻿@rendermode InteractiveAuto
 
-@inject IVendorRepo vendorService
+@inject IVendorRepo vendorRepo
 @inject ToastService toastService
 
 <section id="vendor-page" class="zoom-in">
@@ -165,7 +165,7 @@
         isLoading = true;
         try
         {
-            model = await vendorService.GetVendorByPlaceIdAsync(PlaceId);
+            model = await vendorRepo.GetVendorByPlaceIdAsync(PlaceId);
             if (model is not null)
             {
                 DamageState.Context.Vendor = model;

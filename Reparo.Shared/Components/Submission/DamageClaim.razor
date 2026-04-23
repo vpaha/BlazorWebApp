@@ -4,8 +4,8 @@
 @inject NavigationManager nav
 @inject SfDialogService dialogService
 @inject ToastService toastService
-@inject IDamageRepo damageService
-@inject IVendorRepo vendorService
+@inject IDamageRepo damageRepo
+@inject IVendorRepo vendorRepo
 
 <SfDialog Width="90vw" ShowCloseIcon="true" @bind-Visible="IsSearchDialogOpen">
     <DialogTemplates>
@@ -181,7 +181,7 @@
             DamageContext.IsProcessed = false;
             DamageContext.UserId = 1;
 
-            IReadOnlyList<DamageSectionType> types = await damageService.ListSectionTypesAsync(CancellationToken.None);
+            IReadOnlyList<DamageSectionType> types = await damageRepo.ListSectionTypesAsync(CancellationToken.None);
 
             DamageContext.Sections = types.Select(t => new DamageEntrySection
             {
@@ -227,7 +227,7 @@
             DamageContext.Sections.RemoveAll(s => string.IsNullOrWhiteSpace(s.Entry));
             DamageContext.Vendor = null;
 
-            var claimId = await damageService.AddEntryAsync(DamageContext, CancellationToken.None);
+            var claimId = await damageRepo.AddEntryAsync(DamageContext, CancellationToken.None);
 
             toastService.ShowSuccess($"Claim #{claimId} has been saved.", "System");
             nav.NavigateTo("tracking");
@@ -271,7 +271,7 @@
     {
         try
         {
-            DamageState.Context.Vendor = await vendorService.GetVendorByPlaceIdAsync(placeId);
+            DamageState.Context.Vendor = await vendorRepo.GetVendorByPlaceIdAsync(placeId);
             DamageState.Context.VendorId = DamageState.Context.Vendor?.Id;
         } catch (Exception)
         {

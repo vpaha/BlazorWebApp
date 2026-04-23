@@ -57,30 +57,8 @@ public sealed class UserService : BaseService, IUserService
         if (principal.Identity is ClaimsIdentity identity)
         {
             foreach (var claim in identity.FindAll(identity.RoleClaimType).ToList()) identity.RemoveClaim(claim);
-            foreach (var role in roleNames) identity.AddClaim(new Claim(ClaimTypes.Role, role));
+            foreach (var role in roleNames) identity.AddClaim(new Claim(identity.RoleClaimType, role));
         }
-    }
-
-    public async Task<IReadOnlyList<AppUser>> GetUsersAsync(CancellationToken ct = default)
-    {
-        var users = await _context.Users.AsNoTracking().ToListAsync(ct);
-        var userIds = users.Select(u => u.Id).ToArray();
-
-        var logins = await _context.UserLogins.AsNoTracking().Where(x => userIds.Contains(x.UserId)).ToListAsync(ct);
-        var roleMap = await _context.UserRoles.AsNoTracking().Where(ur => userIds.Contains(ur.UserId))
-            .Join(
-                _context.Roles.AsNoTracking(),
-                ur => ur.RoleId,
-                r => r.Id,
-                (ur, r) => new { ur.UserId, Role = new AppRole { Id = r.Id, Name = r.Name!, NormalizedName = r.NormalizedName } })
-            .ToListAsync(ct);
-
-        foreach (var user in users)
-        {
-            user.ProviderDisplayName = logins.FirstOrDefault(x => x.UserId == user.Id)?.ProviderDisplayName;
-            user.Roles = roleMap.Where(x => x.UserId == user.Id).Select(x => x.Role).ToArray();
-        }
-        return users;
     }
 
     private async Task<int> CreateUserWithLoginAsync(ClaimsPrincipal principal, string loginProvider, string providerKey, CancellationToken ct)
@@ -126,6 +104,28 @@ public sealed class UserService : BaseService, IUserService
         await _context.SaveChangesAsync(ct);
 
         return user.Id;
+    }
+
+    public async Task<IReadOnlyList<AppUser>> GetUsersAsync(CancellationToken ct = default)
+    {
+        var users = await _context.Users.AsNoTracking().ToListAsync(ct);
+        var userIds = users.Select(u => u.Id).ToArray();
+
+        var logins = await _context.UserLogins.AsNoTracking().Where(x => userIds.Contains(x.UserId)).ToListAsync(ct);
+        var roleMap = await _context.UserRoles.AsNoTracking().Where(ur => userIds.Contains(ur.UserId))
+            .Join(
+                _context.Roles.AsNoTracking(),
+                ur => ur.RoleId,
+                r => r.Id,
+                (ur, r) => new { ur.UserId, Role = new AppRole { Id = r.Id, Name = r.Name!, NormalizedName = r.NormalizedName } })
+            .ToListAsync(ct);
+
+        foreach (var user in users)
+        {
+            user.ProviderDisplayName = logins.FirstOrDefault(x => x.UserId == user.Id)?.ProviderDisplayName;
+            user.Roles = roleMap.Where(x => x.UserId == user.Id).Select(x => x.Role).ToArray();
+        }
+        return users;
     }
 
     public async Task<IReadOnlyList<AppRole>> GetRolesAsync(CancellationToken ct = default)
