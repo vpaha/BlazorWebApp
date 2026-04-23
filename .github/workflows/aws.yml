@@ -92,6 +92,8 @@ jobs:
                 { "name": "UserEnvironment__Twitter__ConsumerAPIKey", "value": "${{ secrets.USERENVIRONMENT__TWITTER__CONSUMERAPIKEY }}" },
                 { "name": "UserEnvironment__Twitter__ConsumerSecret", "value": "${{ secrets.USERENVIRONMENT__TWITTER__CONSUMERSECRET }}" },
                 { "name": "UserEnvironment__EnvId", "value": "${{ secrets.USERENVIRONMENT__ENVID }}" },
+                { "name": "UserEnvironment__PartnerBlock", "value": "${{ secrets.USERENVIRONMENT__PARTNERBLOCK }}" },
+                { "name": "Syncfusion__LicenseKey", "value": "${{ secrets.SYNCFUSION__LICENSEKEY }}" },
                 { "name": "GoogleMaps__ApiKey", "value": "${{ secrets.GOOGLEMAPS__APIKEY }}" },
                 { "name": "ConnectionStrings__DefaultConnection", "value": "${{ secrets.CONNECTIONSTRINGS__DEFAULTCONNECTION }}" },
                 { "name": "AI__openAIApiKey", "value": "${{ secrets.AI__OPENAIAPIKEY }}" },

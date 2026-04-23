@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
@@ -12,7 +11,6 @@ using Syncfusion.Blazor.Popups;
 using Syncfusion.Blazor.SmartComponents;
 using Syncfusion.Licensing;
 using System.Net.Http.Headers;
-using Qnxt.Api.Internals;
 
 namespace Reparo;
 
@@ -22,8 +20,6 @@ public partial class Program
 
     private void Run(string[] args)
     {
-        RegisterSyncfusion();
-
         var builder = WebApplication.CreateBuilder(args);
 
         AddUserSecretsIfDev(builder);
@@ -32,6 +28,8 @@ public partial class Program
         builder.WebHost.UseStaticWebAssets();
 
         var config = builder.Configuration;
+
+        RegisterSyncfusion(config);
 
         var pathBase = NormalizePathBase(config["AppBasePath"] ?? throw new InvalidOperationException("AppBasePath is not configured"));
         var googleApiKey = config["GoogleMaps:ApiKey"] ?? string.Empty;
@@ -53,10 +51,10 @@ public partial class Program
         TryRun(app);
     }
 
-    private void RegisterSyncfusion()
+    private void RegisterSyncfusion(IConfiguration config)
     {
-        SyncfusionLicenseProvider.RegisterLicense(
-            "Ngo9BigBOggjHTQxAR8/V1JFaF5cXGRCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWH5cd3RQRmhZVUJ/XEtWYEA=");
+        var key = config["Syncfusion:LicenseKey"] ?? throw new InvalidOperationException("Syncfusion license key is not configured.");
+        SyncfusionLicenseProvider.RegisterLicense(key);
     }
 
     private void AddUserSecretsIfDev(WebApplicationBuilder builder)
@@ -156,8 +154,9 @@ public partial class Program
         var claimUri = config["Endpoints:Api:ClaimUri"] ?? throw new InvalidOperationException("Endpoints:Api:ClaimUri is not configured.");
         var envId = config["UserEnvironment:EnvId"] ?? throw new InvalidOperationException("UserEnvironment:EnvId is not configured.");
 
-        var licenseManager = new LicenseManager();
-        var partnerBlock = licenseManager.CreatePartnerBlock("QNXT MODERNIZATION UI", "json").ToBase64String();
+        //var licenseManager = new LicenseManager();
+        //var partnerBlock = licenseManager.CreatePartnerBlock("QNXT MODERNIZATION UI", "json").ToBase64String();
+        var partnerBlock = config["UserEnvironment:PartnerBlock"] ?? throw new InvalidOperationException("UserEnvironment:PartnerBlock is not configured.");
 
         builder.Services.Configure<TokenHandlerOptions>(options =>
         {
