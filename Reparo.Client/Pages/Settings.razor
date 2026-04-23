@@ -26,26 +26,44 @@
         </CardContent>
         <CardContent EnableSeparator="true">
             <div style="width: fit-content;">
-                <label for="culture-select">Language and Region:</label>
-                <SfDropDownList id="culture-select" TValue="string" TItem="CultureOption" DataSource="@cultures.Options" Value="@selected">
+                <label for="culture-select">Region:</label>
+                <SfDropDownList id="culture-select" TValue="string" TItem="CultureOption" DataSource="@cultures.Options" Value="@selected" aria-label="Culture">
                     <DropDownListFieldSettings Text="Country" Value="Culture" />
                     <DropDownListEvents TValue="string" TItem="CultureOption" ValueChange="OnCultureChanged" />
                 </SfDropDownList>
             </div>
             <div style="width: fit-content;">
-                <SfDatePicker TValue="DateOnly?" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern"
-                              Placeholder="Date format" FloatLabelType="FloatLabelType.Always" EnableMask=true>
+                <SfDatePicker TValue="DateOnly?" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern" aria-label="Date value"
+                              Placeholder="Date only" FloatLabelType="FloatLabelType.Always" EnableMask="true" ShowClearButton="true">
                     <DatePickerMaskPlaceholder Day="dd" Month="mm" Year="yyyy"></DatePickerMaskPlaceholder>
                 </SfDatePicker>
+                <SfDateTimePicker TValue="DateTime?" Format="g"
+                                  Placeholder="Date and Time" aria-label="Date and Time value"
+                                  Step="60" CssClass="e-small" FloatLabelType="FloatLabelType.Always"
+                                  EnableMask="true" ShowClearButton="true">
+                    <DatePickerMaskPlaceholder Day="dd" Month="mm" Year="yyyy" Hour="hh" Minute="mm"></DatePickerMaskPlaceholder>
+                </SfDateTimePicker>
+                <SfDateRangePicker TValue="DateOnly?" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern"
+                                   Placeholder="Date Range" aria-label="Date Range value"
+                                   OpenOnFocus="true" ShowClearButton="true" Separator="to"
+                                   CssClass="e-small" FloatLabelType="FloatLabelType.Always">
+                    <DateRangePickerPresets>
+                        <DateRangePickerPreset Label="Last 2 Days" Start="DateTime.Now.AddDays(-2).Date" End="DateTime.Now.Date"></DateRangePickerPreset>
+                        <DateRangePickerPreset Label="Last Week" Start="DateTime.Now.AddDays(-7).Date" End="DateTime.Now.Date"></DateRangePickerPreset>
+                        <DateRangePickerPreset Label="Last Month" Start="DateTime.Now.AddMonths(-1).Date" End="DateTime.Now.Date"></DateRangePickerPreset>
+                        <DateRangePickerPreset Label="Year to Date" Start="new DateTime(DateTime.Now.Year, 1, 1)" End="DateTime.Now.Date"></DateRangePickerPreset>
+                        <DateRangePickerPreset Label="Past Year" Start="DateTime.Now.AddYears(-1).Date" End="DateTime.Now.Date"></DateRangePickerPreset>
+                    </DateRangePickerPresets>
+                </SfDateRangePicker>
             </div>
             <div style="width: fit-content;">
-                <SfNumericTextBox Placeholder="Currency format" FloatLabelType="FloatLabelType.Always" TValue="Decimal?" Format="C" aria-label="Enter a currency value" Value="100"></SfNumericTextBox>
+                <SfNumericTextBox Placeholder="Currency" FloatLabelType="FloatLabelType.Always" TValue="Decimal?" Format="C" aria-label="Currency value" Value="100"></SfNumericTextBox>
             </div>
         </CardContent>
         <AuthorizeView Policy="Admin">
             <Authorized Context="auth">
                 <CardContent EnableSeparator="true">
-                    <UserInfo User="auth.User"></UserInfo>
+                    <UserContextInfo User="auth.User"></UserContextInfo>
                 </CardContent>
                 <CardContent EnableSeparator="true">
                     <UserList RefreshRequested="RefreshUsersAsync"></UserList>
