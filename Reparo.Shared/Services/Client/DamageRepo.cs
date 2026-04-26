@@ -12,36 +12,10 @@ public interface IDamageRepo
 public sealed class DamageRepo : IDamageRepo
 {
     private readonly HttpClient _http;
-    private readonly AuthenticationStateProvider _authProvider;
 
-    public DamageRepo(HttpClient http, AuthenticationStateProvider authProvider)
+    public DamageRepo(HttpClient http)
     {
         _http = http;
-        _authProvider = authProvider;
-    }
-
-    private async Task<int?> ResolveUserIdAsync()
-    {
-        var authState = await _authProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (user.Identity?.IsAuthenticated == true)
-        {
-            var appUserId = user.FindFirst("app_user_id")?.Value;
-            if (!string.IsNullOrWhiteSpace(appUserId) && int.TryParse(appUserId, out var parsedUserId)) return parsedUserId;
-        }
-        return null;
-    }
-
-    private async Task<int?> ResolveVendorIdAsync()
-    {
-        var authState = await _authProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (user.Identity?.IsAuthenticated == true)
-        {
-            var vendorId = user.FindFirst("vendor_id")?.Value;
-            if (!string.IsNullOrWhiteSpace(vendorId) && int.TryParse(vendorId, out var parsedVendorId)) return parsedVendorId;
-        }
-        return null;
     }
 
     public async Task<IReadOnlyList<DamageSectionType>> ListSectionTypesAsync(CancellationToken ct = default)
@@ -62,7 +36,7 @@ public sealed class DamageRepo : IDamageRepo
         ? $"damage/damage-entries?userId={userId.Value}"
         : "damage/damage-entries";
 
-        var list = await _http.GetFromJsonAsync<IReadOnlyList<DamageEntry>>(url, ct);
+        var list = await _http.GetFromJsonAsync<IReadOnlyList<DamageEntry>>("damage/damage-user-entries", ct);
         return list ?? Array.Empty<DamageEntry>();
     }
 
