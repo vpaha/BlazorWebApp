@@ -140,7 +140,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        damageList = await damageRepo.ListDamageEntriesAsync(CancellationToken.None);
+        damageList = await damageRepo.ListDamageEntriesAsync(false, CancellationToken.None);
         isRunProcessed = false;
     }
 

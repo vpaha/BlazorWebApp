@@ -218,9 +218,9 @@ internal static class RouteExtensions
             return result;
         });
 
-        group.MapGet("damage-entries", async ([FromServices] IDamageService repo, [FromQuery] int? userId, CancellationToken ct) =>
+        group.MapGet("damage-entries", async ([FromServices] IDamageService repo, [FromQuery] int? userId, [FromQuery] int? vendorId, CancellationToken ct) =>
         {
-            var entries = await repo.ListDamageEntriesAsync(userId, ct);
+            var entries = await repo.ListDamageEntriesAsync(userId, vendorId, ct);
             return Results.Ok(entries);
         });
 

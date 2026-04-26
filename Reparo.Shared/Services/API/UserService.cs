@@ -33,8 +33,7 @@ public sealed class UserService : BaseService, IUserService
             principal.FindFirst("iss")?.Value ??
             "external";
 
-        var userId = await _context.UserLogins
-            .AsNoTracking()
+        var userId = await _context.UserLogins.AsNoTracking()
             .Where(x => x.LoginProvider == loginProvider && x.ProviderKey == providerKey)
             .Select(x => (int?)x.UserId)
             .SingleOrDefaultAsync(ct);
@@ -44,8 +43,7 @@ public sealed class UserService : BaseService, IUserService
             userId = await CreateUserWithLoginAsync(principal, loginProvider, providerKey, ct);
         }
 
-        var roleNames = await _context.UserRoles
-            .AsNoTracking()
+        var roleNames = await _context.UserRoles.AsNoTracking()
             .Where(ur => ur.UserId == userId.Value)
             .Join(
                 _context.Roles.AsNoTracking(),
@@ -54,11 +52,21 @@ public sealed class UserService : BaseService, IUserService
                 (_, r) => r.Name!)
             .ToListAsync(ct);
 
+        var vendorId = await _context.Users.AsNoTracking()
+            .Where(u => u.Id == userId.Value)
+            .Select(u => u.VendorId)
+            .SingleOrDefaultAsync(ct);
+
         if (principal.Identity is ClaimsIdentity identity)
         {
             var existing = identity.FindFirst("app_user_id");
             if (existing is not null) identity.RemoveClaim(existing);
             identity.AddClaim(new Claim("app_user_id", userId.Value.ToString()));
+
+            // vendor_id
+            var existingVendor = identity.FindFirst("vendor_id");
+            if (existingVendor is not null) identity.RemoveClaim(existingVendor);
+            if (vendorId.HasValue) identity.AddClaim(new Claim("vendor_id", vendorId.Value.ToString()));
 
             foreach (var claim in identity.FindAll(identity.RoleClaimType).ToList()) identity.RemoveClaim(claim);
             foreach (var role in roleNames) identity.AddClaim(new Claim(identity.RoleClaimType, role));
