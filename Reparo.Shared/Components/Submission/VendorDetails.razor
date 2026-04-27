@@ -4,8 +4,7 @@
 @inject ToastService toastService
 
 <section id="vendor-page" class="zoom-in">
-    <SfSpinner Size="48" Type="SpinnerType.Material" @bind-Visible="@isLoading"></SfSpinner>
-    @if (model is not null)
+    @if (Vendor is not null)
     {
         <SfAppBar role="region">
             <h2>Vendor information and contact details</h2>
@@ -16,27 +15,27 @@
             </CardHeader>
             <CardContent>
                 <div>
-                    @model.Name
+                    @Vendor.Name
                 </div>
-                @if (!string.IsNullOrWhiteSpace(model.LegalName))
+                @if (!string.IsNullOrWhiteSpace(Vendor.LegalName))
                 {
                     <div>
                         <strong>Legal Name</strong><br />
-                        @model.LegalName
+                        @Vendor.LegalName
                     </div>
                 }
-                @if (!string.IsNullOrWhiteSpace(model.Description))
+                @if (!string.IsNullOrWhiteSpace(Vendor.Description))
                 {
                     <div>
                         <strong>Description</strong><br />
-                        @model.Description
+                        @Vendor.Description
                     </div>
                 }
-                @if (!string.IsNullOrWhiteSpace(model.LicenseNumber))
+                @if (!string.IsNullOrWhiteSpace(Vendor.LicenseNumber))
                 {
                     <div>
                         <strong>License Number</strong><br />
-                        @model.LicenseNumber
+                        @Vendor.LicenseNumber
                     </div>
                 }
             </CardContent>
@@ -46,28 +45,28 @@
                 <h3>Contact</h3>
             </CardHeader>
             <CardContent>
-                @if (!string.IsNullOrWhiteSpace(model.Email))
+                @if (!string.IsNullOrWhiteSpace(Vendor.Email))
                 {
                     <div>
                         <strong>Email</strong><br />
-                        <a href="@($"mailto:{model.Email}")">@model.Email</a>
+                        <a href="@($"mailto:{Vendor.Email}")">@Vendor.Email</a>
                     </div>
                 }
-                @if (!string.IsNullOrWhiteSpace(model.Phone))
+                @if (!string.IsNullOrWhiteSpace(Vendor.Phone))
                 {
                     <div>
                         <strong>Phone</strong><br />
-                        <a href="@($"tel:{model.Phone}")">@model.Phone</a>
+                        <a href="@($"tel:{Vendor.Phone}")">@Vendor.Phone</a>
                     </div>
                 }
-                @if (!string.IsNullOrWhiteSpace(model.WebsiteUrl))
+                @if (!string.IsNullOrWhiteSpace(Vendor.WebsiteUrl))
                 {
                     <div>
                         <strong>Website</strong><br />
-                        <a href="@model.WebsiteUrl"
-                           target="_blank"
-                           rel="noopener noreferrer">
-                            @model.WebsiteUrl
+                        <a href="@Vendor.WebsiteUrl"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                            @Vendor.WebsiteUrl
                         </a>
                     </div>
                 }
@@ -93,34 +92,28 @@
             </CardHeader>
             <CardContent>
                 <div>
-                    <strong>Active</strong> @(model.IsActive ? "Yes" : "No")
+                    <strong>Active</strong> @(Vendor.IsActive ? "Yes" : "No")
                 </div>
                 <div>
-                    <strong>Verified</strong> @(model.IsVerified ? "Yes" : "No")
+                    <strong>Verified</strong> @(Vendor.IsVerified ? "Yes" : "No")
                 </div>
                 <div>
-                    <strong>Preferred</strong> @(model.IsPreferred ? "Yes" : "No")
+                    <strong>Preferred</strong> @(Vendor.IsPreferred ? "Yes" : "No")
                 </div>
-                @if (model.Rating.HasValue)
+                @if (Vendor.Rating.HasValue)
                 {
                     <div>
-                        <strong>Rating</strong> @model.Rating.Value.ToString("0.0")
+                        <strong>Rating</strong> @Vendor.Rating.Value.ToString("0.0")
                     </div>
                 }
-                @if (model.ReviewCount.HasValue)
+                @if (Vendor.ReviewCount.HasValue)
                 {
                     <div>
-                        <strong>Review Count</strong> @model.ReviewCount
+                        <strong>Review Count</strong> @Vendor.ReviewCount
                     </div>
                 }
             </CardContent>
         </SfCard>
-    }
-    else if (!isLoading)
-    {
-        <strong>
-            Vendor information is not available
-        </strong>
     }
 </section>
 <style>
@@ -138,32 +131,18 @@
 </style>
 
 @code {
-    private VendorModel? model { get; set; }
-    private bool isLoading { get; set; } = true;
+    [Parameter]
+    public VendorModel Vendor { get; set; } = default!;
 
     private string FormattedAddress =>
         string.Join(", ",
             new[]
             {
-                model?.AddressLine1,
-                model?.AddressLine2,
-                model?.City,
-                model?.State,
-                model?.PostalCode,
-                model?.Country
+                Vendor.AddressLine1,
+                Vendor.AddressLine2,
+                Vendor.City,
+                Vendor.State,
+                Vendor.PostalCode,
+                Vendor.Country
             }.Where(x => !string.IsNullOrWhiteSpace(x)));
-
-    protected override async Task OnInitializedAsync()
-    {
-        isLoading = true;
-        try
-        {
-            model = await vendorRepo.GetVendorAsync();
-        } catch (Exception)
-        {
-        } finally
-        {
-            isLoading = false;
-        }
-    }
 }

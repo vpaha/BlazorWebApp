@@ -1,13 +1,17 @@
 ﻿@page "/vendorprofile"
 @attribute [Authorize(Policy = "Vendor")]
+@inject IVendorRepo vendorRepo
 
 <PageTitle>Vendor Profile | Property Claims</PageTitle>
 
-<div>
-    Hello Vendor
-</div>
+<section>
+    <VendorDetails Vendor="model"></VendorDetails>
+</section>
 @code {
+    private VendorModel? model { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+        model = await vendorRepo.GetVendorAsync();
     }
 }

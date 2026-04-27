@@ -5,123 +5,7 @@
 
 <section id="vendor-page" class="zoom-in">
     <SfSpinner Size="48" Type="SpinnerType.Material" @bind-Visible="@isLoading"></SfSpinner>
-    @if (model is not null)
-    {
-        <SfAppBar role="region">
-            <h2>Vendor information and contact details</h2>
-        </SfAppBar>
-        <SfCard>
-            <CardHeader>
-                <h3>Business Information</h3>
-            </CardHeader>
-            <CardContent>
-                <div>
-                    @model.Name
-                </div>
-                @if (!string.IsNullOrWhiteSpace(model.LegalName))
-                {
-                    <div>
-                        <strong>Legal Name</strong><br />
-                        @model.LegalName
-                    </div>
-                }
-                @if (!string.IsNullOrWhiteSpace(model.Description))
-                {
-                    <div>
-                        <strong>Description</strong><br />
-                        @model.Description
-                    </div>
-                }
-                @if (!string.IsNullOrWhiteSpace(model.LicenseNumber))
-                {
-                    <div>
-                        <strong>License Number</strong><br />
-                        @model.LicenseNumber
-                    </div>
-                }
-            </CardContent>
-        </SfCard>
-        <SfCard>
-            <CardHeader>
-                <h3>Contact</h3>
-            </CardHeader>
-            <CardContent>
-                @if (!string.IsNullOrWhiteSpace(model.Email))
-                {
-                    <div>
-                        <strong>Email</strong><br />
-                        <a href="@($"mailto:{model.Email}")">@model.Email</a>
-                    </div>
-                }
-                @if (!string.IsNullOrWhiteSpace(model.Phone))
-                {
-                    <div>
-                        <strong>Phone</strong><br />
-                        <a href="@($"tel:{model.Phone}")">@model.Phone</a>
-                    </div>
-                }
-                @if (!string.IsNullOrWhiteSpace(model.WebsiteUrl))
-                {
-                    <div>
-                        <strong>Website</strong><br />
-                        <a href="@model.WebsiteUrl"
-                           target="_blank"
-                           rel="noopener noreferrer">
-                            @model.WebsiteUrl
-                        </a>
-                    </div>
-                }
-            </CardContent>
-        </SfCard>
-        @if (!string.IsNullOrWhiteSpace(FormattedAddress))
-        {
-            <SfCard>
-                <CardHeader>
-                    <h3>Address</h3>
-                </CardHeader>
-                <CardContent>
-                    <div>
-                        <strong>Location</strong><br />
-                        @FormattedAddress
-                    </div>
-                </CardContent>
-            </SfCard>
-        }
-        <SfCard>
-            <CardHeader>
-                <h3>Vendor Status</h3>
-            </CardHeader>
-            <CardContent>
-                <div>
-                    <strong>Active</strong> @(model.IsActive ? "Yes" : "No")
-                </div>
-                <div>
-                    <strong>Verified</strong> @(model.IsVerified ? "Yes" : "No")
-                </div>
-                <div>
-                    <strong>Preferred</strong> @(model.IsPreferred ? "Yes" : "No")
-                </div>
-                @if (model.Rating.HasValue)
-                {
-                    <div>
-                        <strong>Rating</strong> @model.Rating.Value.ToString("0.0")
-                    </div>
-                }
-                @if (model.ReviewCount.HasValue)
-                {
-                    <div>
-                        <strong>Review Count</strong> @model.ReviewCount
-                    </div>
-                }
-            </CardContent>
-        </SfCard>
-    }
-    else if (!isLoading)
-    {
-        <strong>
-            Vendor information is not available
-        </strong>
-    }
+    <VendorDetails Vendor="model"></VendorDetails>
 </section>
 <style>
     #vendor-page {
@@ -138,25 +22,12 @@
 </style>
 
 @code {
-    [Parameter]
     public string? PlaceId { get; set; }
     [Inject]
     public DamageState DamageState { get; set; } = default!;
 
     private VendorModel? model { get; set; }
     private bool isLoading { get; set; } = true;
-
-    private string FormattedAddress =>
-        string.Join(", ",
-            new[]
-            {
-                model?.AddressLine1,
-                model?.AddressLine2,
-                model?.City,
-                model?.State,
-                model?.PostalCode,
-                model?.Country
-            }.Where(x => !string.IsNullOrWhiteSpace(x)));
 
     protected override async Task OnInitializedAsync()
     {
