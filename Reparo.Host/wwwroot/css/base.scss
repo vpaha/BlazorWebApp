@@ -25,8 +25,9 @@ body {
 }
 
 main {
+    flex-basis: 100%;
+
     padding: 3px 10px 5px 10px;
-    flex-grow: 1;
     background-position: center;
     background-repeat: no-repeat;
     background-color: #121413;

@@ -1,22 +1,22 @@
 ﻿@page "/repairrequests"
 @attribute [Authorize(Policy = "Vendor")]
-@inject IDamageRepo damageRepo
+@inject IVendorRepo vendorRepo
 
 <PageTitle>Repair Requests | Property Claims</PageTitle>
-<div>
-        @if (damageList != null)
+<section>
+    @if (damageList != null)
+    {
+        foreach (var item in damageList)
         {
-            foreach (var item in damageList)
-            {
-                <DamageInfo DamageContext="@item"></DamageInfo>
-            }
+            <DamageInfo DamageContext="@item"></DamageInfo>
         }
-</div>
+    }
+</section>
 @code {
     IReadOnlyList<DamageEntry> damageList { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        damageList = await damageRepo.ListDamageVendorEntriesAsync(CancellationToken.None);
+        damageList = await vendorRepo.ListDamageVendorEntriesAsync(CancellationToken.None);
     }
 }

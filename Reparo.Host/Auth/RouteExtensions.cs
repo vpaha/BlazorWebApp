@@ -175,30 +175,71 @@ internal static class RouteExtensions
         return group;
     }
 
-    internal static IEndpointConventionBuilder MapPayment(this RouteGroupBuilder group)
-    {
-        group.MapPost("create-checkout-session", async (StripeClient client) =>
-        {
-            var domain = "http://localhost:4242";
-            var options = new SessionCreateOptions
-            {
-                LineItems = [
-                    new SessionLineItemOptions{
-                        Price = "{{PRICE_ID}}",
-                        Quantity = 1,
-                }],
-                Mode = "payment",
-                SuccessUrl = $"{domain}/success.html",
-            };
+    //internal static IEndpointConventionBuilder MapPayment(this RouteGroupBuilder group)
+    //{
+    //    group.MapPost("create-checkout-session", async (StripeClient client) =>
+    //    {
+    //        var domain = "http://localhost:4242";
+    //        var options = new SessionCreateOptions
+    //        {
+    //            LineItems = [
+    //                new SessionLineItemOptions{
+    //                    Price = "{{PRICE_ID}}",
+    //                    Quantity = 1,
+    //            }],
+    //            Mode = "payment",
+    //            SuccessUrl = $"{domain}/success.html",
+    //        };
 
-            var service = new SessionService(client);
-            Session session = await service.CreateAsync(options);
-            return Results.Redirect(session.Url, permanent: false);
-        });
+    //        var service = new SessionService(client);
+    //        Session session = await service.CreateAsync(options);
+    //        return Results.Redirect(session.Url, permanent: false);
+    //    });
+    //    return group;
+    //}
+
+    internal static IEndpointConventionBuilder MapAuthorizedEndpoints(this RouteGroupBuilder group)
+    {
+        group.MapGet("damage-entries", async (HttpContext http, [FromServices] IDamageService repo, CancellationToken ct) =>
+        {
+            var vendorId = http.User.GetVendorId();
+            if (vendorId is null) return Results.Unauthorized();
+
+            var entries = await repo.ListDamageVendorEntriesAsync(vendorId, ct);
+            return Results.Ok(entries);
+        }).RequireAuthorization("Vendor");
+
+        group.MapGet("vendor-get", async (HttpContext http, [FromServices] IVendorService repo, CancellationToken ct) =>
+        {
+            var vendorId = http.User.GetVendorId();
+            var vendor = await repo.GetVendorAsync(null, vendorId, ct);
+            return vendor is null ? Results.NotFound() : Results.Ok(vendor);
+        }).RequireAuthorization("Vendor");
+
+        group.MapGet("user-list", async ([FromServices] IUserService repo, CancellationToken ct) =>
+        {
+            var entries = await repo.GetUsersAsync(ct);
+            if (entries == null) return Results.NotFound();
+            return Results.Ok(entries);
+        }).RequireAuthorization("Admin");
+
+        group.MapGet("roles-get", async ([FromServices] IUserService repo, CancellationToken ct) =>
+        {
+            var entries = await repo.GetRolesAsync(ct);
+            if (entries == null) return Results.NotFound();
+            return Results.Ok(entries);
+        }).RequireAuthorization("Admin");
+
+        group.MapPost("roles-update", async ([FromServices] IUserService repo, [FromBody] AppUser user, CancellationToken ct) =>
+        {
+            await repo.UpdateRolesAsync(user, ct);
+            return Results.Ok();
+        }).RequireAuthorization("Admin");
+
         return group;
     }
 
-    internal static IEndpointConventionBuilder MapDataBase(this RouteGroupBuilder group)
+    internal static IEndpointConventionBuilder MapPublicEndpoints(this RouteGroupBuilder group)
     {
         group.MapGet("damage-sections", async ([FromServices] IDamageService repo, CancellationToken ct) =>
         {
@@ -225,15 +266,6 @@ internal static class RouteExtensions
             return Results.Ok(entries);
         });
 
-        group.MapGet("damage-vendor-entries", async (HttpContext http, [FromServices] IDamageService repo, CancellationToken ct) =>
-        {
-            var vendorId = http.User.GetVendorId();
-            if (vendorId is null) return Results.Unauthorized();
-
-            var entries = await repo.ListDamageVendorEntriesAsync(vendorId, ct);
-            return Results.Ok(entries);
-        });
-
         group.MapPost("damage-add", async (HttpContext http, [FromServices] IDamageService repo, [FromBody] DamageEntry entry, CancellationToken ct) =>
         {
             var userId = http.User.GetUserId();
@@ -252,34 +284,10 @@ internal static class RouteExtensions
             return Results.Ok(id);
         });
 
-        //group.MapGet("vendor-get", async ([FromServices] IVendorService repo, [FromQuery] string? placeid, CancellationToken ct) =>
-        //{
-        //    if(!placeid.hasValue) var entries = await repo.GetVendorAsync(placeid, ct);
-        //    else var entries = await repo.GetVendorAsync(null, int.Parse(placeid.Value), ct);
-
-        //    if (entries == null) return Results.NotFound();
-
-        //    return Results.Ok(entries);
-        //});
-
-        group.MapGet("user-list-get", async ([FromServices] IUserService repo, CancellationToken ct) =>
+        group.MapGet("vendor-get", async (HttpContext http, [FromServices] IVendorService repo, [FromQuery] string placeId, CancellationToken ct) =>
         {
-            var entries = await repo.GetUsersAsync(ct);
-            if (entries == null) return Results.NotFound();
-            return Results.Ok(entries);
-        });
-
-        group.MapGet("roles-get", async ([FromServices] IUserService repo, CancellationToken ct) =>
-        {
-            var entries = await repo.GetRolesAsync(ct);
-            if (entries == null) return Results.NotFound();
-            return Results.Ok(entries);
-        });
-
-        group.MapPost("roles-update", async ([FromServices] IUserService repo, [FromBody] AppUser user, CancellationToken ct) =>
-        {
-            await repo.UpdateRolesAsync(user, ct);
-            return Results.Ok();
+            var vendor = await repo.GetVendorAsync(placeId, null, ct);
+            return vendor is null ? Results.NotFound() : Results.Ok(vendor);
         });
 
         return group;

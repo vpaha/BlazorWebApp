@@ -140,16 +140,19 @@ public partial class Program
         {
             var ctx = sp.GetRequiredService<IHttpContextAccessor>().HttpContext ?? throw new InvalidOperationException("HttpContext is not available (request scope required).");
             client.BaseAddress = BuildBaseAddressFromRequest(ctx.Request, configuredPathBase);
+            if (ctx.Request.Headers.TryGetValue("Cookie", out var cookie)) client.DefaultRequestHeaders.Add("Cookie", cookie.ToString());
         });
         builder.Services.AddHttpClient<IVendorRepo, VendorRepo>((sp, client) =>
         {
             var ctx = sp.GetRequiredService<IHttpContextAccessor>().HttpContext ?? throw new InvalidOperationException("HttpContext is not available (request scope required).");
             client.BaseAddress = BuildBaseAddressFromRequest(ctx.Request, configuredPathBase);
+            if (ctx.Request.Headers.TryGetValue("Cookie", out var cookie)) client.DefaultRequestHeaders.Add("Cookie", cookie.ToString());
         });
         builder.Services.AddHttpClient<IUserRepo, UserRepo>((sp, client) =>
         {
             var ctx = sp.GetRequiredService<IHttpContextAccessor>().HttpContext ?? throw new InvalidOperationException("HttpContext is not available (request scope required).");
             client.BaseAddress = BuildBaseAddressFromRequest(ctx.Request, configuredPathBase);
+            if (ctx.Request.Headers.TryGetValue("Cookie", out var cookie)) client.DefaultRequestHeaders.Add("Cookie", cookie.ToString());
         });
 
         // Corp API
@@ -237,8 +240,9 @@ public partial class Program
         app.MapGroup("authentication").MapLoginAndLogout();
         app.MapGroup("config").MapConfig().DisableAntiforgery();
         app.MapGroup("googlemap").MapGoogleMapEndpoints(googleApiKey);
-        app.MapGroup("damage").MapDataBase();
-        app.MapGroup("pay").MapPayment();
+        app.MapGroup("damage").MapPublicEndpoints();
+        app.MapGroup("vendor").MapAuthorizedEndpoints().RequireAuthorization();
+//        app.MapGroup("pay").MapPayment().RequireAuthorization();
     }
 
     private void MapRazorComponents(WebApplication app)

@@ -5,6 +5,7 @@ public interface IVendorRepo
 {
     Task<VendorModel?> GetVendorAsync(CancellationToken cancellationToken = default);
     Task<VendorModel?> GetVendorAsync(string placeId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<DamageEntry>> ListDamageVendorEntriesAsync(CancellationToken ct = default);
 }
 
 public sealed class VendorRepo : IVendorRepo
@@ -23,6 +24,12 @@ public sealed class VendorRepo : IVendorRepo
 
     public async Task<VendorModel?> GetVendorAsync(CancellationToken ct = default)
     {
-        return await _http.GetFromJsonAsync<VendorModel>($"damage/vendor-get", ct);
+        return await _http.GetFromJsonAsync<VendorModel>($"vendor/vendor-get", ct);
+    }
+
+    public async Task<IReadOnlyList<DamageEntry>> ListDamageVendorEntriesAsync(CancellationToken ct = default)
+    {
+        var list = await _http.GetFromJsonAsync<IReadOnlyList<DamageEntry>>("vendor/damage-entries", ct);
+        return list ?? Array.Empty<DamageEntry>();
     }
 }

@@ -19,16 +19,16 @@ public sealed class UserRepo : IUserRepo
 
     public async Task<IReadOnlyList<AppUser>> GetUsersAsync(CancellationToken ct = default)
     {
-        return await _http.GetFromJsonAsync<IReadOnlyList<AppUser>>($"damage/user-list-get", ct) ?? Array.Empty<AppUser>();
+        return await _http.GetFromJsonAsync<IReadOnlyList<AppUser>>($"vendor/user-list", ct) ?? Array.Empty<AppUser>();
     }
 
     public async Task<IReadOnlyList<AppRole>> GetRolesAsync(CancellationToken ct = default)
     {
-        return await _http.GetFromJsonAsync<IReadOnlyList<AppRole>>($"damage/roles-get", ct) ?? Array.Empty<AppRole>();
+        return await _http.GetFromJsonAsync<IReadOnlyList<AppRole>>($"vendor/roles-get", ct) ?? Array.Empty<AppRole>();
     }
 
     public async Task UpdateRolesAsync(AppUser user, CancellationToken ct = default)
     {
-        await _http.PostAsJsonAsync("damage/roles-update", user, ct);
+        await _http.PostAsJsonAsync("vendor/roles-update", user, ct);
     }
 }
