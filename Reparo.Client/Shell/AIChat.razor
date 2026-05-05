@@ -6,12 +6,12 @@
 
 <section id="ai-container">
     <SfAppBar id="switch-container">
-        <h4>
-            AI assistant.
-        </h4>
-        <h5>
+        <h3>
+            AI assistant
+        </h3>
+        <h3>
             Include damage details?
-        </h5>
+        </h3>
         <SfSwitch @bind-Checked="@isDamageIncluded" TChecked="bool" title="Include damage info"></SfSwitch>
     </SfAppBar>
     <div class="wdr-container">
@@ -43,10 +43,10 @@
         gap: 10px;
     }
 
-        #ai-container .my-text {
+/*         #ai-container .my-text {
             min-width: 300px;
         }
-
+ */
         #ai-container #switch-container {
             padding-bottom: 5px;
             margin-bottom: 5px;

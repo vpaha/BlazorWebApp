@@ -70,7 +70,7 @@ public sealed class S3ImageService : IImageService
             Prefix = prefix
         });
 
-        return response.S3Objects
+        return (response.S3Objects ?? Enumerable.Empty<S3Object>())
             .Where(x => IsImageFile(x.Key))
             .Select(x => new ImageItem
             {
