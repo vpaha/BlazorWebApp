@@ -38,13 +38,17 @@
         </div>
     </SfAppBar>
     <div id="main-container">
-        <Submission IsSideMenuOpen="@isSideMenuOpen"></Submission>
-        <SfSidebar Target="#main-container" ID="side-bar-blade" @bind-IsOpen="isSideBarOpen" Type="SidebarType.Over" Position="SidebarPosition.Right">
-            <ChildContent>
-                <AIChat></AIChat>
-            </ChildContent>
-        </SfSidebar>
+        <div class="fade-in">
+            <Submission IsSideMenuOpen="@isSideMenuOpen"></Submission>
+        </div>
     </div>
+    <SfSidebar ID="side-bar-blade" @bind-IsOpen="isSideBarOpen" Width="@(IsDesktopView ? "40vh" : "")"
+               Type="(IsDesktopView ? SidebarType.Push : SidebarType.Over)" Target="#main-container"
+               Position="SidebarPosition.Right">
+        <ChildContent>
+            <AIChat></AIChat>
+        </ChildContent>
+    </SfSidebar>
 </section>
 <style>
     #headerAppBar {
@@ -54,10 +58,6 @@
     #side-bar-blade {
         border: solid 1px grey;
         border-radius: 8px;
-        max-width: 424px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
         padding: 10px 15px 10px 15px;
     }
 

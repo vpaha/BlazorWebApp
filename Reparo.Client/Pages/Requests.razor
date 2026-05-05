@@ -48,7 +48,9 @@
             }
         </div>
     </div>
-    <SfSidebar ID="side-bar-blade" @bind-IsOpen="isSideBarOpen" Type="(IsDesktopView ? SidebarType.Push : SidebarType.Over)" Target="#main-container" Position="SidebarPosition.Right">
+    <SfSidebar ID="side-bar-blade" Width="@(IsDesktopView ? "40vh" : "")" @bind-IsOpen="isSideBarOpen"
+               Type="(IsDesktopView ? SidebarType.Push : SidebarType.Over)" Target="#main-container"
+               Position="SidebarPosition.Right">
         <ChildContent>
             @if (damageContext is not null)
             {
@@ -85,7 +87,6 @@
     #side-bar-blade {
         border: solid 1px grey;
         border-radius: 8px;
-        max-width: 30vw;
         padding: 6px 10px 6px 10px;
     }
 
