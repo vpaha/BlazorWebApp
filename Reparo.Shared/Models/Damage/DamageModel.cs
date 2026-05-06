@@ -64,11 +64,9 @@ public class DamageEntry : IValidatableObject
     public DateTimeOffset UpdatedAt { get; set; }
 
     public int? UserId { get; set; }
-    [JsonIgnore]
     public AppUser? User { get; set; }
 
     public int? VendorId { get; set; }
-    [JsonIgnore]
     public VendorModel? Vendor { get; set; }
 
     public List<DamageEntrySection> Sections { get; set; } = [];

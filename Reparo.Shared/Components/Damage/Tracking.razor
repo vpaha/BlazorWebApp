@@ -28,7 +28,8 @@
                 }
             </div>
             <div>
-                <SfButton type="button" CssClass="e-outline e-primary" OnClick="ToggleBlade" Content="@(IsBladeOpen ? "Hide" : "Review damage")">
+                <SfButton type="button" CssClass="e-outline e-primary" OnClick="ToggleBlade" Content="@(IsBladeOpen ? "Hide" : "Review damage")"
+                          IconCss="e-icons e-eye" IconPosition="IconPosition.Right" title="Review damage">
                 </SfButton>
             </div>
         </div>
@@ -37,25 +38,25 @@
         <div class="spread-across">
             @if (DamageContext.Vendor is not null)
             {
-                <SfButton CssClass="e-success e-outline" OnClick="ShowVendor" IconCss="sf-icon-transport">@DamageContext.Vendor.Name</SfButton>
-                <SfButton type="button"
-                              OnClick="OnChat"
-                              IconCss="e-icons e-smart-paste" IconPosition="IconPosition.Right" IsPrimary="true"
-                              CssClass="e-outline"
-                              Content="Chat">
-                    </SfButton>
+                <SfButton CssClass="e-success e-outline" OnClick="ShowVendor" IconCss="e-icons e-user" title="View Vendor Details">@DamageContext.Vendor.Name</SfButton>
+                <SfButton type="button" OnClick="OnChat" IconCss="e-icons e-comment-show" IconPosition="IconPosition.Right" IsPrimary="true"
+                          CssClass="e-outline"
+                          Content="Chat" title="Chat with Vendor">
+                </SfButton>
             }
             else
             {
                 <SfButton type="button" CssClass="e-success e-outline" OnClick="toggleSearch"
                           Content="Find a local contractor" IconCss="e-icons e-search"
-                          IconPosition="IconPosition.Right"></SfButton>
+                          IconPosition="IconPosition.Right" title="Find a local contractor"></SfButton>
                 <h3>No Contractor is selected</h3>
             }
         </div>
     </CardContent>
     <CardContent EnableSeparator="true">
-        <Coverage damageContext="DamageContext"></Coverage>
+        <SfButton type="button" CssClass="e-success e-outline"
+                  Content="Request insurance coverage" IconCss="e-icons e-resizer-1"
+                  IconPosition="IconPosition.Right" title="Request insurance coverage"></SfButton>
     </CardContent>
 </SfCard>
 <style>

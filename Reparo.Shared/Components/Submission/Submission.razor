@@ -45,30 +45,29 @@
                     }
                     <SfCard role="article" CssClass="zoom-in">
                         <CardContent>
-                            <ValidationSummary></ValidationSummary>
-                        </CardContent>
-                        <CardContent EnableSeparator="true">
                             @if (DamageContext.Vendor is not null)
                             {
-                                <SfButton CssClass="e-success e-outline"
-                                          OnClick="ShowVendor" IconCss="sf-icon-transport">Selected vendor</SfButton>
-                                <span style="margin-left:10px;">@DamageContext.Vendor.Name</span>
-                                @*                                 <div style="flex-grow:1"></div> *@
-                                <SfButton CssClass="e-link" OnClick="RemoveVendor" IconCss="e-icons e-close" title="Clear"></SfButton>
+                                <div class="spread-across">
+                                    <SfButton CssClass="e-success e-outline"
+                                              OnClick="ShowVendor" IconCss="e-icons e-user" title="View Vendor Details">@DamageContext.Vendor.Name</SfButton>
+                                    <SfButton CssClass="e-round e-outline" OnClick="RemoveVendor" IconCss="e-icons e-close" title="Remove this vendor"></SfButton>
+                                </div>
                             }
                             else
                             {
-                                <h3>No Contractor is selected</h3>
                                 <SfButton type="button" CssClass="e-success e-outline" OnClick="toggleSearch"
                                           Content="Find a local contractor" IconCss="e-icons e-search"
-                                          IconPosition="IconPosition.Right"></SfButton>
+                                          IconPosition="IconPosition.Right" title="Find a local contractor"></SfButton>
                             }
+                        </CardContent>
+                        <CardContent EnableSeparator="true">
+                            <ValidationSummary></ValidationSummary>
                         </CardContent>
                     </SfCard>
                 </div>
             </FormTemplate>
             <FormButtons>
-                <SfButton type="submit" CssClass="e-primary" OnClick="TriggerSubmit" Content="Submit the Report">
+                <SfButton type="submit" CssClass="e-primary" OnClick="TriggerSubmit" Content="Submit the Report" IconCss="e-icons e-home" IconPosition="IconPosition.Right" title="Submit the Report">
                 </SfButton>
                 <SfButton type="reset" title="Clear Fields" CssClass="e-outline">Clear</SfButton>
             </FormButtons>

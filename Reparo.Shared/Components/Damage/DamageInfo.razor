@@ -3,7 +3,7 @@
         <div class="spread-across">
             <Description DamageContext="DamageContext"></Description>
             <div>
-                <SfButton type="button" IsPrimary="true" CssClass="e-outline" OnClick="ToggleBlade" Content="@(IsBladeOpen ? "Hide" : "Review damage report")">
+                <SfButton type="button" IsPrimary="true" CssClass="e-outline" OnClick="ToggleBlade" Content="@(IsBladeOpen ? "Hide" : "Review damage report")" IconCss="e-icons e-eye" IconPosition="IconPosition.Right" title="Review damage report">
                 </SfButton>
             </div>
         </div>
@@ -13,14 +13,16 @@
             <SfMessage Severity="@GetSeverity(DamageContext.StatusId)">@GetStatusText(DamageContext.StatusId)</SfMessage>
             <SfButton type="button"
                       OnClick="OnSubmit"
-                      IconCss="e-icons e-smart-paste" IconPosition="IconPosition.Right" IsPrimary="true"
+                      IconCss="e-icons e-check" IconPosition="IconPosition.Right" IsPrimary="true"
                       CssClass="e-outline"
-                      Content="Proceed with Service">
+                      Content="Proceed with Service" title="Proceed with Service">
             </SfButton>
         </div>
     </CardContent>
     <CardContent EnableSeparator="true">
-        <Estimate damageContext="DamageContext"></Estimate>
+        <SfButton type="button" CssClass="e-success e-outline"
+                  Content="Insurance Estimate" IconCss="e-icons e-resizer-1"
+                  IconPosition="IconPosition.Right" title="Insurance Estimate"></SfButton>
     </CardContent>
 </SfCard>
 @code {

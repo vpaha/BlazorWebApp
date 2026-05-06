@@ -1,7 +1,7 @@
 ﻿<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div id="spacebetween">
-            <SfButton type="button" title="Click to open" CssClass="@btnStyle" IconPosition="IconPosition.Right" IconCss="e-icons e-resizer-right" OnClick="toggleTop">
+            <SfButton type="button" title="Click to open" CssClass="@btnStyle" IconPosition="IconPosition.Right" IconCss="e-icons e-chevron-right-double" OnClick="toggleTop">
                 @(topExpanded ? "Hide" : DamageContext.DamageSectionType?.Name)
             </SfButton>
             <SfButton type="button" title="Get help" CssClass="e-link" OnClick="toggleInfo">

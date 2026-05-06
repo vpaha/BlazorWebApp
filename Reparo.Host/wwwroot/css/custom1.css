@@ -149,13 +149,13 @@ h5 {
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  padding: 10px 10px 10px 10px;
+  padding: 5px 10px 5px 10px;
 }
 
-.e-dlg-content {
-  background-color: #DCDCDC !important;
+/*.e-dlg-content {
+    background-color: #DCDCDC !important;
 }
-
+*/
 .popup-dialog .e-footer-content {
   display: flex !important;
   justify-content: center;

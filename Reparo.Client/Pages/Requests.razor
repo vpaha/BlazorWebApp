@@ -23,12 +23,13 @@
     <SfSpinner Size="48" Type="SpinnerType.Material" @bind-Visible="@isLoading"></SfSpinner>
     <SfAppBar role="region">
         <h1>Repair Progress</h1>
-    </SfAppBar>
-    <SfAppBar role="region">
-        <h2>
-            Review repair progress to proceed to next steps
-        </h2>
-        <SfButton type="button" CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleBar" IconCss="e-icons e-drag-and-drop-indicator"></SfButton>
+        @if (IsDesktopView)
+        {
+            <h2>
+                Review repair progress to proceed to next steps
+            </h2>
+        }
+        <SfButton type="button" CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleBar" IconCss="e-icons e-line-small" title="Review"></SfButton>
     </SfAppBar>
     <div id="main-container">
         <div id="data-container" class="zoom-in">
@@ -66,13 +67,13 @@
                 </SfCard>
                 <div class="spread-across">
                     <SfButton type="button" Content="Damage Details"
-                              IconCss="e-icons e-smart-paste" IconPosition="IconPosition.Right" IsPrimary="true"
+                              IconCss="e-icons e-circle-info" IconPosition="IconPosition.Right" IsPrimary="true"
                               CssClass="e-outline"
-                              OnClick="OnEdit">
+                              OnClick="OnEdit" title="Damage Details">
                     </SfButton>
                     <SfButton type="button" Content="View Images"
-                              IconCss="e-icons e-smart-paste" IconPosition="IconPosition.Left" IsPrimary="true"
-                              OnClick="OnShowImages">
+                              IconCss="e-icons e-pentagon" IconPosition="IconPosition.Left" IsPrimary="true"
+                              OnClick="OnShowImages" title="View Images">
                     </SfButton>
                 </div>
                 @if (!isVendor)
@@ -95,9 +96,9 @@
         padding-left: 2px;
     }
 
-    #main-container #data-container .e-card {
-        margin-bottom: 6px;
-    }
+        #main-container #data-container .e-card {
+            margin-bottom: 6px;
+        }
 
 </style>
 

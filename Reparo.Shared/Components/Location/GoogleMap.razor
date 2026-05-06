@@ -7,17 +7,11 @@
 
 @implements IAsyncDisposable
 
-<div id="google-container" class="fade-in">
+<div class="fade-in">
     <label id="map-label">Local contractors near the property</label>
     <gmp-map id="nearbymap" aria-labelledby="map-label" role="region"></gmp-map>
 </div>
 <style>
-    #google-container {
-        padding: 2px;
-        background-color: white;
-        border-radius: 6px;
-    }
-
     #nearbymap {
         height: 400px;
     }
@@ -42,10 +36,10 @@
             _objRef = DotNetObjectReference.Create(this);
 
             await jSRuntime.InvokeVoidAsync("googleMap.initMap", "nearbymap", Latitude, Longitude, 16, _objRef);
-            if (!environment.IsDevelopment())
-            {
+            // if (!environment.IsDevelopment())
+            // {
                 await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces", Latitude, Longitude);
-            }
+         //   }
         }
     }
 
