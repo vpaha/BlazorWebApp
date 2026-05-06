@@ -13,7 +13,9 @@
                 }
             </div>
             <div>
-                <a href="authentication/signout" class="e-btn e-info e-outline">Sign Out</a>
+                <a href="authentication/signout" title="Sign Out">
+                    <SfButton type="button" CssClass="e-outline e-info" Content="Sign Out" IconCss="e-icons e-export" IsPrimary="true" IconPosition="IconPosition.Right"></SfButton>
+                </a>
             </div>
         </Authorized>
         <NotAuthorized>
@@ -21,7 +23,9 @@
                 Welcome, guest!
             </div>
             <div>
-                <a href="profile" class="e-btn e-info e-outline">Sign in</a>
+                <a href="profile" title="Sign in">
+                    <SfButton type="button" CssClass="e-outline e-info" Content="Sign in" IconCss="e-icons e-import" IsPrimary="true" IconPosition="IconPosition.Right"></SfButton>
+                </a>
             </div>
         </NotAuthorized>
     </AuthorizeView>

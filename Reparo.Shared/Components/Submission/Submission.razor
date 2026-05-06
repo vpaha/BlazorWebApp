@@ -67,7 +67,7 @@
                 </div>
             </FormTemplate>
             <FormButtons>
-                <SfButton type="submit" CssClass="e-primary" OnClick="TriggerSubmit" Content="Submit the Report" IconCss="e-icons e-home" IconPosition="IconPosition.Right" title="Submit the Report">
+                <SfButton type="submit" CssClass="e-primary" OnClick="TriggerSubmit" Content="Submit the Report" IconCss="e-icons e-circle-check" IconPosition="IconPosition.Left" title="Submit the Report">
                 </SfButton>
                 <SfButton type="reset" title="Clear Fields" CssClass="e-outline">Clear</SfButton>
             </FormButtons>
@@ -211,7 +211,7 @@
             ShowCloseIcon = true,
             PrimaryButtonOptions = new DialogButtonOptions
             {
-                Content = "Close"
+                Content = "Close", IconCss = "e-icons e-close"
             },
             ChildContent = builder =>
             {

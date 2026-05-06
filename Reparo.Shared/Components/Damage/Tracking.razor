@@ -29,7 +29,7 @@
             </div>
             <div>
                 <SfButton type="button" CssClass="e-outline e-primary" OnClick="ToggleBlade" Content="@(IsBladeOpen ? "Hide" : "Review damage")"
-                          IconCss="e-icons e-eye" IconPosition="IconPosition.Right" title="Review damage">
+                           IconCss="@(IsBladeOpen ? "e-icons e-eye-slash" : "e-icons e-eye")" IconPosition="IconPosition.Right" title="Review damage">
                 </SfButton>
             </div>
         </div>
@@ -54,7 +54,7 @@
         </div>
     </CardContent>
     <CardContent EnableSeparator="true">
-        <SfButton type="button" CssClass="e-success e-outline"
+        <SfButton type="button" CssClass="e-outline" IsPrimary="true"
                   Content="Request insurance coverage" IconCss="e-icons e-resizer-1"
                   IconPosition="IconPosition.Right" title="Request insurance coverage"></SfButton>
     </CardContent>
@@ -85,7 +85,7 @@
             ShowCloseIcon = true,
             PrimaryButtonOptions = new DialogButtonOptions
             {
-                Content = "Close"
+                Content = "Close", IconCss = "e-icons e-close"
             },
             AnimationSettings = new DialogAnimationOptions
             {

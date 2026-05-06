@@ -76,7 +76,7 @@ public class DamageEntry : IValidatableObject
         if (Sections.Count == 0 || Sections.All(x => string.IsNullOrWhiteSpace(x.Entry)))
         {
             yield return new ValidationResult(
-                "Select a damage type to describe the damage.",
+                "Click a button to describe damage",
                 [nameof(Sections)]);
         }
     }

@@ -33,7 +33,7 @@
             </div>
         </FormTemplate>
         <FormButtons>
-            <SfButton type="submit" CssClass="e-primary" Disabled="_isValid" OnClick="TriggerSubmit" Content="@(isMapView ? "Hide this Map" : "Local Contractors")" title="Submit">
+            <SfButton type="submit" CssClass="e-primary" Disabled="_isValid" OnClick="TriggerSubmit" Content="@(isMapView ? "Hide this Map" : "Local Contractors")" IconCss="@(isMapView ? "e-icons e-close" : "e-icons e-location")" title="Submit">
             </SfButton>
         </FormButtons>
     </SfDataForm>
