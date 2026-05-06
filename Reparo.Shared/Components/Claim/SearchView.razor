@@ -1,16 +1,13 @@
 ﻿<section>
-    <SfAppBar Role="region">
-        <h2>Search claims</h2>
-    </SfAppBar>
     <SfAppBar Role="button" Id="headerAppBar" ColorMode="AppBarColor.Primary">
         <SfButton CssClass="e-round e-outline e-info" OnClick="ToggleMenu">
             <SfIcon Name="IconName.Adjustment" Title="Open filter" Style="color: white" />
         </SfButton>
         @if (IsDesktop)
         {
-            <h4>Filter</h4>
+            <h3>Filter</h3>
             <AppBarSeparator />
-            <h4 class="appbar-title">Claims list</h4>
+            <h3 class="appbar-title">Claims list</h3>
             <AppBarSeparator />
             <UserPanel />
         }
@@ -24,7 +21,7 @@
                 <ClaimSearchForm OnFilterEvent="HandleFormSubmission" />
             </div>
         </SfSidebar>
-        <ClaimResultGrid @ref="ClaimResultGrid" OnFilterEvent="ToggleMenu" OnOpenBladeEvent="HandleSideBar" />
+        <ClaimResultGrid @ref="ClaimResultGrid" OnOpenBladeEvent="HandleSideBar" />
         <SfSidebar ID="right-sidebar" Position="SidebarPosition.Right" Target="#main-container" @bind-IsOpen="IsSideBarOpen" Type="SidebarDisplayType">
             <ClaimSummary claim="SelectedClaim" />
         </SfSidebar>
