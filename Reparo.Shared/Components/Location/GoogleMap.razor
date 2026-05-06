@@ -36,10 +36,10 @@
             _objRef = DotNetObjectReference.Create(this);
 
             await jSRuntime.InvokeVoidAsync("googleMap.initMap", "nearbymap", Latitude, Longitude, 16, _objRef);
-            // if (!environment.IsDevelopment())
-            // {
+            if (!environment.IsDevelopment())
+            {
                 await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces", Latitude, Longitude);
-         //   }
+            }
         }
     }
 
