@@ -16,7 +16,7 @@
     </SfAppBar>
     <div class="wdr-container">
         <div style="flex-grow: 1;">
-            <SfTextBox @bind-Value="MessageText" Multiline="true" CssClass="my-text"
+            <SfTextBox @bind-Value="MessageText" Multiline="true"
                        Placeholder="Start asking..." FloatLabelType="FloatLabelType.Always" ShowClearButton="true"
                        InputAttributes="@(new Dictionary<string, object> {{ "rows", "8" }})" />
         </div>
@@ -43,10 +43,6 @@
         gap: 10px;
     }
 
-/*         #ai-container .my-text {
-            min-width: 300px;
-        }
- */
         #ai-container #switch-container {
             padding-bottom: 5px;
             margin-bottom: 5px;
