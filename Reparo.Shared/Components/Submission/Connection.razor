@@ -1,33 +1,34 @@
-﻿<SfCard CssClass="zoom-in" role="region">
+﻿<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div class="wdr-container">
-            <div style="flex-grow: 1;">
-                <SfTextBox @bind-Value="DamageContext.ContactEntry" Placeholder="Your name and how we can contact you (phone or email)" Multiline="true" ShowClearButton="true"
-                           FloatLabelType="FloatLabelType.Auto" InputAttributes="@(new Dictionary<string, object> {{ "rows", "4" }})" />
-                <ValidationMessage For="@(() => DamageContext.ContactEntry)" />
-            </div>
+            <SfTextBox @bind-Value="DamageContext.ContactEntry" Placeholder="Your name and how we can contact you (phone or email)" Multiline="true" ShowClearButton="true"
+                       FloatLabelType="FloatLabelType.Auto" InputAttributes="@(new Dictionary<string, object> {{ "rows", "4" }})" />
             <div @onclick:preventDefault>
                 <SfSpeechToText @bind-Transcript="DamageContext.ContactEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnContactTranscriptChanged" />
             </div>
         </div>
+        <div class="validation-message">
+            <ValidationMessage For="@(() => DamageContext.ContactEntry)" />
+        </div>
     </CardContent>
 </SfCard>
-<SfCard CssClass="zoom-in" role="region">
+<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div class="wdr-container">
-            <div style="flex-grow: 1;">
-                <SfTextBox @bind-Value="DamageContext.InsuranceEntry" Placeholder="Your insurance carrier, policy number, and claim number" Multiline="true" ShowClearButton="true"
-                           FloatLabelType="FloatLabelType.Auto" InputAttributes="@(new Dictionary<string, object> {{ "rows", "4" }})" />
-                <ValidationMessage For="@(() => DamageContext.InsuranceEntry)" />
-            </div>
+            <SfTextBox @bind-Value="DamageContext.InsuranceEntry" Placeholder="Your insurance carrier, policy number, and claim number" Multiline="true" ShowClearButton="true"
+                       FloatLabelType="FloatLabelType.Auto" InputAttributes="@(new Dictionary<string, object> {{ "rows", "4" }})" />
             <div @onclick:preventDefault>
                 <SfSpeechToText @bind-Transcript="DamageContext.InsuranceEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnInsuranceTranscriptChanged" />
             </div>
+        </div>
+        <div class="validation-message">
+            <ValidationMessage For="@(() => DamageContext.InsuranceEntry)" />
         </div>
     </CardContent>
 </SfCard>
 <AddressEntry DamageContext="DamageContext" AddressChanged="AddressChanged"></AddressEntry>
 @code {
+    [CascadingParameter(Name = CascadingParams.MediaQuery)] private bool IsDesktopView { get; set; }
     [CascadingParameter] private EditContext EditContext { get; set; } = default!;
     [Parameter] public DamageEntry DamageContext { get; set; } = default!;
 

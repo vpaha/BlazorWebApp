@@ -2,17 +2,19 @@
 @inject HttpClient httpClient
 @inject ToastService toastService
 
-<SfCard CssClass="zoom-in" role="article">
+<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div class="wdr-container">
             <div style="flex-grow: 1;">
                 <SfTextBox @bind-Value="DamageContext.AddressEntry" Placeholder="Property Address" ShowClearButton="true"
                            FloatLabelType="FloatLabelType.Auto" OnChange="onChanged" />
-                <ValidationMessage For="@(() => DamageContext.AddressEntry)" />
             </div>
             <div @onclick:preventDefault>
                 <SfSpeechToText @bind-Transcript="DamageContext.AddressEntry" CssClass="e-info e-outline e-primary" SpeechRecognitionStopped="OnTranscriptChanged" />
             </div>
+        </div>
+        <div class="validation-message">
+            <ValidationMessage For="@(() => DamageContext.AddressEntry)" />
         </div>
         <div style="margin-top:5px;">
             Explore repair services for this address
@@ -26,7 +28,7 @@
 {
     @if (ShowMap)
     {
-        <SfCard CssClass="zoom-in" role="region">
+        <SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
             <CardContent>
                 <label id="map-label">
                     Serving @DamageContext.Placename and surrounding areas

@@ -137,6 +137,14 @@ h5 {
   row-gap: 0px;
 }
 
+.max-width-400 {
+  max-width: 400px;
+}
+
+.max-width {
+  width: 100%;
+}
+
 .spread-across {
   display: flex;
   justify-content: space-between;
@@ -83060,10 +83068,6 @@ div > .e-pv-bookmark-icon.e-pv-icon.e-right {
 
 main:has(.show-image) {
   background-image: url("/room.jpg");
-}
-
-#stepper-container {
-  background-color: white;
 }
 
 .e-toast-container .e-toast.e-toast-danger .e-toast-title {

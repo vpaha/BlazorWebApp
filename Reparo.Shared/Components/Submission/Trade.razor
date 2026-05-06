@@ -1,4 +1,4 @@
-﻿<SfCard role="link" CssClass="zoom-in">
+﻿<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div id="spacebetween">
             <SfButton type="button" title="Click to open" CssClass="@btnStyle" IconPosition="IconPosition.Right" IconCss="e-icons e-resizer-right" OnClick="toggleTop">
@@ -13,15 +13,15 @@
     {
         <CardContent EnableSeparator="true">
             <div class="wdr-container">
-                <div style="flex-grow: 1;">
-                    <SfTextBox @bind-Value="DamageContext.Entry" Multiline="true"
-                               CssClass="@(DamageContext.DamageSectionType?.IsEmergency == true ? "e-warning" : null)"
-                               ShowClearButton="true" Placeholder="@DamageContext.DamageSectionType?.Name" FloatLabelType="FloatLabelType.Auto"
-                               InputAttributes="@(new Dictionary<string, object> {{ "rows", "5" }})" />
-                    <ValidationMessage For="@(() => DamageContext.Entry)" />
-                </div>
+                <SfTextBox @bind-Value="DamageContext.Entry" Multiline="true"
+                           CssClass="@(DamageContext.DamageSectionType?.IsEmergency == true ? "e-warning" : "")"
+                           ShowClearButton="true" Placeholder="@DamageContext.DamageSectionType?.Name" FloatLabelType="FloatLabelType.Auto"
+                           InputAttributes="@(new Dictionary<string, object> {{ "rows", "5" }})" />
                 <div @onclick:preventDefault>
                     <SfSpeechToText @bind-Transcript="DamageContext.Entry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnTranscriptChanged" />
+                </div>
+                <div class="validation-message">
+                    <ValidationMessage For="@(() => DamageContext.Entry)" />
                 </div>
             </div>
         </CardContent>
@@ -48,9 +48,9 @@
             height: 48px;
         }
 </style>
-    @code {
+@code {
+    [CascadingParameter(Name = CascadingParams.MediaQuery)] private bool IsDesktopView { get; set; }
     [CascadingParameter] private EditContext EditContext { get; set; } = default!;
-
     [Parameter] public DamageEntrySection DamageContext { get; set; } = default!;
 
     private string btnStyle => DamageContext.DamageSectionId == 1 ? "e-large-button e-primary" : "e-large-button  e-primary e-outline";

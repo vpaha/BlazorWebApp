@@ -22,53 +22,49 @@
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidator>
             <FormTemplate>
-                <div id="data-container">
-                    <div class="@(IsDesktopView ? "desktop-view" : "mobile-view")">
-                        @if (currentStep == 0)
+                <SfStepper ActiveStep="currentStep" Orientation="StepperOrientation.Horizontal" CssClass="stepper-container"
+                           LabelPosition="StepperLabelPosition.Bottom" StepClicked="@StepClicked">
+                    <ChildContent>
+                        <StepperSteps>
+                            <StepperStep @ref="stepperStep1" Label="Damage" IconCss="sf-icon-transport"></StepperStep>
+                            <StepperStep @ref="stepperStep3" Label="Connect" IconCss="sf-icon-success"></StepperStep>
+                        </StepperSteps>
+                    </ChildContent>
+                </SfStepper>
+                <div id="subm-container">
+                    @if (currentStep == 0)
+                    {
+                        foreach (var item in DamageContext.Sections)
                         {
-                            <SfAppBar>
-                                @if (DamageContext.Vendor is not null)
-                                {
-                                    <SfButton CssClass="e-success e-outline"
-                                              OnClick="ShowVendor" IconCss="sf-icon-transport">Selected vendor</SfButton>
-                                    <span style="margin-left:10px;">@DamageContext.Vendor.Name</span>
-                                    <div style="flex-grow:1"></div>
-                                    <SfButton CssClass="e-link" OnClick="RemoveVendor" IconCss="e-icons e-close" title="Clear"></SfButton>
-                                }
-                                else
-                                {
-                                    <h3>No Contractor is selected</h3>
-                                    <SfButton type="button" CssClass="e-success e-outline" OnClick="toggleSearch"
-                                              Content="Find a local contractor" IconCss="e-icons e-search"
-                                              IconPosition="IconPosition.Right"></SfButton>
-                                }
-                            </SfAppBar>
-                            foreach (var item in DamageContext.Sections)
+                            <Trade DamageContext="item"></Trade>
+                        }
+                    }
+                    else if (currentStep == 1)
+                    {
+                        <Connection DamageContext="DamageContext"></Connection>
+                    }
+                    <SfCard role="article" CssClass="zoom-in">
+                        <CardContent>
+                            <ValidationSummary></ValidationSummary>
+                        </CardContent>
+                        <CardContent EnableSeparator="true">
+                            @if (DamageContext.Vendor is not null)
                             {
-                                <Trade DamageContext="item"></Trade>
+                                <SfButton CssClass="e-success e-outline"
+                                          OnClick="ShowVendor" IconCss="sf-icon-transport">Selected vendor</SfButton>
+                                <span style="margin-left:10px;">@DamageContext.Vendor.Name</span>
+                                @*                                 <div style="flex-grow:1"></div> *@
+                                <SfButton CssClass="e-link" OnClick="RemoveVendor" IconCss="e-icons e-close" title="Clear"></SfButton>
                             }
-                        }
-                        else if (currentStep == 1)
-                        {
-                            <Connection DamageContext="DamageContext"></Connection>
-                        }
-                        <SfCard role="article" CssClass="zoom-in">
-                            <CardContent>
-                                <ValidationSummary></ValidationSummary>
-                            </CardContent>
-                        </SfCard>
-                    </div>
-                    <div id="sideBar-container" class="@slideClass">
-                        <SfStepper ID="stepper-container" ActiveStep="currentStep" Orientation="StepperOrientation.Vertical"
-                                   LabelPosition="StepperLabelPosition.Bottom" StepClicked="@StepClicked">
-                            <ChildContent>
-                                <StepperSteps>
-                                    <StepperStep @ref="stepperStep1" Label="Damage" IconCss="sf-icon-transport"></StepperStep>
-                                    <StepperStep @ref="stepperStep3" Label="Connect" IconCss="sf-icon-success"></StepperStep>
-                                </StepperSteps>
-                            </ChildContent>
-                        </SfStepper>
-                    </div>
+                            else
+                            {
+                                <h3>No Contractor is selected</h3>
+                                <SfButton type="button" CssClass="e-success e-outline" OnClick="toggleSearch"
+                                          Content="Find a local contractor" IconCss="e-icons e-search"
+                                          IconPosition="IconPosition.Right"></SfButton>
+                            }
+                        </CardContent>
+                    </SfCard>
                 </div>
             </FormTemplate>
             <FormButtons>
@@ -80,46 +76,26 @@
     </CascadingValue>
 }
 <style>
-    #data-container,
-    #sideBar-container {
+    #subm-container {
+        padding-left: 2px;
+        padding-right: 2px;
+        padding-bottom: 10px;
         display: flex;
+        flex-wrap: wrap;
         align-items: flex-start;
-        gap: 10px;
+        column-gap: 10px;
+        row-gap: 6px;
     }
 
     #sideBar-container {
-        min-height: 440px;
-    }
-
-    #stepper-container,
-    #data-container {
-        border: solid 1px white;
         border-radius: 8px;
-        padding: 5px;
+        padding: 10px 15px 10px 15px;
+        overflow: hidden;
     }
 
-        #data-container .desktop-view {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-start;
-            flex-basis: 100%;
-            column-gap: 12px;
-            row-gap: 8px;
-        }
-
-            #data-container .desktop-view .e-card {
-                flex-basis: 49%;
-            }
-
-        #data-container .mobile-view {
-            display: flex;
-            flex-direction: column;
-            flex-basis: 100%;
-            row-gap: 2px;
-        }
-
-    #group-container .e-card {
-        box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.25);
+    #main-container .stepper-container {
+        margin-top: 10px;
+        margin-bottom: 6px;
     }
 
     .sf-icon-transport:before {
@@ -135,23 +111,18 @@
     }
 </style>
 @code {
-    [CascadingParameter(Name = CascadingParams.MediaQuery)] private bool IsDesktopView { get; set; }
-    [Parameter] public bool IsSideMenuOpen { get; set; } = default!;
-
     [Inject]
     private DamageState DamageState { get; set; } = default!;
     public DamageEntry DamageContext => DamageState.Context;
 
     public EditContext EditContext { get; set; } = default!;
 
-    private string slideClass => IsSideMenuOpen ? "slide-in-right" : "slide-out-right";
-
     private StepperStep? stepperStep1;
     private StepperStep? stepperStep3;
 
     private int currentStep { get; set; } = 0;
 
-    private bool IsSearchDialogOpen;
+    private bool IsSearchDialogOpen { get; set; }
 
     public void StepClicked(StepperClickedEventArgs args)
     {

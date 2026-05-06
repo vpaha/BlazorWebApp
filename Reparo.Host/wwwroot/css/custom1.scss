@@ -5,10 +5,6 @@ main:has(.show-image) {
     background-image: url("/room.jpg");
 }
 
-#stepper-container {
-    background-color: white;
-}
-
 .e-toast-container {
     .e-toast {
         &.e-toast-danger {

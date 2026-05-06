@@ -17,29 +17,19 @@
 <section>
     <SfAppBar role="region">
         <h1>Start Your Property Damage Claim</h1>
-    </SfAppBar>
-    <SfAppBar role="region" id="headerAppBar">
-        <div>
-            @if (IsDesktopView)
-            {
-                <h2>
-                    Provide a few details below to get repair estimates and connect with local contractors
-                </h2>
-            }
-        </div>
-        <div style="display:flex;gap:10px;align-items:center">
-            <SfButton CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleMenu">
-                <SfIcon Name="IconName.ListOrderedRTL" Title="Steps to Follow"></SfIcon>
-            </SfButton>
-            <AppBarSeparator></AppBarSeparator>
-            <SfButton CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleBar">
-                <SfIcon Name="IconName.AIChat" Title="AI Assistance"></SfIcon>
-            </SfButton>
-        </div>
+        @if (IsDesktopView)
+        {
+            <h2>
+                Provide a few details below to get repair estimates and connect with local contractors
+            </h2>
+        }
+        <SfButton CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleBar">
+            <SfIcon Name="IconName.AIChat" Title="AI Assistance"></SfIcon>
+        </SfButton>
     </SfAppBar>
     <div id="main-container">
         <div class="fade-in">
-            <Submission IsSideMenuOpen="@isSideMenuOpen"></Submission>
+            <Submission></Submission>
         </div>
     </div>
     <SfSidebar ID="side-bar-blade" @bind-IsOpen="isSideBarOpen" Width="@(IsDesktopView ? "30vw" : "")"
@@ -51,10 +41,6 @@
     </SfSidebar>
 </section>
 <style>
-    #headerAppBar {
-        justify-content: space-between;
-    }
-
     #side-bar-blade {
         border: solid 1px grey;
         border-radius: 8px;
@@ -70,9 +56,6 @@
 @code {
     [CascadingParameter(Name = CascadingParams.MediaQuery)] private bool IsDesktopView { get; set; }
 
-    private bool isSideMenuOpen { get; set; } = true;
     private bool isSideBarOpen { get; set; } = false;
-
-    private void toggleMenu() => isSideMenuOpen = !isSideMenuOpen;
     private void toggleBar() => isSideBarOpen = !isSideBarOpen;
 }
