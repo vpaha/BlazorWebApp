@@ -7,7 +7,7 @@
 
 <SfDialog Width="90vw" ShowCloseIcon="true" @bind-Visible="IsSearchDialogOpen">
     <DialogTemplates>
-        <Header>Search contractors</Header>
+        <Header>Local contractors near the property</Header>
         <Content>
             <GoogleMap Latitude="DamageContext.Latitude" Longitude="DamageContext.Longitude" OnSelectionEvent="SelectedVendor" />
         </Content>
@@ -22,7 +22,7 @@
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidator>
             <FormTemplate>
-                <SfStepper ActiveStep="currentStep" Orientation="StepperOrientation.Horizontal" CssClass="stepper-container"
+                <SfStepper ID="stepper-container" ActiveStep="currentStep" Orientation="StepperOrientation.Horizontal"
                            LabelPosition="StepperLabelPosition.Bottom" StepClicked="@StepClicked">
                     <ChildContent>
                         <StepperSteps>
@@ -92,7 +92,7 @@
         overflow: hidden;
     }
 
-    #main-container .stepper-container {
+    #stepper-container {
         margin-top: 10px;
         margin-bottom: 6px;
     }

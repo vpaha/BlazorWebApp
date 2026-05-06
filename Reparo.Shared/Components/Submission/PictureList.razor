@@ -2,7 +2,7 @@
 
 @inject IImageService ImageService
 
-<SfCarousel ID="control-container" AnimationEffect="CarouselAnimationEffect.Fade">
+<SfCarousel ID="control-container" AnimationEffect="CarouselAnimationEffect.Slide">
     @if (!Images.Any())
     {
         <CarouselItem>
@@ -26,6 +26,7 @@
 <style>
     #control-container {
         margin: 0 auto;
+        background-color: #DCDCDC !important;
     }
 
         #control-container img {

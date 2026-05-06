@@ -69,6 +69,8 @@ body {
 
 main {
   flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
   padding: 3px 10px 5px 10px;
   background-position: center;
   background-repeat: no-repeat;
@@ -82,6 +84,7 @@ main > section {
   flex-direction: column;
   gap: 5px;
   padding-top: 8px;
+  flex-basis: 100%;
 }
 
 h1, h2, h3, h4, h5 {
@@ -152,10 +155,6 @@ h5 {
   padding: 5px 10px 5px 10px;
 }
 
-/*.e-dlg-content {
-    background-color: #DCDCDC !important;
-}
-*/
 .popup-dialog .e-footer-content {
   display: flex !important;
   justify-content: center;

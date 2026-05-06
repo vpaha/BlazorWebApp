@@ -27,13 +27,13 @@
             <SfIcon Name="IconName.AIChat" Title="AI Assistance"></SfIcon>
         </SfButton>
     </SfAppBar>
-    <div id="main-container">
+    <div id="damage-container">
         <div class="fade-in">
             <Submission></Submission>
         </div>
     </div>
     <SfSidebar ID="side-bar-blade" @bind-IsOpen="isSideBarOpen" Width="@(IsDesktopView ? "30vw" : "")"
-               Type="(IsDesktopView ? SidebarType.Push : SidebarType.Over)" Target="#main-container"
+               Type="(IsDesktopView ? SidebarType.Push : SidebarType.Over)" Target="#damage-container"
                Position="SidebarPosition.Right">
         <ChildContent>
             <AIChat></AIChat>
@@ -45,12 +45,6 @@
         border: solid 1px grey;
         border-radius: 8px;
         padding: 10px 15px 10px 15px;
-    }
-
-    #main-container {
-        padding-left: 2px;
-        padding-right: 2px;
-        padding-bottom: 20px;
     }
 </style>
 @code {
