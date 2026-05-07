@@ -1,4 +1,6 @@
-﻿<SfCard role="link">
+﻿@inject IDamageRepo damageRepo
+
+<SfCard role="link">
     <CardContent>
         <div class="spread-across">
             <Description DamageContext="DamageContext"></Description>
@@ -10,18 +12,17 @@
     </CardContent>
     <CardContent EnableSeparator="true">
         <div class="spread-across">
-            <SfMessage Severity="@GetSeverity(DamageContext.StatusId)">@GetStatusText(DamageContext.StatusId)</SfMessage>
+            <SfMessage Severity="@GetSeverity(DamageContext.StatusId)">@((DamageStatus)DamageContext.StatusId)</SfMessage>
+            <SfButton type="button" CssClass="e-success e-outline" OnClick="OnReview"
+                      Content="Review by AI" IconCss="e-icons e-resizer-1"
+                      IconPosition="IconPosition.Right" title="Review by AI"></SfButton>
             <SfButton type="button"
                       OnClick="OnSubmit"
                       IconCss="e-icons e-check" IconPosition="IconPosition.Right" IsPrimary="true"
-                      Content="Proceed with Service" title="Proceed with Service">
+                      CssClass="@(DamageContext.StatusId==(int)DamageStatus.Reported?"":"e-outline")"
+                      Content="@(DamageContext.StatusId==(int)DamageStatus.Reported?"Proceed with Service":"Scheduled")" title="Proceed with Service">
             </SfButton>
         </div>
-    </CardContent>
-    <CardContent EnableSeparator="true">
-        <SfButton type="button" CssClass="e-success e-outline"
-                  Content="Insurance Estimate" IconCss="e-icons e-resizer-1"
-                  IconPosition="IconPosition.Right" title="Insurance Estimate"></SfButton>
     </CardContent>
 </SfCard>
 @code {
@@ -36,14 +37,26 @@
 
     private async Task OnSubmit()
     {
+        DamageContext.StatusId = DamageContext.StatusId == (int)DamageStatus.ServiceScheduled ? (int)DamageStatus.Reported : (int)DamageStatus.ServiceScheduled;
+        await damageRepo.UpdateEntryAsync(DamageContext, CancellationToken.None);
     }
 
+    private async Task OnReview()
+    {
+        var result = await damageRepo.ReviewEntryAsync(DamageContext, CancellationToken.None);
+        if (result)
+        {
+            DamageContext.StatusId = (int)DamageStatus.InspectionCompleted;
+            await damageRepo.UpdateEntryAsync(DamageContext, CancellationToken.None);
+        }
+    }
+    
     private MessageSeverity GetSeverity(int statusId)
     {
         return (DamageStatus)statusId switch
         {
             DamageStatus.Reported or DamageStatus.WaitingForVendorAssignment or DamageStatus.EstimatePending
-                => MessageSeverity.Info,
+                => MessageSeverity.Normal,
             DamageStatus.VendorAssigned or DamageStatus.ServiceScheduled or DamageStatus.InspectionScheduled
                 => MessageSeverity.Success,
 
@@ -59,12 +72,7 @@
             DamageStatus.OnHold
                 => MessageSeverity.Warning,
 
-            _ => MessageSeverity.Info
+            _ => MessageSeverity.Normal
         };
-    }
-
-    private string GetStatusText(int statusId)
-    {
-        return ((DamageStatus)statusId).ToString();
     }
 }

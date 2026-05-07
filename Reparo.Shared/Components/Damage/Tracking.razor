@@ -39,6 +39,7 @@
         {
             <div class="spread-across">
                 <SfButton CssClass="e-success e-outline" OnClick="ShowVendor" title="View Vendor Details">@DamageContext.Vendor.Name</SfButton>
+                <SfMessage Severity="@GetSeverity(DamageContext.StatusId)">@((DamageStatus)DamageContext.StatusId)</SfMessage>
                 <SfButton type="button" OnClick="OnChat" IconCss="e-icons e-comment-show" IconPosition="IconPosition.Right" IsPrimary="true"
                           CssClass="e-outline"
                           Content="Chat" title="Chat with Vendor">
@@ -47,7 +48,7 @@
         }
         else
         {
-            <SfButton type="button" CssClass="e-success e-outline" OnClick="toggleSearch"
+            <SfButton type="button" CssClass="e-info e-outline" OnClick="toggleSearch"
                       Content="Find a local contractor" IconCss="e-icons e-search"
                       IconPosition="IconPosition.Right" title="Find a local contractor"></SfButton>
             <h3>No Contractor is selected</h3>
@@ -124,6 +125,31 @@
         {
             IsSearchDialogOpen = false;
         }
+    }
+
+    private MessageSeverity GetSeverity(int statusId)
+    {
+        return (DamageStatus)statusId switch
+        {
+            DamageStatus.Reported or DamageStatus.WaitingForVendorAssignment or DamageStatus.EstimatePending
+                => MessageSeverity.Normal,
+            DamageStatus.VendorAssigned or DamageStatus.ServiceScheduled or DamageStatus.InspectionScheduled
+                => MessageSeverity.Success,
+
+            DamageStatus.WorkInProgress
+                => MessageSeverity.Warning,
+
+            DamageStatus.WorkCompleted or DamageStatus.Closed
+                => MessageSeverity.Success,
+
+            DamageStatus.Cancelled
+                => MessageSeverity.Error,
+
+            DamageStatus.OnHold
+                => MessageSeverity.Warning,
+
+            _ => MessageSeverity.Normal
+        };
     }
 
     private async Task OnChat()

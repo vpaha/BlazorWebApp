@@ -5,9 +5,9 @@ public interface IDamageRepo
     Task<IReadOnlyList<DamageSectionType>> ListSectionTypesAsync(CancellationToken ct = default);
     Task<IReadOnlyList<DamageEntry>> ListVendorDamageEntriesAsync(CancellationToken ct = default);
     Task<IReadOnlyList<DamageEntry>> ListUserDamageEntriesAsync(CancellationToken ct = default);
-
-    Task<long> AddEntryAsync(DamageEntry entry, CancellationToken ct = default);
-    Task<long> UpdateEntryAsync(DamageEntry entry, CancellationToken ct = default);
+    Task<int> AddEntryAsync(DamageEntry entry, CancellationToken ct = default);
+    Task UpdateEntryAsync(DamageEntry entry, CancellationToken ct = default);
+    Task<bool> ReviewEntryAsync(DamageEntry entry, CancellationToken ct = default);
 }
 
 public sealed class DamageRepo : IDamageRepo
@@ -37,17 +37,23 @@ public sealed class DamageRepo : IDamageRepo
         return list ?? Array.Empty<DamageEntry>();
     }
 
-    public async Task<long> AddEntryAsync(DamageEntry entry, CancellationToken ct = default)
+    public async Task<int> AddEntryAsync(DamageEntry entry, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("damage/damage-add", entry, ct);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<long>(cancellationToken: ct);
+        return await response.Content.ReadFromJsonAsync<int>(cancellationToken: ct);
     }
 
-    public async Task<long> UpdateEntryAsync(DamageEntry entry, CancellationToken ct = default)
+    public async Task UpdateEntryAsync(DamageEntry entry, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("damage/damage-update", entry, ct);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<long>(cancellationToken: ct);
+    }
+
+    public async Task<bool> ReviewEntryAsync(DamageEntry entry, CancellationToken ct = default)
+    {
+        var response = await _http.PostAsJsonAsync("damage/damage-review", entry, ct);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<bool>(cancellationToken: ct);
     }
 }

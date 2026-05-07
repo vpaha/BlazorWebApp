@@ -67,18 +67,20 @@
                                 <div>@item.Entry</div>
                             </CardContent>
                         }
+                    <CardContent EnableSeparator="true">
+                        <div class="spread-across">
+                            <SfButton type="button" Content="Damage Details"
+                                      IconCss="e-icons e-circle-info" IconPosition="IconPosition.Right" IsPrimary="true"
+                                      CssClass="e-outline"
+                                      OnClick="OnEdit" title="Damage Details">
+                            </SfButton>
+                            <SfButton type="button" Content="View Images"
+                                      IconCss="e-icons e-pentagon" IconPosition="IconPosition.Left" IsPrimary="true"
+                                      OnClick="OnShowImages" title="View Images">
+                            </SfButton>
+                        </div>
+                    </CardContent>
                 </SfCard>
-                <div class="spread-across">
-                    <SfButton type="button" Content="Damage Details"
-                              IconCss="e-icons e-circle-info" IconPosition="IconPosition.Right" IsPrimary="true"
-                              CssClass="e-outline"
-                              OnClick="OnEdit" title="Damage Details">
-                    </SfButton>
-                    <SfButton type="button" Content="View Images"
-                              IconCss="e-icons e-pentagon" IconPosition="IconPosition.Left" IsPrimary="true"
-                              OnClick="OnShowImages" title="View Images">
-                    </SfButton>
-                </div>
                 @if (!isVendor)
                 {
                     <FileUpload damageId="damageContext.Id"></FileUpload>
