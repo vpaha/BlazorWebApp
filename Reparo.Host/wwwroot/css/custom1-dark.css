@@ -150,9 +150,9 @@ h5 {
 
 .spread-across {
   display: flex;
+  flex-flow: wrap;
   justify-content: space-between;
-  gap: 15px;
-  padding: 5px 10px 5px 10px;
+  gap: 10px;
 }
 
 .popup-dialog .e-footer-content {
@@ -164,6 +164,10 @@ h5 {
 
 .e-toast-container .e-toast .e-toast-close-icon {
   margin-top: 5px !important;
+}
+
+.e-button-center {
+  margin-bottom: 20px;
 }
 
 .e-control,

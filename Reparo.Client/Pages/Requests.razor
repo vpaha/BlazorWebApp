@@ -29,7 +29,10 @@
                 Review repair progress to proceed to next steps
             </h2>
         }
-        <SfButton type="button" CssClass="e-round e-outline" IsPrimary="true" OnClick="toggleBar" IconCss="e-icons e-line-small" title="Review"></SfButton>
+        @if (isSideBarOpen)
+        {
+            <SfButton type="button" CssClass="e-round" IsPrimary="true" OnClick="toggleBar" IconCss="e-icons e-decrease-indent-rtl" title="Close the sidebar"></SfButton>
+        }
     </SfAppBar>
     <div id="main-container">
         <div id="data-container" class="zoom-in">

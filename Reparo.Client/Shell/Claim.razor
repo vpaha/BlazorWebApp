@@ -8,14 +8,14 @@
     <SfCard>
         <CardContent>
             <a href="claim" title="New Claims">
-                <SfButton type="button" CssClass="e-outline" Content="Claims" IconCss="e-icons e-critical-path" IsPrimary="true"></SfButton>
+                <SfButton type="button" CssClass="e-outline" Content="Claims" IconCss="e-icons e-critical-path" IsPrimary="true" OnClick="ShowDialog"></SfButton>
             </a>
         </CardContent>
     </SfCard>
 </section>
 
 @code {
-    [CascadingParameter(Name = CascadingParams.MediaQuery)] private bool IsDesktopView { get; set; }
+    [CascadingParameter(Name = CascadingParams.MediaQuery)] public bool IsDesktopView { get; set; }
 
     private async Task ShowDialog()
     {
