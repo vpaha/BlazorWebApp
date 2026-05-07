@@ -2,14 +2,14 @@
 {
     <SfCard ID="claim-container" role="region">
         <CardContent>
-            <div>
-                <input type="button" class="e-success e-outline" value="Attachments" onclick="Attachment('@claim.ClaimId')" />
-            </div>
-            <h4>Claim Details:</h4>
+            <h3>Claim Details:</h3>
             @foreach (var prop in claim.GetType().GetProperties())
             {
                 <div>@prop.Name: @prop.GetValue(claim)</div>
             }
+        </CardContent>
+        <CardContent EnableSeparator="true">
+            <input type="button" class="e-success e-outline" value="Attachments" onclick="Attachment('@claim.ClaimId')" />
         </CardContent>
     </SfCard>
 }

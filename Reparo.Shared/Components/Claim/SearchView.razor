@@ -3,27 +3,23 @@
         <SfButton CssClass="e-round e-outline e-info" OnClick="ToggleMenu">
             <SfIcon Name="IconName.Adjustment" Title="Open filter" Style="color: white" />
         </SfButton>
-        @if (IsDesktop)
-        {
-            <h3>Filter</h3>
-            <AppBarSeparator />
-            <h3 class="appbar-title">Claims list</h3>
-            <AppBarSeparator />
-            <UserPanel />
-        }
+        <h3>Filter</h3>
         <AppBarSeparator />
-        <div>Desktop: @IsDesktop</div>
+        <h3 style="flex-grow: 1;">Claim list</h3>
+        <AppBarSeparator />
+        <UserPanel />
     </SfAppBar>
-
     <div id="main-container">
-        <SfSidebar Position="SidebarPosition.Left" Target="#main-container" @bind-IsOpen="IsMenuOpen" Type="@SidebarDisplayType" EnableGestures="false">
-            <div id="search-filter">
+        <SfSidebar ID="left-sidebar" Position="SidebarPosition.Left" Target="#main-container" @bind-IsOpen="IsMenuOpen" Type="SidebarType.Push" EnableGestures="false">
+            <ChildContent>
                 <ClaimSearchForm OnFilterEvent="HandleFormSubmission" />
-            </div>
+            </ChildContent>
         </SfSidebar>
         <ClaimResultGrid @ref="ClaimResultGrid" OnOpenBladeEvent="HandleSideBar" />
-        <SfSidebar ID="right-sidebar" Position="SidebarPosition.Right" Target="#main-container" @bind-IsOpen="IsSideBarOpen" Type="SidebarDisplayType">
-            <ClaimSummary claim="SelectedClaim" />
+        <SfSidebar ID="right-sidebar" Position="SidebarPosition.Right" Target="#main-container" @bind-IsOpen="IsSideBarOpen" Type="SidebarType.Push">
+            <ChildContent>
+                <ClaimSummary claim="SelectedClaim" />
+            </ChildContent>
         </SfSidebar>
     </div>
 </section>
@@ -31,10 +27,7 @@
     #headerAppBar {
         justify-content: space-between;
         column-gap: 16px;
-    }
-
-    .appbar-title {
-        flex-grow: 1;
+        border-radius: 8px;
     }
 
     #main-container {
@@ -50,17 +43,13 @@
         padding: 10px 15px;
     }
 
-    #search-filter {
+    #left-sidebar {
+        border: 1px solid gray;
+        border-radius: 5px;
         padding: 10px;
     }
 </style>
 @code {
-    [CascadingParameter(Name = CascadingParams.MediaQuery)] private bool IsDesktopView { get; set; }
-    [Parameter] public bool ForceDesktopView { get; set; } // This parameter is used to force desktop view in the dialog, as the media query does not work inside it.
-
-    private bool IsDesktop => ForceDesktopView || IsDesktopView;
-    private SidebarType SidebarDisplayType => IsDesktop ? SidebarType.Push : SidebarType.Over;
-
     private bool IsSideBarOpen { get; set; } = false;
     private bool IsMenuOpen { get; set; } = true;
 
@@ -76,6 +65,7 @@
     {
         if (ClaimResultGrid is null) return;
         await ClaimResultGrid.ApplyFilterAsync(filter);
+        IsSideBarOpen = false;
     }
 
     private void HandleSideBar(ClaimSearchResponse? claim)
