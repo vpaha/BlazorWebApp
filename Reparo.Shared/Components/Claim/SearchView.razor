@@ -10,13 +10,15 @@
         <UserPanel />
     </SfAppBar>
     <div id="main-container">
-        <SfSidebar ID="left-sidebar" Position="SidebarPosition.Left" Target="#main-container" @bind-IsOpen="IsMenuOpen" Type="SidebarType.Push" EnableGestures="false">
+        <SfSidebar Position="SidebarPosition.Left" Target="#main-container" @bind-IsOpen="IsMenuOpen" Type="SidebarType.Push" EnableGestures="false">
             <ChildContent>
                 <ClaimSearchForm OnFilterEvent="HandleFormSubmission" />
             </ChildContent>
         </SfSidebar>
-        <ClaimResultGrid @ref="ClaimResultGrid" OnOpenBladeEvent="HandleSideBar" />
-        <SfSidebar ID="right-sidebar" Position="SidebarPosition.Right" Target="#main-container" @bind-IsOpen="IsSideBarOpen" Type="SidebarType.Push">
+        <div class="grid-stretch">
+            <ClaimResultGrid @ref="ClaimResultGrid" OnOpenBladeEvent="HandleSideBar" />
+        </div>
+        <SfSidebar Position="SidebarPosition.Right" Target="#main-container" @bind-IsOpen="IsSideBarOpen" Type="SidebarType.Push">
             <ChildContent>
                 <ClaimSummary claim="SelectedClaim" />
             </ChildContent>
@@ -25,28 +27,14 @@
 </section>
 <style>
     #headerAppBar {
-        justify-content: space-between;
         column-gap: 16px;
-        border-radius: 8px;
     }
 
     #main-container {
-        border: 1px solid white;
-        border-radius: 8px;
-        padding: 5px;
         background-color: gainsboro;
-    }
-
-    #right-sidebar {
-        border: 1px solid gray;
-        border-radius: 8px;
-        padding: 10px 15px;
-    }
-
-    #left-sidebar {
-        border: 1px solid gray;
-        border-radius: 5px;
-        padding: 10px;
+        margin-top: 2px;
+        display: flex;
+        flex-basis: 100%;
     }
 </style>
 @code {

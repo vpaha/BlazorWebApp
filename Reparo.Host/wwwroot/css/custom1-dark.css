@@ -79,12 +79,39 @@ main {
   border-bottom: 1px solid grey;
 }
 
-main > section {
+section {
   display: flex;
   flex-direction: column;
+  flex-basis: 100%;
+}
+
+main > section {
   gap: 5px;
   padding-top: 8px;
+}
+
+.e-sidebar {
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.grid-stretch {
+  padding: 10px;
+  display: flex;
+}
+
+.grid-stretch .e-grid {
+  border: solid 1px white;
+  border-radius: 8px;
+  padding: 10px;
+  display: inherit;
+  flex-direction: column;
   flex-basis: 100%;
+}
+
+.grid-stretch .e-gridcontent {
+  flex-basis: inherit;
 }
 
 h1, h2, h3, h4, h5 {
@@ -157,10 +184,14 @@ h5 {
 }
 
 .popup-dialog .e-footer-content {
-  display: flex !important;
+  display: inherit !important;
   justify-content: center;
   align-items: center;
   gap: 16px;
+}
+
+.popup-dialog .e-dlg-content {
+  display: flex !important;
 }
 
 .e-toast-container .e-toast .e-toast-close-icon {

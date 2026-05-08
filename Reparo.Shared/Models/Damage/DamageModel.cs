@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.AI;
+using OpenAI.Chat;
 using Syncfusion.Blazor.Notifications;
+using System.ComponentModel.DataAnnotations;
 
 public sealed class DamageEntrySection
 {
@@ -124,6 +126,25 @@ public class DamageEntry : IValidatableObject
             _ => MessageSeverity.Normal
         };
     }
+
+    public void ProcessEntry()
+    {
+        if (AddressEntry is not null)
+        {
+    //        openAI?.GetResponseAsync(AddressEntry);
+        }
+    }
+
+    public DamageEntry()
+    {
+        
+    }
+
+    //private IChatClient? openAI { get; set; }
+    //public DamageEntry(IChatClient OpenAI): this()
+    //{
+    //    openAI = OpenAI;
+    //}
 }
 
 public sealed class DateGreaterThanAttribute : ValidationAttribute

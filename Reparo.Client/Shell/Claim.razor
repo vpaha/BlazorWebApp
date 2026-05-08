@@ -5,13 +5,9 @@
 @inject SfDialogService dialogService
 
 <section>
-    <SfCard>
-        <CardContent>
-            <a href="claim" title="New Claims">
-                <SfButton type="button" CssClass="e-outline" Content="Claims" IconCss="e-icons e-critical-path" IsPrimary="true" OnClick="ShowDialog"></SfButton>
-            </a>
-        </CardContent>
-    </SfCard>
+    <a href="claim" title="New Claims">
+        <SfButton type="button" CssClass="e-outline" Content="Claims" IconCss="e-icons e-critical-path" IsPrimary="true" OnClick="ShowDialog"></SfButton>
+    </a>
 </section>
 
 @code {
@@ -21,7 +17,9 @@
     {
         await dialogService.AlertAsync(null, "Search claims", new DialogOptions
         {
+            CssClass = "popup-dialog",
             ShowCloseIcon = true,
+            Height = "80%",
             PrimaryButtonOptions = new DialogButtonOptions
             {
                 Content = "Close", IconCss = "e-icons e-close"

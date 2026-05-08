@@ -232,13 +232,6 @@ internal static class RouteExtensions
             var vendor = await repo.GetVendorByPlaceAsync(placeId, ct);
             return vendor is null ? Results.NotFound() : Results.Ok(vendor);
         });
-
-        group.MapPost("damage-review", async ([FromServices] IDamageService repo, [FromBody] DamageEntry entry, CancellationToken ct) =>
-        {
-            var success = await repo.ReviewEntryAsync(entry, ct);
-            return Results.Ok(success);
-        });
-
         return group;
     }
 

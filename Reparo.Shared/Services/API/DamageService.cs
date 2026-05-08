@@ -10,7 +10,6 @@ public interface IDamageService
     Task<IReadOnlyList<DamageEntry>> ListVendorDamageEntriesAsync(int vendorId, CancellationToken ct = default);
     Task<int> AddEntryAsync(DamageEntry entry, CancellationToken ct = default);
     Task<int> UpdateEntryAsync(DamageEntry entry, CancellationToken ct = default);
-    Task<bool> ReviewEntryAsync(DamageEntry entry, CancellationToken ct = default);
 }
 
 public sealed class DamageService : IDamageService
@@ -103,16 +102,5 @@ public sealed class DamageService : IDamageService
 
         await _context.SaveChangesAsync(ct);
         return entry.Id;
-    }
-
-    public async Task<bool> ReviewEntryAsync(DamageEntry entry, CancellationToken ct = default)
-    {
-        var now = DateTimeOffset.UtcNow;
-        entry.UpdatedAt = entry.UpdatedAt == default ? now : entry.UpdatedAt;
-
-        _context.DamageEntries.Update(entry);
-        await _context.SaveChangesAsync(ct);
-
-        return true;
     }
 }

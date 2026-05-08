@@ -43,11 +43,6 @@
 
     private async Task OnReview()
     {
-        var result = await damageRepo.ReviewEntryAsync(DamageContext, CancellationToken.None);
-        if (result)
-        {
-            DamageContext.StatusId = (int)DamageStatus.InspectionCompleted;
-            await damageRepo.UpdateEntryAsync(DamageContext, CancellationToken.None);
-        }
+        DamageContext.ProcessEntry();
     }
 }
