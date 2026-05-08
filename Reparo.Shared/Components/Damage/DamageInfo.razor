@@ -4,15 +4,15 @@
     <CardContent>
         <div class="spread-across">
             <Description DamageContext="DamageContext"></Description>
-            <div>
-                <SfButton type="button" IsPrimary="true" CssClass="e-outline" OnClick="ToggleBlade" Content="@(IsBladeOpen ? "Hide" : "Review damage report")" IconCss="@(IsBladeOpen ? "e-icons e-eye-slash" : "e-icons e-eye")" IconPosition="IconPosition.Right" title="Review damage report">
-                </SfButton>
-            </div>
+            <SfMessage Severity="@DamageContext.GetSeverity()" Variant="MessageVariant.Filled">@((DamageStatus)DamageContext.StatusId)</SfMessage>
+            <SfButton type="button" IsPrimary="true" CssClass="e-outline" OnClick="ToggleBlade"
+                      Content="@(IsBladeOpen ? "Hide" : "Review damage report")" IconCss="@(IsBladeOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
+                      IconPosition="IconPosition.Right" title="Review damage report">
+            </SfButton>
         </div>
     </CardContent>
     <CardContent EnableSeparator="true">
         <div class="spread-across">
-            <SfMessage Severity="@GetSeverity(DamageContext.StatusId)">@((DamageStatus)DamageContext.StatusId)</SfMessage>
             <SfButton type="button" CssClass="e-success e-outline" OnClick="OnReview"
                       Content="Review by AI" IconCss="e-icons e-resizer-1"
                       IconPosition="IconPosition.Right" title="Review by AI"></SfButton>
@@ -49,30 +49,5 @@
             DamageContext.StatusId = (int)DamageStatus.InspectionCompleted;
             await damageRepo.UpdateEntryAsync(DamageContext, CancellationToken.None);
         }
-    }
-    
-    private MessageSeverity GetSeverity(int statusId)
-    {
-        return (DamageStatus)statusId switch
-        {
-            DamageStatus.Reported or DamageStatus.WaitingForVendorAssignment or DamageStatus.EstimatePending
-                => MessageSeverity.Normal,
-            DamageStatus.VendorAssigned or DamageStatus.ServiceScheduled or DamageStatus.InspectionScheduled
-                => MessageSeverity.Success,
-
-            DamageStatus.WorkInProgress
-                => MessageSeverity.Warning,
-
-            DamageStatus.WorkCompleted or DamageStatus.Closed
-                => MessageSeverity.Success,
-
-            DamageStatus.Cancelled
-                => MessageSeverity.Error,
-
-            DamageStatus.OnHold
-                => MessageSeverity.Warning,
-
-            _ => MessageSeverity.Normal
-        };
     }
 }

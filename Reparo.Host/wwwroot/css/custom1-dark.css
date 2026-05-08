@@ -152,6 +152,7 @@ h5 {
   display: flex;
   flex-flow: wrap;
   justify-content: space-between;
+  align-items: center;
   gap: 10px;
 }
 

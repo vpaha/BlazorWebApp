@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using Syncfusion.Blazor.Notifications;
 
 public sealed class DamageEntrySection
 {
@@ -98,6 +98,31 @@ public class DamageEntry : IValidatableObject
         }
         if (parts.Any() == true) return string.Join(". ", parts);
         return null;
+    }
+
+    public MessageSeverity GetSeverity()
+    {
+        return (DamageStatus)StatusId switch
+        {
+            DamageStatus.Reported or DamageStatus.WaitingForVendorAssignment or DamageStatus.EstimatePending
+                => MessageSeverity.Normal,
+            DamageStatus.VendorAssigned or DamageStatus.ServiceScheduled or DamageStatus.InspectionScheduled
+                => MessageSeverity.Success,
+
+            DamageStatus.WorkInProgress
+                => MessageSeverity.Warning,
+
+            DamageStatus.WorkCompleted or DamageStatus.Closed
+                => MessageSeverity.Success,
+
+            DamageStatus.Cancelled
+                => MessageSeverity.Error,
+
+            DamageStatus.OnHold
+                => MessageSeverity.Warning,
+
+            _ => MessageSeverity.Normal
+        };
     }
 }
 

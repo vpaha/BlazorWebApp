@@ -7,14 +7,6 @@ public enum ScreenSize
     Large
 }
 
-public enum MessageSeverity
-{
-    Information,
-    Warning,
-    Error,
-    ServerException
-}
-
 public enum MessageCategory
 {
     Global,
