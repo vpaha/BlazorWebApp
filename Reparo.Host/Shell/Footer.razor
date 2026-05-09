@@ -1,19 +1,12 @@
-﻿<div>
-    <a href="about" class="e-btn e-primary e-outline" title="about us">About Us</a>
-</div>
-<div>
-    <a href="settings" title="Color theme">
-        <SfButton type="button" CssClass="e-outline" Content="Settings" IconCss="e-icons e-settings" IsPrimary="true"></SfButton>
-    </a>
-</div>
-<div>
-    <a href="authentication/clear" class="e-btn e-info e-outline" title="browser Cache">Clear browser Cache</a>
-</div>
+﻿@inject SfDialogService dialogService
+<a href="about" class="e-btn e-primary e-outline" title="about us">About Us</a>
+<a href="settings" title="Color theme">
+    <SfButton type="button" CssClass="e-outline" Content="Settings" IconCss="e-icons e-settings" IsPrimary="true"></SfButton>
+</a>
+<a href="authentication/clear" class="e-btn e-info e-outline" title="browser Cache">Clear browser Cache</a>
 <AuthorizeView>
     <Authorized Context="auth">
-        <div>
-            <a href="claim" class="e-btn e-primary e-outline" title="sign in">Claims</a>
-        </div>
+        <SfButton type="button" CssClass="e-outline" Content="QNXT" IconCss="e-icons e-critical-path" IsPrimary="true" OnClick="ShowDialog"></SfButton>
     </Authorized>
 </AuthorizeView>
 <div>
@@ -22,3 +15,24 @@
 <div>
     WASM Version @(typeof(Program).Assembly.GetName().Version?.ToString(4))
 </div>
+
+@code {
+    private async Task ShowDialog()
+    {
+        await dialogService.AlertAsync(null, "Search claims", new DialogOptions
+        {
+            CssClass = "popup-dialog",
+            ShowCloseIcon = true,
+            Height = "80%",
+            PrimaryButtonOptions = new DialogButtonOptions
+            {
+                Content = "Close", IconCss = "e-icons e-close"
+            },
+            ChildContent = builder =>
+            {
+                builder.OpenComponent<Shared.Components.Claim.SearchView>(0);
+                builder.CloseComponent();
+            }
+        });
+    }
+}
