@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using OpenAI;
 using Serilog;
-using Stripe;
+//using Stripe;
 using Syncfusion.Blazor;
 using Syncfusion.Blazor.Popups;
 using Syncfusion.Licensing;
@@ -137,7 +137,7 @@ public partial class Program
 
     private void ConfigureAppServices(WebApplicationBuilder builder, IConfiguration config, string configuredPathBase)
     {
-        builder.Services.AddSingleton(new StripeClient("sk_test_51TG7e18LrDbU9B5cfEkBWsaoGNguzvdvvG8qwuUm51eVx4ctFMAyg3R3GfxjJhUbVrRoaK7W8YfnDsIB4NtCTli500uJWmhLHq"));
+        //        builder.Services.AddSingleton(new StripeClient("sk_test_51TG7e18LrDbU9B5cfEkBWsaoGNguzvdvvG8qwuUm51eVx4ctFMAyg3R3GfxjJhUbVrRoaK7W8YfnDsIB4NtCTli500uJWmhLHq"));
 
         //Amazon
         builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
@@ -148,7 +148,6 @@ public partial class Program
         builder.Services.AddScoped<ToastService>();
         builder.Services.AddScoped<SfDialogService>();
         builder.Services.AddScoped<DamageState>();
-        builder.Services.AddScoped<IDamageAiService, DamageAiService>();
         // Repos
         builder.Services.AddScoped<IDamageService, DamageService>();
         builder.Services.AddScoped<IVendorService, VendorService>();
@@ -224,13 +223,13 @@ public partial class Program
         var key = config["AI:openAIApiKey"];
         var model = config["AI:openAIModel"];
 
-        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(model))
-            return;
+        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(model)) return;
 
         var openAIClient = new OpenAIClient(key);
         IChatClient chatClient = openAIClient.GetChatClient(model).AsIChatClient();
 
         builder.Services.AddChatClient(chatClient);
+        builder.Services.AddScoped<IDamageAiService, DamageAiService>();
     }
 
     private void ConfigurePipeline(WebApplication app, string pathBase)
@@ -245,6 +244,7 @@ public partial class Program
         app.UseHttpLogging();
 
         app.UseRouting();
+        app.UseCors("AllowAll");
 
         app.UseRequestLocalization();
 
@@ -256,7 +256,6 @@ public partial class Program
         app.UseAntiforgery();
         app.UseOutputCache();
 
-        app.UseCors("AllowAll");
     }
 
     private void MapEndpoints(WebApplication app, string googleApiKey)

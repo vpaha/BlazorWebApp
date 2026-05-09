@@ -1,10 +1,10 @@
 ﻿@inject ToastService toastService
 
-<SfToast @ref="toast" ID="toast-default" Timeout="ToastConstants.TimeoutSuccess" ShowProgressBar="true">
-    <ToastPosition X="Right" Y="Top"></ToastPosition>
+<SfToast @ref="toast" ID="toast-default" Target="main">
+    <ToastPosition X="Center" Y="Bottom"></ToastPosition>
     <ToastAnimationSettings>
-        <ToastShowAnimationSettings Effect="ToastEffect.SlideDown"></ToastShowAnimationSettings>
-        <ToastHideAnimationSettings Effect="ToastEffect.SlideUp"></ToastHideAnimationSettings>
+        <ToastShowAnimationSettings Effect="ToastEffect.FlipXDownIn"></ToastShowAnimationSettings>
+        <ToastHideAnimationSettings Effect="ToastEffect.FlipXDownOut"></ToastHideAnimationSettings>
     </ToastAnimationSettings>
 </SfToast>
 @code {
@@ -43,7 +43,8 @@
                     Content = options.Content,
                     CssClass = cssClass,
                     ShowCloseButton = true,
-                    Timeout = timeout
+                    Timeout = timeout,
+                    ShowProgressBar = true
                 });
             });
         };

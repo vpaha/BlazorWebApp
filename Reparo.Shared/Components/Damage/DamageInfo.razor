@@ -1,5 +1,8 @@
 ﻿@inject IDamageRepo damageRepo
+@inject IDamageAiService damageAiService
+@inject ToastService toastService
 
+<SfSpinner Size="48" Type="SpinnerType.Material" @bind-Visible="@isLoading"></SfSpinner>
 <SfCard role="link">
     <CardContent>
         <div class="spread-across">
@@ -30,6 +33,8 @@
     [Parameter] public bool IsBladeOpen { get; set; } = default!;
     [Parameter] public EventCallback<DamageEntry> OnToggleBladeEvent { get; set; }
 
+    private bool isLoading { get; set; }
+
     private async Task ToggleBlade()
     {
         await OnToggleBladeEvent.InvokeAsync(DamageContext);
@@ -43,6 +48,18 @@
 
     private async Task OnReview()
     {
-        DamageContext.ProcessEntry();
+        try
+        {
+            isLoading = true;
+
+            await damageAiService.ProcessEntryAsync(DamageContext, CancellationToken.None);
+            toastService.ShowSuccess("Damage report reviewed by AI");
+        } catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+        } finally
+        {
+            isLoading = false;
+        }
     }
 }
