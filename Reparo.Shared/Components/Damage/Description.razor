@@ -11,10 +11,12 @@
         @if (HasAny(DamageContext.Street, DamageContext.City, DamageContext.State, DamageContext.Zip))
         {
             <div>
-                <div>at</div>
+                <div>address</div>
                 <div>
-                    @Value(DamageContext.Street)
-                    @Value(AddressLine)
+                    <strong>
+                        @Value(DamageContext.Street)
+                        @Value(AddressLine)
+                    </strong>
                 </div>
             </div>
         }

@@ -13,7 +13,7 @@
     <CardContent EnableSeparator="true">
         <div class="spread-across">
             <Description DamageContext="DamageContext"></Description>
-            <SfMessage Severity="@DamageContext.GetSeverity()" Variant="MessageVariant.Filled">@((DamageStatus)DamageContext.StatusId)</SfMessage>
+            <SfMessage Severity="@DamageContext.GetSeverity()" Variant="MessageVariant.Filled">@DamageContext.StatusId</SfMessage>
             <SfButton type="button" IsPrimary="true" CssClass="e-outline" OnClick="ToggleBlade"
                       Content="@(IsBladeOpen ? "Hide" : "Review damage report")" IconCss="@(IsBladeOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
                       IconPosition="IconPosition.Right" title="Review damage report">

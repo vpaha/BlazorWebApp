@@ -2,7 +2,7 @@
     <CardContent>
         <div class="spread-across">
             <Description DamageContext="DamageContext"></Description>
-            <SfMessage Severity="@DamageContext.GetSeverity()" Variant="MessageVariant.Filled">@((DamageStatus)DamageContext.StatusId)</SfMessage>
+            <SfMessage Severity="@DamageContext.GetSeverity()" Variant="MessageVariant.Filled">@DamageContext.StatusId</SfMessage>
             <SfButton type="button" IsPrimary="true" CssClass="e-outline" OnClick="ToggleBlade"
                       Content="@(IsBladeOpen ? "Hide" : "Review damage report")" IconCss="@(IsBladeOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
                       IconPosition="IconPosition.Right" title="Review damage report">
@@ -11,14 +11,14 @@
     </CardContent>
     <CardContent EnableSeparator="true">
         <div class="spread-across">
-            <SfButton type="button" CssClass="e-success e-outline" OnClick="OnReview"
-                      Content="Review by AI" IconCss="e-icons e-resizer-1"
+            <SfButton type="button" CssClass="@(DamageContext.StatusId == DamageStatus.AIReviewCompleted ? "e-success" : "e-success e-outline")" OnClick="OnReview"
+                      Content="Review by AI" IconCss="e-icons e-resizer-1" Disabled="DamageContext.StatusId == DamageStatus.AIReviewCompleted"
                       IconPosition="IconPosition.Right" title="Review by AI"></SfButton>
             <SfButton type="button"
                       OnClick="OnSubmit"
                       IconCss="e-icons e-check" IconPosition="IconPosition.Right" IsPrimary="true"
-                      CssClass="@(DamageContext.StatusId==(int)DamageStatus.Reported?"":"e-outline")"
-                      Content="@(DamageContext.StatusId==(int)DamageStatus.Reported?"Proceed with Service":"Scheduled")" title="Proceed with Service">
+                      CssClass="@(DamageContext.StatusId==DamageStatus.Reported?"":"e-outline")"
+                      Content="@(DamageContext.StatusId==DamageStatus.Reported?"Proceed with Service":"Scheduled")" title="Proceed with Service">
             </SfButton>
         </div>
     </CardContent>

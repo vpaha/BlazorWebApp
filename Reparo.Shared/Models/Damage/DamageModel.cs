@@ -26,7 +26,7 @@ public sealed class DamageSectionType
 public class DamageEntry : IValidatableObject
 {
     public int Id { get; set; }
-    public int StatusId { get; set; }
+    public DamageStatus StatusId { get; set; }
 
     [Required(ErrorMessage = "What's the property address? (Street, city, state, or ZIP code)")]
     public string? AddressEntry { get; set; }
@@ -44,6 +44,7 @@ public class DamageEntry : IValidatableObject
     public double? Longitude { get; set; }
 
     public string? InsuranceEntry { get; set; }
+
     public string? InsuranceCarrier { get; set; }
     public string? PolicyNumber { get; set; }
     public string? ClaimNumber { get; set; }
@@ -53,7 +54,6 @@ public class DamageEntry : IValidatableObject
 
     public string? FullName { get; set; }
     public string? Phone { get; set; }
-
     [EmailAddress]
     public string? Email { get; set; }
 
@@ -102,25 +102,13 @@ public class DamageEntry : IValidatableObject
 
     public MessageSeverity GetSeverity()
     {
-        return (DamageStatus)StatusId switch
+        return StatusId switch
         {
-            DamageStatus.Reported or DamageStatus.WaitingForVendorAssignment or DamageStatus.EstimatePending
-                => MessageSeverity.Normal,
-            DamageStatus.VendorAssigned or DamageStatus.ServiceScheduled or DamageStatus.InspectionScheduled
-                => MessageSeverity.Success,
-
-            DamageStatus.WorkInProgress
-                => MessageSeverity.Warning,
-
-            DamageStatus.WorkCompleted or DamageStatus.Closed
-                => MessageSeverity.Success,
-
-            DamageStatus.Cancelled
-                => MessageSeverity.Error,
-
-            DamageStatus.OnHold
-                => MessageSeverity.Warning,
-
+            DamageStatus.Reported or DamageStatus.WaitingForVendorAssignment => MessageSeverity.Error,
+            DamageStatus.VendorAssigned or DamageStatus.ServiceScheduled => MessageSeverity.Info,
+            DamageStatus.AIReviewCompleted or DamageStatus.WorkCompleted => MessageSeverity.Success,
+            DamageStatus.Closed => MessageSeverity.Normal,
+            DamageStatus.Cancelled => MessageSeverity.Warning,
             _ => MessageSeverity.Normal
         };
     }

@@ -21,7 +21,7 @@ internal static class ModelBuilderExtensions
             e.HasKey(x => x.Id);
             e.Property(x => x.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
-            e.Property(x => x.StatusId).HasColumnName("status_id").HasDefaultValue(1).IsRequired();
+            e.Property(x => x.StatusId).HasColumnName("status_id").HasDefaultValue(DamageStatus.Reported).IsRequired();
             e.Property(x => x.AddressEntry).HasColumnName("address_entry").IsRequired();
 
             e.Property(x => x.ContactEntry).HasColumnName("contact_entry").IsRequired();

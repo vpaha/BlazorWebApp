@@ -4,15 +4,10 @@
     WaitingForVendorAssignment = 2,
     VendorAssigned = 3,
 
-    InspectionScheduled = 4,
-    InspectionCompleted = 5,
-    EstimatePending = 6,
-    
-    ServiceScheduled = 7,
-    WorkInProgress = 8,
+    AIReviewCompleted = 4,
+    ServiceScheduled = 5,
+    WorkCompleted = 6,
 
-    WorkCompleted = 9,
-    Closed = 10,
-    Cancelled = 11,
-    OnHold = 12
+    Closed = 7,
+    Cancelled = 8
 }

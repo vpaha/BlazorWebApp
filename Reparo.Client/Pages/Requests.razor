@@ -236,7 +236,7 @@
         {
             isLoading = true;
 
-            damage.StatusId = damage.StatusId == (int)DamageStatus.ServiceScheduled ? (int)DamageStatus.Reported : (int)DamageStatus.ServiceScheduled;
+            damage.StatusId = damage.StatusId == DamageStatus.ServiceScheduled ? DamageStatus.Reported : DamageStatus.ServiceScheduled;
             await damageRepo.UpdateEntryAsync(damage, CancellationToken.None);
 
             toastService.ShowSuccess("Damage details updated successfully");
@@ -259,6 +259,7 @@
             toastService.ShowSuccess("Damage report reviewed by AI");
         } catch (Exception ex)
         {
+            damage.StatusId = DamageStatus.AIReviewCompleted;
             toastService.ShowError(ex.Message);
         } finally
         {
