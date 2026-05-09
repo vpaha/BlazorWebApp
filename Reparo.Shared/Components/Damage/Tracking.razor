@@ -63,7 +63,10 @@
     {
         await dialogService.AlertAsync(null, DamageContext.Vendor?.Name, new DialogOptions
         {
+            CssClass = "popup-dialog",
             ShowCloseIcon = true,
+            Height = "80%",
+
             PrimaryButtonOptions = new DialogButtonOptions
             {
                 Content = "Close", IconCss = "e-icons e-close"
