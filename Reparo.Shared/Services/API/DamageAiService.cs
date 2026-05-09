@@ -40,8 +40,6 @@ public sealed class DamageAiService : IDamageAiService
     - Return valid JSON only.
     """;
 
-    private const string DescriptionPrompt = "Review and correct the grammar in the user text. Keep the original logic and meaning unchanged while improving clarity.";
-
     public DamageAiService(IChatClient chatClient)
     {
         _chatClient = chatClient;
