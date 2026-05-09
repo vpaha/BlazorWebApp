@@ -11,7 +11,7 @@
     </CardContent>
     <CardContent EnableSeparator="true">
         <div class="spread-across">
-            <SfButton type="button" CssClass="@(DamageContext.StatusId == DamageStatus.AIReviewCompleted ? "e-success" : "e-success e-outline")" OnClick="OnReview"
+            <SfButton type="button" CssClass="e-success e-outline" OnClick="OnReview"
                       Content="Review by AI" IconCss="e-icons e-resizer-1" Disabled="DamageContext.StatusId == DamageStatus.AIReviewCompleted"
                       IconPosition="IconPosition.Right" title="Review by AI"></SfButton>
             <SfButton type="button"
