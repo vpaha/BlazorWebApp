@@ -9,7 +9,7 @@
 <PageTitle>Profile | Property Claims</PageTitle>
 
 <section class="zoom-in">
-    <SfSpinner Size="48" Type="SpinnerType.Material" @bind-Visible="@isLoading"></SfSpinner>
+    <SfSpinner @bind-Visible="@isLoading"></SfSpinner>
     <AuthorizeView Policy="Vendor">
         <Authorized>
             <VendorDetails Vendor="model"></VendorDetails>

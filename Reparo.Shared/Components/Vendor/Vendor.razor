@@ -2,7 +2,7 @@
 @inject ToastService toastService
 
 <section id="vendor-page" class="zoom-in">
-    <SfSpinner Size="48" Type="SpinnerType.Material" @bind-Visible="@isLoading"></SfSpinner>
+    <SfSpinner @bind-Visible="@isLoading"></SfSpinner>
     <VendorDetails Vendor="model"></VendorDetails>
 </section>
 <style>
