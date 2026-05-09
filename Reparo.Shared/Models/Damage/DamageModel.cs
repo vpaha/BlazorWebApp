@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.AI;
-using OpenAI.Chat;
-using Syncfusion.Blazor.Notifications;
+﻿using Syncfusion.Blazor.Notifications;
 using System.ComponentModel.DataAnnotations;
 
 public sealed class DamageEntrySection
@@ -91,7 +89,7 @@ public class DamageEntry : IValidatableObject
         if (!string.IsNullOrWhiteSpace(ContactEntry)) parts.Add(ContactEntry);
         if (!string.IsNullOrWhiteSpace(InsuranceEntry)) parts.Add(InsuranceEntry);
 
-        if (Sections.Count == 0 || Sections.All(x => string.IsNullOrWhiteSpace(x.Entry)))
+        if (Sections.Count > 0 && Sections.Any(x => !string.IsNullOrWhiteSpace(x.Entry)))
         {
             parts.AddRange(
                 Sections.Where(d => !string.IsNullOrWhiteSpace(d.Entry))
@@ -126,25 +124,6 @@ public class DamageEntry : IValidatableObject
             _ => MessageSeverity.Normal
         };
     }
-
-    public void ProcessEntry()
-    {
-        if (AddressEntry is not null)
-        {
-    //        openAI?.GetResponseAsync(AddressEntry);
-        }
-    }
-
-    public DamageEntry()
-    {
-        
-    }
-
-    //private IChatClient? openAI { get; set; }
-    //public DamageEntry(IChatClient OpenAI): this()
-    //{
-    //    openAI = OpenAI;
-    //}
 }
 
 public sealed class DateGreaterThanAttribute : ValidationAttribute

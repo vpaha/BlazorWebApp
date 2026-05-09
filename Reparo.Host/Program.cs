@@ -148,6 +148,7 @@ public partial class Program
         builder.Services.AddScoped<ToastService>();
         builder.Services.AddScoped<SfDialogService>();
         builder.Services.AddScoped<DamageState>();
+        builder.Services.AddScoped<IDamageAiService, DamageAiService>();
         // Repos
         builder.Services.AddScoped<IDamageService, DamageService>();
         builder.Services.AddScoped<IVendorService, VendorService>();
