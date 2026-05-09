@@ -7,7 +7,7 @@
             <SfCard role="article">
                 <CardContent>
                     <SfTextBox @bind-Value="damageContext.Street" Width="100%" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly"
-                               Placeholder="Street" HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Street address" },{ "autocomplete" , "address-line1" }})" />
+                               Placeholder="Street" HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Street address" },{ "autocomplete" , "address-line1" }})" autofocus />
                     <ValidationMessage For="@(() => damageContext.Street)" />
                     <div style="display:flex;column-gap:2px;">
                         <SfTextBox @bind-Value="damageContext.City" Width="auto" CssClass="e-small" Placeholder="City" FloatLabelType="FloatLabelType.Auto" Readonly="isReadOnly"

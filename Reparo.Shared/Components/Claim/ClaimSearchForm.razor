@@ -6,7 +6,7 @@
     <FormTemplate>
         <div id="form-container">
             <SfTextBox @bind-Value="ClaimFilter.ProvId" CssClass="e-small" Placeholder="Provider ID/Name" ShowClearButton="true"
-                       FloatLabelType="FloatLabelType.Always" />
+                       FloatLabelType="FloatLabelType.Always" autofocus />
             <div class="validation-message">
                 <ValidationMessage For="@(() => ClaimFilter.ProvId)" />
             </div>

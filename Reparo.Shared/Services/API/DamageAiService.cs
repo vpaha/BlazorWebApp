@@ -20,9 +20,7 @@ public sealed class DamageAiService : IDamageAiService
     private const string ExtractionPrompt =
     """
     Extract structured property damage claim information from the user text.
-
     Return JSON only.
-
     Schema:
     {
       "street": "",
@@ -36,69 +34,89 @@ public sealed class DamageAiService : IDamageAiService
       "policyNumber": "",
       "claimNumber": ""
     }
-
     Rules:
     - Do not invent values.
     - Use null when information is missing.
     - Return valid JSON only.
     """;
 
+    private const string DescriptionPrompt = "Review and correct the grammar in the user text. Keep the original logic and meaning unchanged while improving clarity.";
+
     public DamageAiService(IChatClient chatClient)
     {
         _chatClient = chatClient;
     }
 
-    public async Task ProcessEntryAsync(
-        DamageEntry entry,
-        CancellationToken cancellationToken = default)
+    public async Task ProcessEntryAsync(DamageEntry entry, CancellationToken cancellationToken = default)
     {
-        var input = entry.BuildCombinedDescription();
-
-        if (string.IsNullOrWhiteSpace(input))
-            return;
+        ArgumentNullException.ThrowIfNull(entry);
 
         ChatOptions options = new()
         {
-            MaxOutputTokens = 400,
+            MaxOutputTokens = 800,
             Temperature = 0.1f
         };
 
-        List<ChatMessage> messages =
-        [
-            new(ChatRole.System, ExtractionPrompt),
-            new(ChatRole.User, $"Text:\n{input}")
-        ];
+        var input = entry.BuildCombinedInfo();
 
-        ChatResponse response = await _chatClient.GetResponseAsync(
-            messages,
-            options,
-            cancellationToken);
+        if (!string.IsNullOrWhiteSpace(input))
+        {
+            List<ChatMessage> messages = [new(ChatRole.System, ExtractionPrompt), new(ChatRole.User, $"Text:\n{input}")];
+            ChatResponse response = await _chatClient.GetResponseAsync(messages, options, cancellationToken);
+            var result = JsonSerializer.Deserialize<DamageExtractionResult>(response.Text, JsonOptions);
 
-        if (string.IsNullOrWhiteSpace(response.Text))
-            return;
+            if (result is not null)
+            {
+                entry.Street = result.Street;
+                entry.City = result.City;
+                entry.State = result.State;
+                entry.Zip = result.Zip;
+                entry.FullName = result.FullName;
+                entry.Phone = result.Phone;
+                entry.Email = result.Email;
+                entry.InsuranceCarrier = result.InsuranceCarrier;
+                entry.PolicyNumber = result.PolicyNumber;
+                entry.ClaimNumber = result.ClaimNumber;
+            }
+        }
 
-        var result = JsonSerializer.Deserialize<DamageExtractionResult>(
-            response.Text,
-            JsonOptions);
+        var sections = entry.Sections.Where(x => !string.IsNullOrWhiteSpace(x.Entry)).ToList();
+        if (sections.Count > 0)
+        {
+            var sectionInput = JsonSerializer.Serialize(sections.Select((section, index) => new { index, text = section.Entry }));
+            List<ChatMessage> messages = [new(ChatRole.System,
+            """
+            Review and correct grammar for each item.
+            Keep the original logic and meaning unchanged.
+            Return JSON only using this schema:
+            [
+              { "index": 0, "text": "" }
+            ]
+            """), new(ChatRole.User, sectionInput)
+            ];
 
-        if (result is null)
-            return;
-
-        entry.Street = result.Street;
-        entry.City = result.City;
-        entry.State = result.State;
-        entry.Zip = result.Zip;
-
-        entry.FullName = result.FullName;
-        entry.Phone = result.Phone;
-        entry.Email = result.Email;
-
-        entry.InsuranceCarrier = result.InsuranceCarrier;
-        entry.PolicyNumber = result.PolicyNumber;
-        entry.ClaimNumber = result.ClaimNumber;
+            ChatResponse response = await _chatClient.GetResponseAsync(messages, options, cancellationToken);
+            var reviewedSections = JsonSerializer.Deserialize<List<ReviewedSectionResult>>(response.Text, JsonOptions);
+            if (reviewedSections is not null)
+            {
+                foreach (var reviewed in reviewedSections)
+                {
+                    if (reviewed.Index >= 0 && reviewed.Index < sections.Count)
+                    {
+                        sections[reviewed.Index].Entry = reviewed.Text?.Trim();
+                    }
+                }
+            }
+        }
 
         entry.UpdatedAt = DateTimeOffset.UtcNow;
         entry.StatusId = DamageStatus.AIReviewCompleted;
+    }
+
+    private sealed class ReviewedSectionResult
+    {
+        public int Index { get; set; }
+        public string? Text { get; set; }
     }
 
     private sealed class DamageExtractionResult

@@ -1,24 +1,24 @@
 ﻿<SfCard id="navContainer" role="link">
     <CardContent>
-        <a href="" title="Home page">
+        <a href="" title="Home page" tabindex="-1">
             <SfButton type="button" CssClass="e-outline" Content="Home" IconCss="e-icons e-home" IsPrimary="true"></SfButton>
         </a>
         <AuthorizeView Policy="Vendor">
             <Authorized>
-                <a href="requests" title="Repair Requests">
+                <a href="requests" title="Repair Requests" tabindex="-1">
                     <SfButton type="button" CssClass="e-outline" Content="Repair Requests" IconCss="e-icons e-align-center" IsPrimary="true"></SfButton>
                 </a>
             </Authorized>
             <NotAuthorized>
-                <a href="damage" title="Damage Report">
+                <a href="damage" title="Damage Report" tabindex="-1">
                     <SfButton type="button" CssClass="e-outline" Content="Damage Report" IconCss="e-icons e-critical-path" IsPrimary="true"></SfButton>
                 </a>
-                <a href="requests" title="Damage Tracking">
+                <a href="requests" title="Damage Tracking" tabindex="-1">
                     <SfButton type="button" CssClass="e-outline" Content="Tracking" IconCss="e-icons e-flags" IsPrimary="true"></SfButton>
                 </a>
             </NotAuthorized>
         </AuthorizeView>
-        <a href="profile" title="My Account">
+        <a href="profile" title="My Account" tabindex="-1">
             <SfButton type="button" CssClass="e-outline" Content="My Account" IconCss="e-icons e-user" IsPrimary="true"></SfButton>
         </a>
     </CardContent>

@@ -81,7 +81,7 @@ public class DamageEntry : IValidatableObject
         }
     }
 
-    public string? BuildCombinedDescription()
+    public string? BuildCombinedInfo()
     {
         var parts = new List<string>();
 
@@ -89,6 +89,13 @@ public class DamageEntry : IValidatableObject
         if (!string.IsNullOrWhiteSpace(ContactEntry)) parts.Add(ContactEntry);
         if (!string.IsNullOrWhiteSpace(InsuranceEntry)) parts.Add(InsuranceEntry);
 
+        if (parts.Any() == true) return string.Join(". ", parts);
+        return null;
+    }
+
+    public string? BuildCombinedDamageInfo()
+    {
+        var parts = new List<string>();
         if (Sections.Count > 0 && Sections.Any(x => !string.IsNullOrWhiteSpace(x.Entry)))
         {
             parts.AddRange(
