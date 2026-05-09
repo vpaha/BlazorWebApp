@@ -1,9 +1,4 @@
-﻿@inject IDamageRepo damageRepo
-@inject IDamageAiService damageAiService
-@inject ToastService toastService
-
-<SfSpinner Size="48" Type="SpinnerType.Material" @bind-Visible="@isLoading"></SfSpinner>
-<SfCard role="link">
+﻿<SfCard role="link">
     <CardContent>
         <div class="spread-across">
             <Description DamageContext="DamageContext"></Description>
@@ -32,8 +27,8 @@
     [Parameter] public DamageEntry DamageContext { get; set; } = default!;
     [Parameter] public bool IsBladeOpen { get; set; } = default!;
     [Parameter] public EventCallback<DamageEntry> OnToggleBladeEvent { get; set; }
-
-    private bool isLoading { get; set; }
+    [Parameter] public EventCallback<DamageEntry> OnReviewEvent { get; set; }
+    [Parameter] public EventCallback<DamageEntry> OnSubmitEvent { get; set; }
 
     private async Task ToggleBlade()
     {
@@ -42,24 +37,11 @@
 
     private async Task OnSubmit()
     {
-        DamageContext.StatusId = DamageContext.StatusId == (int)DamageStatus.ServiceScheduled ? (int)DamageStatus.Reported : (int)DamageStatus.ServiceScheduled;
-        await damageRepo.UpdateEntryAsync(DamageContext, CancellationToken.None);
+        await OnSubmitEvent.InvokeAsync(DamageContext);
     }
 
     private async Task OnReview()
     {
-        try
-        {
-            isLoading = true;
-
-            await damageAiService.ProcessEntryAsync(DamageContext, CancellationToken.None);
-            toastService.ShowSuccess("Damage report reviewed by AI");
-        } catch (Exception ex)
-        {
-            toastService.ShowError(ex.Message);
-        } finally
-        {
-            isLoading = false;
-        }
+        await OnReviewEvent.InvokeAsync(DamageContext);
     }
 }

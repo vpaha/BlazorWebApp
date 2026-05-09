@@ -6,6 +6,7 @@
 @inject IDamageRepo damageRepo
 @inject IAuthorizationService authz
 @inject SfDialogService dialogService
+@inject IDamageAiService damageAiService
 
 <PageTitle>Track Property Repair Status | Property Claims</PageTitle>
 
@@ -42,7 +43,7 @@
                 {
                     @if (isVendor)
                     {
-                        <DamageInfo DamageContext="@item" OnToggleBladeEvent="ToggleBlade" IsBladeOpen="isSideBarOpen" />
+                        <DamageInfo DamageContext="@item" OnToggleBladeEvent="ToggleBlade" IsBladeOpen="isSideBarOpen" OnReviewEvent="OnReview" OnSubmitEvent="OnSubmit" />
                     }
                     else
                     {
@@ -144,7 +145,7 @@
         }
     }
 
-    private async Task ToggleBlade(DamageEntry damage)
+    private void ToggleBlade(DamageEntry damage)
     {
         damageContext = damage;
         toggleBar();
@@ -227,5 +228,41 @@
                 builder.CloseComponent();
             }
         });
+    }
+
+    private async Task OnSubmit(DamageEntry damage)
+    {
+        try
+        {
+            isLoading = true;
+
+            damage.StatusId = damage.StatusId == (int)DamageStatus.ServiceScheduled ? (int)DamageStatus.Reported : (int)DamageStatus.ServiceScheduled;
+            await damageRepo.UpdateEntryAsync(damage, CancellationToken.None);
+
+            toastService.ShowSuccess("Damage details updated successfully");
+        } catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+        } finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task OnReview(DamageEntry damage)
+    {
+        try
+        {
+            isLoading = true;
+
+            await damageAiService.ProcessEntryAsync(damage, CancellationToken.None);
+            toastService.ShowSuccess("Damage report reviewed by AI");
+        } catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+        } finally
+        {
+            isLoading = false;
+        }
     }
 }
