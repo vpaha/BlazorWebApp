@@ -259,7 +259,6 @@
             toastService.ShowSuccess("Damage report reviewed by AI");
         } catch (Exception ex)
         {
-            damage.StatusId = DamageStatus.AIReviewCompleted;
             toastService.ShowError(ex.Message);
         } finally
         {
