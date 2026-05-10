@@ -243,6 +243,7 @@
         {
             DamageState.Context.Vendor = await vendorRepo.GetVendorByPlaceAsync(placeId);
             DamageState.Context.VendorId = DamageState.Context.Vendor?.Id;
+            DamageContext.StatusId = DamageStatus.VendorAssigned;
         } catch (Exception)
         {
         } finally

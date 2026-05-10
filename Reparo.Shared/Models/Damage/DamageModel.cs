@@ -111,7 +111,7 @@ public class DamageEntry : IValidatableObject
     {
         return StatusId switch
         {
-            DamageStatus.Reported or DamageStatus.WaitingForVendorAssignment => MessageSeverity.Error,
+            DamageStatus.Reported => MessageSeverity.Error,
             DamageStatus.VendorAssigned or DamageStatus.ServiceScheduled => MessageSeverity.Info,
             DamageStatus.AIReviewCompleted or DamageStatus.WorkCompleted => MessageSeverity.Success,
             DamageStatus.Closed => MessageSeverity.Normal,

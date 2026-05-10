@@ -15,7 +15,7 @@
             <Description DamageContext="DamageContext"></Description>
             <SfMessage Severity="@DamageContext.GetSeverity()" Variant="MessageVariant.Filled">@DamageContext.StatusId</SfMessage>
             <SfButton type="button" CssClass="e-success e-outline" OnClick="OnReview"
-                      Content="Review by AI" IconCss="e-icons e-resizer-1" Disabled="DamageContext.StatusId == DamageStatus.AIReviewCompleted"
+                      Content="Review by AI" IconCss="e-icons e-resizer-1" Disabled="isDisabled()"
                       IconPosition="IconPosition.Right" title="Review by AI"></SfButton>
             <SfButton type="button" IsPrimary="true" CssClass="e-outline" OnClick="ToggleBlade"
                       Content="@(IsBladeOpen ? "Hide" : "Review damage report")" IconCss="@(IsBladeOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
@@ -99,6 +99,7 @@
         {
             DamageContext.Vendor = await vendorRepo.GetVendorByPlaceAsync(placeId);
             DamageContext.VendorId = DamageContext.Vendor?.Id;
+            DamageContext.StatusId = DamageStatus.VendorAssigned;
         } catch (Exception)
         {
         } finally
@@ -115,4 +116,6 @@
     {
         await OnReviewEvent.InvokeAsync(DamageContext);
     }
+
+    private bool isDisabled() => DamageContext.StatusId >= DamageStatus.AIReviewCompleted;
 }

@@ -1,13 +1,11 @@
 ﻿public enum DamageStatus
 {
     Reported = 1,
-    WaitingForVendorAssignment = 2,
-    VendorAssigned = 3,
-
+    VendorAssigned = 2,
+    ServiceScheduled = 3,
     AIReviewCompleted = 4,
-    ServiceScheduled = 5,
-    WorkCompleted = 6,
+    WorkCompleted = 5,
 
-    Closed = 7,
-    Cancelled = 8
+    Closed = 6,
+    Cancelled = 7
 }

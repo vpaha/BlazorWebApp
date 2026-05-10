@@ -108,7 +108,7 @@ public sealed class DamageAiService : IDamageAiService
         }
 
         entry.UpdatedAt = DateTimeOffset.UtcNow;
-        entry.StatusId = DamageStatus.AIReviewCompleted;
+        if (entry.VendorId != null) entry.StatusId = DamageStatus.AIReviewCompleted;
     }
 
     private sealed class ReviewedSectionResult

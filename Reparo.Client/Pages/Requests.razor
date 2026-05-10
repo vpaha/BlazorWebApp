@@ -238,7 +238,7 @@
         {
             isLoading = true;
 
-            damage.StatusId = damage.StatusId == DamageStatus.ServiceScheduled ? DamageStatus.Reported : DamageStatus.ServiceScheduled;
+            damage.StatusId = DamageStatus.ServiceScheduled;
             await damageRepo.UpdateEntryAsync(damage, CancellationToken.None);
 
             toastService.ShowSuccess("Damage details updated successfully");
