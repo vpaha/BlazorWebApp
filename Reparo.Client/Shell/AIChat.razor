@@ -4,62 +4,80 @@
 @inject IChatClient client
 
 <section id="ai-container">
-    <SfAppBar id="switch-container">
-        <h2>
-            AI assistant
+    <SfAppBar>
+        <h2 style="border-bottom: 1px solid gray;">
+            AI Assistant
         </h2>
     </SfAppBar>
-    <SfCard Id="pre-line">
-        <CardContent>
-            @messageResponse.ToString()
-        </CardContent>
-    </SfCard>
-    <div class="wdr-container" style="flex-grow: 1;">
-        <SfTextBox @bind-Value="MessageText" Multiline="true"
-                   Placeholder="Start typing..." FloatLabelType="FloatLabelType.Auto" ShowClearButton="true"
-                   InputAttributes="@(new Dictionary<string, object> {{ "rows", "8" }})" />
+    <div class="chat-card">
+        @if (Messages.Count > 0)
+        {
+            @foreach (var message in Messages)
+            {
+                <div>@((MarkupString)message)</div>
+            }
+        }
+    </div>
+    <div style="flex-grow:1"></div>
+    <div class="wdr-container">
+        <SfTextBox @bind-Value="MessageText"
+                   Multiline="true"
+                   Placeholder="Start asking..."
+                   FloatLabelType="FloatLabelType.Always"
+                   ShowClearButton="true"
+                   InputAttributes="@(new Dictionary<string, object>
+                                                                                                                                                                                                                         {
+                                                                                                                                                                                                                         { "rows", "8" }
+                                                                                                                                                                                                                         })" />
         <div @onclick:preventDefault>
             <SfSpeechToText @bind-Transcript="MessageText" CssClass="e-info e-outline" />
         </div>
     </div>
-    <div>
-        <SfButton type="button" CssClass="e-primary" IconCss="e-icons e-ai-chat" OnClick="Communicate" style="height:56px;" title="Ask AI" Content="Get Response">
-        </SfButton>
-    </div>
+    <SfButton type="button"
+              CssClass="e-primary"
+              IconCss="e-icons e-ai-chat"
+              OnClick="CommunicateAsync"
+              title="Ask AI"
+              Content="Get Response" />
 </section>
+
 <style>
     #ai-container {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        justify-content: space-between;
+        height: 100%;
+        gap: 8px;
     }
 
-        #ai-container #switch-container {
-            padding-bottom: 5px;
-            margin-bottom: 5px;
-            border-bottom: 1px solid gray;
+        #ai-container .chat-card {
+            display: flex;
+            flex-direction: column;
+            max-height: 198px;
+            overflow-y: auto;
         }
 
-        #ai-container #pre-line .e-card-content {
-            white-space: pre-line;
-        }
+            #ai-container .chat-card > div {
+                padding-bottom: 3px;
+            }
 </style>
 
 @code {
-    private string MessageText { set; get; } = default!;
-    private readonly StringBuilder messageResponse = new();
+    private string MessageText { get; set; } = string.Empty;
+    private List<string> Messages { get; set; } = [];
 
-    protected override async Task OnInitializedAsync()
-    {
-    }
-
-    private async Task Communicate()
+    private async Task CommunicateAsync()
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(MessageText))
+            {
+                return;
+            }
+            Messages.Insert(0, $"You: <i>{MessageText}</i>");
             var response = await client.GetResponseAsync(MessageText);
-
-            messageResponse.Append(response);
+            Messages.Insert(0, $"<strong>AI:</strong> {response}");
+            MessageText = string.Empty;
         } catch (Exception ex)
         {
             toastService.ShowError(ex.Message);

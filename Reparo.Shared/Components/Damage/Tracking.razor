@@ -14,6 +14,9 @@
         <div class="spread-across">
             <Description DamageContext="DamageContext"></Description>
             <SfMessage Severity="@DamageContext.GetSeverity()" Variant="MessageVariant.Filled">@DamageContext.StatusId</SfMessage>
+            <SfButton type="button" CssClass="e-success e-outline" OnClick="OnReview"
+                      Content="Review by AI" IconCss="e-icons e-resizer-1" Disabled="DamageContext.StatusId == DamageStatus.AIReviewCompleted"
+                      IconPosition="IconPosition.Right" title="Review by AI"></SfButton>
             <SfButton type="button" IsPrimary="true" CssClass="e-outline" OnClick="ToggleBlade"
                       Content="@(IsBladeOpen ? "Hide" : "Review damage report")" IconCss="@(IsBladeOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
                       IconPosition="IconPosition.Right" title="Review damage report">
@@ -39,18 +42,12 @@
             <h3>No Contractor is selected</h3>
         }
     </CardContent>
-    <CardContent EnableSeparator="true">
-        <SfButton type="button" CssClass="e-outline" IsPrimary="true"
-                  Content="Request insurance coverage" IconCss="e-icons e-resizer-1"
-                  IconPosition="IconPosition.Right" title="Request insurance coverage"></SfButton>
-    </CardContent>
 </SfCard>
-<style>
-</style>
 @code {
     [Parameter] public DamageEntry DamageContext { get; set; } = default!;
     [Parameter] public bool IsBladeOpen { get; set; } = default!;
     [Parameter] public EventCallback<DamageEntry> OnToggleBladeEvent { get; set; }
+    [Parameter] public EventCallback<DamageEntry> OnReviewEvent { get; set; }
 
     private bool IsSearchDialogOpen;
 
@@ -112,5 +109,10 @@
 
     private async Task OnChat()
     {
+    }
+
+    private async Task OnReview()
+    {
+        await OnReviewEvent.InvokeAsync(DamageContext);
     }
 }
