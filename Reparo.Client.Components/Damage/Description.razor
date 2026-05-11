@@ -3,21 +3,21 @@
     <div id="damage-summary">
         @if (DamageContext.DateOfLoss != default)
         {
-            <div>Damage #@DamageContext.Id reported: <strong>@($"{DamageContext.DateOfLoss:D}")</strong></div>
+            <div>Damage #@DamageContext.Id reported on <strong>@($"{DamageContext.DateOfLoss:D}")</strong></div>
         }
         @if (HasAny(DamageContext.Street, DamageContext.City, DamageContext.State, DamageContext.Zip))
         {
             <div>
-                <i>Address</i> @AddressLine")
+                Address: <i>@AddressLine</i>
             </div>
         }
         <div style="padding-top:5px;">
-            Service requested:
+            Requested service
         </div>
         @foreach (var item in DamageContext.Sections?.Where(x => HasValue(x.Entry)) ?? [])
         {
-            <div>
-                <strong>@item.DamageSectionType?.Name</strong> @item.Entry
+            <div style="padding-left:3px;">
+                <strong>@item.DamageSectionType?.Name:</strong> @item.Entry
             </div>
         }
         <div style="padding-top:5px;">
