@@ -162,7 +162,7 @@
 
         try
         {
-            DamageContext.DateOfLoss = DateTime.UtcNow;
+            DamageContext.DateOfLoss = DateOnly.FromDateTime(DateTime.UtcNow);
             DamageContext.StatusId = DamageStatus.Reported;
 
             DamageContext.Sections.RemoveAll(s => string.IsNullOrWhiteSpace(s.Entry));

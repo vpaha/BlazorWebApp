@@ -73,17 +73,15 @@ public sealed class DamageService : IDamageService
     // Adds a DamageEntry only (no sections)
     public async Task<int> AddEntryAsync(DamageEntry entry, CancellationToken ct = default)
     {
-        var now = DateTimeOffset.UtcNow;
-
-        entry.CreatedAt = entry.CreatedAt == default ? now : entry.CreatedAt;
-        entry.UpdatedAt = entry.UpdatedAt == default ? now : entry.UpdatedAt;
+        entry.CreatedAt = DateTime.UtcNow;
+        entry.UpdatedAt = DateTime.UtcNow;
 
         if (entry.Sections is { Count: > 0 })
         {
             foreach (var s in entry.Sections)
             {
                 s.DamageSectionType = null;
-                s.CreatedAt = s.CreatedAt == default ? now : s.CreatedAt;
+                s.CreatedAt = DateTime.UtcNow;
             }
         }
 
@@ -95,8 +93,7 @@ public sealed class DamageService : IDamageService
 
     public async Task<int> UpdateEntryAsync(DamageEntry entry, CancellationToken ct = default)
     {
-        var now = DateTimeOffset.UtcNow;
-        entry.UpdatedAt = entry.UpdatedAt == default ? now : entry.UpdatedAt;
+        entry.UpdatedAt = DateTime.UtcNow;
 
         _context.DamageEntries.Update(entry);
 

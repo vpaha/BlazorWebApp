@@ -41,9 +41,9 @@ internal static class ModelBuilderExtensions
             e.Property(x => x.Phone).HasColumnName("phone");
             e.Property(x => x.Email).HasColumnName("email");
 
-            e.Property(x => x.DateOfLoss).HasColumnName("date_of_loss").HasColumnType("timestamptz").HasDefaultValueSql("now()");
-            e.Property(x => x.CreatedAt).HasColumnName("created_at").HasColumnType("timestamptz").HasDefaultValueSql("now()");
-            e.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamptz").HasDefaultValueSql("now()");
+            e.Property(x => x.DateOfLoss).HasColumnName("date_of_loss").HasColumnType("date");
+            e.Property(x => x.CreatedAt).HasColumnName("created_at").HasColumnType("timestamptz");
+            e.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamptz");
 
             e.Property(x => x.Latitude).HasColumnName("latitude").HasColumnType("double precision");
             e.Property(x => x.Longitude).HasColumnName("longitude").HasColumnType("double precision");
@@ -69,7 +69,7 @@ internal static class ModelBuilderExtensions
             e.Property(x => x.DamageSectionId).HasColumnName("damage_section_id").IsRequired();
 
             e.Property(x => x.Entry).HasColumnName("entry");
-            e.Property(x => x.CreatedAt).HasColumnName("created_at").HasColumnType("timestamptz").HasDefaultValueSql("now()");
+            e.Property(x => x.CreatedAt).HasColumnName("created_at").HasColumnType("timestamptz");
             e.HasIndex(x => new { x.DamageEntryId, x.DamageSectionId }).IsUnique()
                 .HasDatabaseName("uq_damage_entry_sections");
 

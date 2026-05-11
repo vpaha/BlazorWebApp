@@ -100,7 +100,7 @@ public sealed class DamageAiService : IDamageAiService
             }
         }
 
-        entry.UpdatedAt = DateTimeOffset.UtcNow;
+        entry.UpdatedAt = DateTime.UtcNow;
         entry.AIReviewCompleted = true;
     }
 

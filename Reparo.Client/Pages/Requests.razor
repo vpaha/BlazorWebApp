@@ -155,7 +155,7 @@
     {
         if (isVendor)
         {
-            await dialogService.AlertAsync(null, damageContext.DateOfLoss.ToString("D"), new DialogOptions
+            await dialogService.AlertAsync(null, $"Damage report #{damageContext.Id}", new DialogOptions
             {
                 ShowCloseIcon = true,
                 CssClass = "popup-dialog",
@@ -178,9 +178,10 @@
         }
         else
         {
-            bool isConfirm = await dialogService.ConfirmAsync(null, damageContext.DateOfLoss.ToString("D"), new DialogOptions
+            bool isConfirm = await dialogService.ConfirmAsync(null, $"Damage report #{damageContext.Id}", new DialogOptions
             {
                 CssClass = "popup-dialog",
+                Width = "40vw",
                 CancelButtonOptions = new DialogButtonOptions
                 {
                     Content = "Cancel",
@@ -213,9 +214,9 @@
 
     private async Task OnShowImages()
     {
-        await dialogService.AlertAsync(null, damageContext.DateOfLoss.ToString("D"), new DialogOptions
+        await dialogService.AlertAsync(null, $"Damage report #{damageContext.Id}", new DialogOptions
         {
-            Height = "80%",
+            Height = "80vh",
             CssClass = "popup-dialog",
 
             ShowCloseIcon = true,

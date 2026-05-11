@@ -3,35 +3,29 @@
     <div id="damage-summary">
         @if (DamageContext.DateOfLoss != default)
         {
-            <div>Damage reported:</div>
-            <div>
-                <strong>@($"{DamageContext.DateOfLoss:G}")</strong>
-            </div>
+            <div>Damage #@DamageContext.Id reported: <strong>@($"{DamageContext.DateOfLoss:D}")</strong></div>
         }
         @if (HasAny(DamageContext.Street, DamageContext.City, DamageContext.State, DamageContext.Zip))
         {
             <div>
-                <div>address</div>
-                <div>
-                    <strong>
-                        @Value(DamageContext.Street)
-                        @Value(AddressLine)
-                    </strong>
-                </div>
+                <i>Address</i> @AddressLine")
             </div>
         }
-        <div>
+        <div style="padding-top:5px;">
             Service requested:
         </div>
         @foreach (var item in DamageContext.Sections?.Where(x => HasValue(x.Entry)) ?? [])
         {
             <div>
-                <strong>@item.DamageSectionType?.Name</strong>
-                <div>@item.Entry</div>
+                <strong>@item.DamageSectionType?.Name</strong> @item.Entry
             </div>
         }
-        @RenderSection("Contact", ("Name", DamageContext.FullName), ("Phone", DamageContext.Phone), ("Email", DamageContext.Email))
-        @RenderSection("Insurance", ("Carrier", DamageContext.InsuranceCarrier), ("Policy Number", DamageContext.PolicyNumber), ("Claim Number", DamageContext.ClaimNumber))
+        <div style="padding-top:5px;">
+            @RenderSection(("Full Name", DamageContext.FullName), ("Phone", DamageContext.Phone), ("Email", DamageContext.Email))
+        </div>
+        <div style="padding-top:5px;">
+            @RenderSection(("Insurance Carrier", DamageContext.InsuranceCarrier), ("Policy Number", DamageContext.PolicyNumber), ("Claim Number", DamageContext.ClaimNumber))
+        </div>
     </div>
 }
 <style>
@@ -51,6 +45,7 @@
 
     private string AddressLine => string.Join(" ", new[]
         {
+            DamageContext.Street,
             DamageContext.City,
             DamageContext.State,
             DamageContext.Zip
@@ -59,28 +54,16 @@
     private bool HasValue(string? value) => !string.IsNullOrWhiteSpace(value);
     private bool HasAny(params string?[] values) => values.Any(HasValue);
 
-    private RenderFragment Value(string? value) => @<text>
-        @if (HasValue(value))
-        {
-            <div>@value</div>
-        }
-    </text>;
-
-    private RenderFragment RenderSection(string title, params (string Label, string? Value)[] fields) => @<text>
+    private RenderFragment RenderSection(params (string Label, string? Value)[] fields) => @<text>
         @{
             var visible = fields.Where(f => HasValue(f.Value)).ToList();
         }
         @if (visible.Any())
         {
-            <div>
-                <strong>@title</strong>
-                <div>
-                    @foreach (var f in visible)
-                    {
-                        <div>@f.Label: @f.Value</div>
-                    }
-                </div>
-            </div>
+            @foreach (var f in visible)
+            {
+                <div><strong>@f.Label</strong>: @f.Value</div>
+            }
         }
     </text>;
 }
