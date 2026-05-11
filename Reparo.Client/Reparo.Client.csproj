@@ -18,6 +18,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Reparo.Client.Components\Reparo.Client.Components.csproj" />
 		<ProjectReference Include="..\Reparo.Models\Reparo.Models.csproj" />
+		<ProjectReference Include="..\Reparo.Server.Components\Reparo.Server.Components.csproj" />
 		<ProjectReference Include="..\Reparo.Services\Client\Reparo.Client.Services.csproj" />
 	</ItemGroup>
 
