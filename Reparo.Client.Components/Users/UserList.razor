@@ -89,7 +89,7 @@
                     },
                     ChildContent = builder =>
                     {
-                        builder.OpenComponent<Shared.Components.Vendor.VendorList>(0);
+                        builder.OpenComponent<VendorList>(0);
                         builder.AddAttribute(1, "OnVendorSelected", EventCallback.Factory.Create<VendorModel>(this, async vendor =>
                         {
                             selectedVendor = vendor;

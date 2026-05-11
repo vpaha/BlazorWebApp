@@ -24,8 +24,8 @@
 		<PackageReference Include="Microsoft.Extensions.AI" Version="10.2.0" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Reparo.Client.Components\Reparo.Client.Components.csproj" />
 		<ProjectReference Include="..\Reparo.Models\Reparo.Models.csproj" />
-		<ProjectReference Include="..\Reparo.Shared\Components\Reparo.Components.csproj" />
 		<ProjectReference Include="..\Reparo.Shared\Models\Reparo.Models.csproj" />
 	</ItemGroup>
 	<ItemGroup>

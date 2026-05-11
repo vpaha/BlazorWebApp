@@ -1,6 +1,4 @@
-﻿using Reparo.Client;
-using Reparo.Client.Pages;
-using Xunit;
+﻿using Xunit;
 
 namespace Reparo.TestProject.Client
 {
