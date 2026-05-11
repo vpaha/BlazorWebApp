@@ -1,8 +1,4 @@
-﻿@rendermode InteractiveServer
-
-@* @using Syncfusion.Blazor.SmartComponents
- *@
-<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
+﻿<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div id="spacebetween">
             <SfButton type="button" title="Click to open" CssClass="@btnStyle" IconPosition="IconPosition.Right" IconCss="e-icons e-chevron-right-double" OnClick="toggleTop">
@@ -17,15 +13,15 @@
     {
         <CardContent EnableSeparator="true">
             <div class="wdr-container">
-@*                 <SfSmartTextArea UserRole="insurance adjuster" Placeholder="@DamageSection.DamageSectionType?.Name" @bind-Value="DamageSection.Entry"
+                 <SfSmartTextArea UserRole="insurance adjuster" Placeholder="@DamageSection.DamageSectionType?.Name" @bind-Value="DamageSection.Entry"
                                  CssClass="@(DamageSection.DamageSectionType?.IsEmergency == true ? "e-warning" : "")"
-                                 ShowClearButton="true" FloatLabelType="FloatLabelType.Auto"
-                                 RowCount="5" ShowSuggestionOnPopup="false">
+                                 ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
+                                 RowCount="5" ShowSuggestionOnPopup="true">
                 </SfSmartTextArea>
- *@                <SfTextBox @bind-Value="DamageSection.Entry" Multiline="true"
+@*                  <SfTextBox @bind-Value="DamageSection.Entry" Multiline="true"
                            CssClass="@(DamageSection.DamageSectionType?.IsEmergency == true ? "e-warning" : "")"
                            ShowClearButton="true" Placeholder="@DamageSection.DamageSectionType?.Name" FloatLabelType="FloatLabelType.Auto"
-                           InputAttributes="@(new Dictionary<string, object> {{ "rows", "5" }})" />
+                           InputAttributes="@(new Dictionary<string, object> {{ "rows", "5" }})" /> *@
                 <div @onclick:preventDefault>
                     <SfSpeechToText @bind-Transcript="DamageSection.Entry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnTranscriptChanged" />
                 </div>

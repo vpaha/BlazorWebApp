@@ -1,4 +1,5 @@
 ﻿@inject IChatClient client
+@inject ToastService toastService
 
 <section id="ai-container">
     <SfAppBar>
@@ -23,9 +24,9 @@
                    FloatLabelType="FloatLabelType.Always"
                    ShowClearButton="true"
                    InputAttributes="@(new Dictionary<string, object>
-                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                            { "rows", "8" }
-                                                                                                                                                                                                                                            })" />
+                                                                                                                                                                                                                                                               {
+                                                                                                                                                                                                                                                               { "rows", "8" }
+                                                                                                                                                                                                                                                               })" />
         <div @onclick:preventDefault>
             <SfSpeechToText @bind-Transcript="MessageText" CssClass="e-info e-outline" />
         </div>
@@ -69,9 +70,15 @@
         {
             return;
         }
-        Messages.Insert(0, $"You: <i>{MessageText}</i>");
-        var response = await client.GetResponseAsync(MessageText);
-        Messages.Insert(0, $"<strong>AI:</strong> {response}");
-        MessageText = string.Empty;
+        try
+        {
+            Messages.Insert(0, $"You: <i>{MessageText}</i>");
+            var response = await client.GetResponseAsync(MessageText);
+            Messages.Insert(0, $"<strong>AI:</strong> {response}");
+            MessageText = string.Empty;
+        } catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+        }
     }
 }
