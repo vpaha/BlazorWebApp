@@ -59,7 +59,7 @@ public sealed class DamageAiService : IDamageAiService
 
         if (!string.IsNullOrWhiteSpace(input))
         {
-            List<ChatMessage> messages = [new(ChatRole.System, ExtractionPrompt), new(ChatRole.User, $"Text:\n{input}")];
+            List<ChatMessage> messages = [new(ChatRole.User, ExtractionPrompt), new(ChatRole.User, $"Text:\n{input}")];
             ChatResponse response = await _chatClient.GetResponseAsync(messages, options, cancellationToken);
             var result = JsonSerializer.Deserialize<DamageExtractionResult>(response.Text, JsonOptions);
 
@@ -82,7 +82,7 @@ public sealed class DamageAiService : IDamageAiService
         if (sections.Count > 0)
         {
             var sectionInput = JsonSerializer.Serialize(sections.Select((section, index) => new { index, text = section.Entry }));
-            List<ChatMessage> messages = [new(ChatRole.System,
+            List<ChatMessage> messages = [new(ChatRole.User,
             """
             Review and correct grammar for each item.
             Keep the original logic and meaning unchanged.
