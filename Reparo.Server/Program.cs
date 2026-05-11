@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using OpenAI;
+using Reparo.Pages;
 using Serilog;
 //using Stripe;
 using Syncfusion.Blazor;
 using Syncfusion.Blazor.Popups;
+using Syncfusion.Blazor.SmartComponents;
 using Syncfusion.Licensing;
 using System.Net.Http.Headers;
-
-using Reparo.Pages;
 
 namespace Reparo;
 
@@ -229,8 +229,9 @@ public partial class Program
 
         var openAIClient = new OpenAIClient(key);
         IChatClient chatClient = openAIClient.GetChatClient(model).AsIChatClient();
-
         builder.Services.AddChatClient(chatClient);
+        builder.Services.AddSyncfusionSmartComponents().InjectOpenAIInference();
+
         builder.Services.AddScoped<IDamageAiService, DamageAiService>();
     }
 
