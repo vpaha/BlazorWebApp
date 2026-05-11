@@ -13,16 +13,13 @@
     {
         <CardContent EnableSeparator="true">
             <div class="wdr-container">
-                 <SfSmartTextArea UserRole="insurance adjuster" Placeholder="@DamageSection.DamageSectionType?.Name" @bind-Value="DamageSection.Entry"
+                <SfSmartTextArea UserRole="property owner" Placeholder="@DamageSection.DamageSectionType?.Name" @bind-Value="DamageSection.Entry"
                                  CssClass="@(DamageSection.DamageSectionType?.IsEmergency == true ? "e-warning" : "")"
                                  ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
-                                 RowCount="5" ShowSuggestionOnPopup="true">
+                                 RowCount="5" ShowSuggestionOnPopup="false">
                 </SfSmartTextArea>
-@*                  <SfTextBox @bind-Value="DamageSection.Entry" Multiline="true"
-                           CssClass="@(DamageSection.DamageSectionType?.IsEmergency == true ? "e-warning" : "")"
-                           ShowClearButton="true" Placeholder="@DamageSection.DamageSectionType?.Name" FloatLabelType="FloatLabelType.Auto"
-                           InputAttributes="@(new Dictionary<string, object> {{ "rows", "5" }})" /> *@
-                <div @onclick:preventDefault>
+                <div @onclick:preventDefault style="align-self: center">
+                    <SfIcon Name="IconName.AIChat" Size="IconSize.Medium" Title="AI assistance"></SfIcon>
                     <SfSpeechToText @bind-Transcript="DamageSection.Entry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnTranscriptChanged" />
                 </div>
                 <div class="validation-message">

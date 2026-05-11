@@ -23,11 +23,8 @@
                    Placeholder="Start asking..."
                    FloatLabelType="FloatLabelType.Always"
                    ShowClearButton="true"
-                   InputAttributes="@(new Dictionary<string, object>
-                                                                                                                                                                                                                                                               {
-                                                                                                                                                                                                                                                               { "rows", "8" }
-                                                                                                                                                                                                                                                               })" />
-        <div @onclick:preventDefault>
+                   InputAttributes="@(new Dictionary<string, object>{{ "rows", "8" }})" />
+        <div @onclick:preventDefault style="align-self: center">
             <SfSpeechToText @bind-Transcript="MessageText" CssClass="e-info e-outline" />
         </div>
     </div>

@@ -4,7 +4,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPublishable>True</IsPublishable>
-    <RootNamespace>Reparo.Shared.Models</RootNamespace>
+	  
+    <RootNamespace>Reparo.Models</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="ExternalReview\**" />

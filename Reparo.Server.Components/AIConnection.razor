@@ -1,10 +1,12 @@
-﻿@rendermode InteractiveAuto
-<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
+﻿<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div class="wdr-container">
-            <SfTextBox @bind-Value="DamageContext.ContactEntry" Placeholder="Your name and how we can contact you (phone or email)" Multiline="true" ShowClearButton="true"
-                       FloatLabelType="FloatLabelType.Auto" InputAttributes="@(new Dictionary<string, object> {{ "rows", "4" }})" />
-            <div @onclick:preventDefault>
+            <SfSmartTextArea UserRole="property owner" Placeholder="Your name and how we can contact you (phone or email)" @bind-Value="DamageContext.ContactEntry"
+                             ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
+                             RowCount="4" ShowSuggestionOnPopup="false">
+            </SfSmartTextArea>
+            <div @onclick:preventDefault style="align-self: center">
+                <SfIcon Name="IconName.AIChat" Size="IconSize.Medium" Title="AI assistance"></SfIcon>
                 <SfSpeechToText @bind-Transcript="DamageContext.ContactEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnContactTranscriptChanged" />
             </div>
         </div>
@@ -16,9 +18,12 @@
 <SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div class="wdr-container">
-            <SfTextBox @bind-Value="DamageContext.InsuranceEntry" Placeholder="Your insurance carrier, policy number, and claim number" Multiline="true" ShowClearButton="true"
-                       FloatLabelType="FloatLabelType.Auto" InputAttributes="@(new Dictionary<string, object> {{ "rows", "4" }})" />
-            <div @onclick:preventDefault>
+            <SfSmartTextArea UserRole="property owner" Placeholder="Your insurance carrier, policy number, and claim number" @bind-Value="DamageContext.InsuranceEntry"
+                             ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
+                             RowCount="4" ShowSuggestionOnPopup="false">
+            </SfSmartTextArea>
+            <div @onclick:preventDefault style="align-self: center">
+                <SfIcon Name="IconName.AIChat" Size="IconSize.Medium" Title="AI assistance"></SfIcon>
                 <SfSpeechToText @bind-Transcript="DamageContext.InsuranceEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnInsuranceTranscriptChanged" />
             </div>
         </div>

@@ -2,12 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
-		<RootNamespace>Reparo.Client</RootNamespace>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 		<RunAOTCompilation>false</RunAOTCompilation>
-		<UserSecretsId>3e5403eb-dfc7-4fbd-aa44-da97279cfb5b</UserSecretsId>
+		
+		<RootNamespace>Reparo.Client</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>

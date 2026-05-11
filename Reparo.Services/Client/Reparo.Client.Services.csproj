@@ -4,6 +4,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<IsPublishable>True</IsPublishable>
+		
 		<RootNamespace>Reparo.Client.Services</RootNamespace>
 	</PropertyGroup>
 	<ItemGroup>

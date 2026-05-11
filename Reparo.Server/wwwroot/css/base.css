@@ -164,10 +164,7 @@ h5 {
 
 .wdr-container {
   display: flex;
-  flex-flow: nowrap;
-  align-items: flex-end;
   column-gap: 5px;
-  row-gap: 0px;
 }
 
 .max-width-400 {

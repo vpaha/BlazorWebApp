@@ -5,11 +5,9 @@
 <SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div class="wdr-container">
-            <div style="flex-grow: 1;">
-                <SfTextBox @bind-Value="DamageContext.AddressEntry" Placeholder="Property Address" ShowClearButton="true"
-                           FloatLabelType="FloatLabelType.Auto" OnChange="onChanged" />
-            </div>
-            <div @onclick:preventDefault>
+            <SfTextBox @bind-Value="DamageContext.AddressEntry" Placeholder="Property Address" ShowClearButton="true"
+                       FloatLabelType="FloatLabelType.Auto" OnChange="onChanged" Width="100%" />
+            <div @onclick:preventDefault style="align-self: center">
                 <SfSpeechToText @bind-Transcript="DamageContext.AddressEntry" CssClass="e-info e-outline e-primary" SpeechRecognitionStopped="OnTranscriptChanged" />
             </div>
         </div>
