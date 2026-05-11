@@ -12,6 +12,8 @@ using Syncfusion.Blazor.Popups;
 using Syncfusion.Licensing;
 using System.Net.Http.Headers;
 
+using Reparo.Pages;
+
 namespace Reparo;
 
 public partial class Program

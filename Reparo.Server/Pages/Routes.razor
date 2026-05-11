@@ -1,6 +1,6 @@
-﻿<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Shell.NotFound)" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
+﻿<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(NotFound)" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(Reparo._Layout)">
+        <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(_Layout)">
             <NotAuthorized>
                 <RedirectToLogin />
             </NotAuthorized>
