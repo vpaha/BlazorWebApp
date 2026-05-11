@@ -2,15 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-public interface IUserService
-{
-    Task ProvisionAsync(ClaimsPrincipal principal, CancellationToken ct = default);
-
-    Task<IReadOnlyList<AppUser>> GetUsersAsync(CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<AppRole>> GetRolesAsync(CancellationToken ct = default);
-    Task UpdateUserAsync(AppUser user, CancellationToken ct = default);
-}
-
 public sealed class UserService : BaseService, IUserService
 {
     private readonly AppDbContext _context;

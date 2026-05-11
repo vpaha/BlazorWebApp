@@ -1,5 +1,4 @@
-﻿using Reparo.Shared.Models.Resource;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 public class RequiredIfAttribute : ValidationAttribute
 {
@@ -14,7 +13,7 @@ public class RequiredIfAttribute : ValidationAttribute
 
     public override string FormatErrorMessage(string name)
     {
-        var errorMessage = ModelResource.MandatoryFieldMessage;
+        var errorMessage = "This field is required.";
         return ErrorMessage ?? errorMessage;
     }
 

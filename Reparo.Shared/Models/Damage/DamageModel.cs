@@ -1,5 +1,13 @@
-﻿using Syncfusion.Blazor.Notifications;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+
+public enum MessageSeverity
+{
+    Normal = 0,
+    Success = 1,
+    Info = 2,
+    Warning = 3,
+    Error = 4
+}
 
 public sealed class DamageEntrySection
 {

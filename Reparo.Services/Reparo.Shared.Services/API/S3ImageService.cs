@@ -2,13 +2,6 @@
 using Amazon.S3.Model;
 using Microsoft.Extensions.Configuration;
 
-public interface IImageService
-{
-    Task UploadAsync(int damageId, string fileName, string contentType, Stream stream);
-    Task DeleteAsync(int damageId, string fileName);
-    Task<List<ImageItem>> ListAsync(int damageId);
-}
-
 public sealed class S3ImageService : IImageService
 {
     private readonly IAmazonS3 _s3;
@@ -100,10 +93,4 @@ public sealed class S3ImageService : IImageService
         var extension = Path.GetExtension(key).ToLowerInvariant();
         return extension is ".jpg" or ".jpeg" or ".png" or ".gif" or ".webp";
     }
-}
-
-public sealed class ImageItem
-{
-    public string FileName { get; set; } = string.Empty;
-    public string Url { get; set; } = string.Empty;
 }

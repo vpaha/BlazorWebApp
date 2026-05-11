@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Json;
 
-public interface IClaimService
-{
-    Task<ModelCollection<ClaimSearchResponse>> SearchAsync(ClaimSearchFilter request, CancellationToken ct = default);
-}
-
 public sealed class ClaimService : BaseService, IClaimService
 {
     private readonly HttpClient _httpClient;

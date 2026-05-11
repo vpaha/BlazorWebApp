@@ -1,13 +1,6 @@
 ﻿using Microsoft.Extensions.AI;
 using System.Text.Json;
 
-public interface IDamageAiService
-{
-    Task ProcessEntryAsync(
-        DamageEntry entry,
-        CancellationToken cancellationToken = default);
-}
-
 public sealed class DamageAiService : IDamageAiService
 {
     private readonly IChatClient _chatClient;

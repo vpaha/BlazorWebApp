@@ -4,9 +4,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPublishable>True</IsPublishable>
-    <RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
-    <RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
-    <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <RootNamespace>Reparo.Shared.Services</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
@@ -16,12 +13,10 @@
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="AWSSDK.S3" Version="4.0.22.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="10.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.2.0-preview.1.26063.2" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resource\ServiceResource.Designer.cs">
@@ -40,7 +35,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Models\Reparo.Models.csproj" />
-    <ProjectReference Include="..\Utilities\Reparo.Utilities.csproj" />
+    <ProjectReference Include="..\..\Reparo.Shared\Models\Reparo.Models.csproj" />
+    <ProjectReference Include="..\..\Reparo.Shared\Utilities\Reparo.Utilities.csproj" />
   </ItemGroup>
 </Project>

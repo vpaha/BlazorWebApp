@@ -1,13 +1,12 @@
-﻿using Reparo.Shared.Models.Resource;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-[AtLeastOneRequiredAttribute(["ClaimId", "MemId", "ProvId"], ErrorMessageResourceName = "DataForm_AtLeastOneProperty_Error", ErrorMessageResourceType = typeof(ModelResource))]
+[AtLeastOneRequiredAttribute(["ClaimId", "MemId", "ProvId"], ErrorMessage = "At least one of ClaimId, MemId, or ProvId must be provided.")]
 public class ClaimSearchRequest
 {
     public string ClaimId { get; set; }
     public string FormType { get; set; }
     public string MemId { get; set; }
-    [RegularExpression(@"^.{2,}$", ErrorMessageResourceName = "DataForm_Name_Error", ErrorMessageResourceType = typeof(ModelResource))]
+    [RegularExpression(@"^.{2,}$", ErrorMessage = "Name must be at least 2 characters long")]
     public string MemberName { get; set; }
     public string EnrollId { get; set; }
     public string Status { get; set; }
