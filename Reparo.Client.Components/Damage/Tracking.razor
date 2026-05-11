@@ -13,9 +13,10 @@
     <CardContent EnableSeparator="true">
         <Description DamageContext="DamageContext"></Description>
         <div class="spread-across">
-            <SfButton type="button" CssClass="e-success e-outline" OnClick="OnReview"
-                      Content="Review by AI" IconCss="e-icons e-resizer-1" Disabled="@DamageContext.AIReviewCompleted"
-                      IconPosition="IconPosition.Right" title="Review by AI"></SfButton>
+            <SfButton type="button" OnClick="OnReview" IconCss="e-icons e-resizer-1"
+                      Content="@(DamageContext.AIReviewCompleted?"Reviewed by AI":"Run AI review")" Disabled="@DamageContext.AIReviewCompleted"
+                      CssClass="@(DamageContext.AIReviewCompleted?"e-success":"e-primary")"
+                      IconPosition="IconPosition.Right" title="Smart review"></SfButton>
             <SfMessage Variant="MessageVariant.Filled">@DamageContext.StatusId</SfMessage>
             @* Severity="@DamageContext.GetSeverity()" *@
             <SfButton type="button" IsPrimary="true" CssClass="e-outline" OnClick="ToggleBlade"
