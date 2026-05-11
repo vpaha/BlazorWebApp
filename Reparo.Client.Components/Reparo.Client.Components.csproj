@@ -37,19 +37,4 @@
 	  <ProjectReference Include="..\Reparo.Services\Client\Reparo.Client.Services.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Compile Update="Resource\SharedResource.Designer.cs">
-			<DesignTime>true</DesignTime>
-			<AutoGen>true</AutoGen>
-			<DependentUpon>SharedResource.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Resource\SharedResource.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>SharedResource.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-	</ItemGroup>
-
 </Project>
