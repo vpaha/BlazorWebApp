@@ -27,8 +27,7 @@
 		<PackageReference Include="Syncfusion.Blazor.Grid" Version="32.1.23" />
 		<PackageReference Include="Syncfusion.Blazor.RichTextEditor" Version="32.1.23" />
 		<PackageReference Include="Syncfusion.Blazor.ProgressBar" Version="32.1.23" />
-		<PackageReference Include="Syncfusion.Blazor.Layouts" Version="32.1.23" />
-		
+		<PackageReference Include="Syncfusion.Blazor.Layouts" Version="32.1.23" />		
 		<PackageReference Include="Syncfusion.Blazor.DataForm" Version="32.1.23" />
 	</ItemGroup>
 

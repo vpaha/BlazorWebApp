@@ -11,10 +11,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<SupportedPlatform Include="browser" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.2" />
 		<PackageReference Include="Microsoft.Extensions.AI" Version="10.2.0" />
 
@@ -35,7 +31,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Reparo.Models\Reparo.Models.csproj" />
-	  <ProjectReference Include="..\Reparo.Services\Client\Reparo.Client.Services.csproj" />
 	</ItemGroup>
 
 </Project>
