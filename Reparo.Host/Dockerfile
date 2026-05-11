@@ -13,9 +13,9 @@ COPY ["Reparo.Host/Reparo.Host.csproj", "Reparo.Host/"]
 COPY ["Reparo.Client/Reparo.Client.csproj", "Reparo.Client/"]
 COPY ["Reparo.Client.Components/Reparo.Client.Components.csproj", "Reparo.Client.Components/"]
 COPY ["Reparo.Models/Reparo.Models.csproj", "Reparo.Models/"]
-COPY ["Misc/Utilities/Reparo.Utilities.csproj", "Reparo.Shared/Utilities/"]
-COPY ["Rapero.Services/Client/Reparo.Client.Services.csproj", "Rapro.Client/Services/"]
-COPY ["Rapero.Services/Server/Reparo.Server.Services.csproj", "Rapro.Server/Services/"]
+COPY ["Misc/Utilities/Reparo.Utilities.csproj", "Misc/Utilities/"]
+COPY ["Reparo.Services/Client/Reparo.Client.Services.csproj", "Reparo.Services/Client/"]
+COPY ["Reparo.Services/Server/Reparo.Server.Services.csproj", "Reparo.Services/Server/"]
 RUN dotnet restore "./Reparo.Host/Reparo.Host.csproj"
 COPY . .
 WORKDIR "/src/Reparo.Host"
