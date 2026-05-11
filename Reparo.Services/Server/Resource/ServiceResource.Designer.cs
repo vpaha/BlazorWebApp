@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Reparo.Shared.Services.Resource {
+namespace Reparo.Server.Services.Resource {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Reparo.Shared.Services.Resource {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Reparo.Shared.Services.Resource.ServiceResource", typeof(ServiceResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Reparo.Server.Services.Resource.ServiceResource", typeof(ServiceResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

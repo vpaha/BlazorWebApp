@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reparo.Client.Components", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reparo.Client.Services", "Reparo.Services\Client\Reparo.Client.Services.csproj", "{55598634-A335-35E4-2CE9-A2598248FC50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reparo.Services", "Reparo.Services\Server\Reparo.Services.csproj", "{9AABFC98-3C93-C814-002F-AB846CB7A9A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reparo.Server.Services", "Reparo.Services\Server\Reparo.Server.Services.csproj", "{9AABFC98-3C93-C814-002F-AB846CB7A9A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -11,10 +11,11 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Reparo.Host/Reparo.Host.csproj", "Reparo.Host/"]
 COPY ["Reparo.Client/Reparo.Client.csproj", "Reparo.Client/"]
-COPY ["Reparo.Shared/Components/Reparo.Components.csproj", "Reparo.Shared/Components/"]
-COPY ["Reparo.Shared/Models/Reparo.Models.csproj", "Reparo.Shared/Models/"]
-COPY ["Reparo.Shared/Utilities/Reparo.Utilities.csproj", "Reparo.Shared/Utilities/"]
-COPY ["Reparo.Shared/Services/Reparo.Services.csproj", "Reparo.Shared/Services/"]
+COPY ["Reparo.Client.Components/Reparo.Client.Components.csproj", "Reparo.Client.Components/"]
+COPY ["Reparo.Models/Reparo.Models.csproj", "Reparo.Models/"]
+COPY ["Misc/Utilities/Reparo.Utilities.csproj", "Reparo.Shared/Utilities/"]
+COPY ["Rapero.Services/Client/Reparo.Client.Services.csproj", "Rapro.Client/Services/"]
+COPY ["Rapero.Services/Server/Reparo.Server.Services.csproj", "Rapro.Server/Services/"]
 RUN dotnet restore "./Reparo.Host/Reparo.Host.csproj"
 COPY . .
 WORKDIR "/src/Reparo.Host"
