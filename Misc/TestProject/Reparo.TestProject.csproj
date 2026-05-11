@@ -35,6 +35,7 @@
     <PackageReference Include="Coverlet.collector" Version="6.0.4" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Reparo.Services\Client\Reparo.Client.Services.csproj" />
     <ProjectReference Include="..\..\Reparo.Services\Reparo.Client.Services\Reparo.Client.Services.csproj" />
   </ItemGroup>
 </Project>
