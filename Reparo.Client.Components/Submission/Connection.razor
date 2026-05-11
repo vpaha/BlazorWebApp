@@ -1,4 +1,5 @@
-﻿<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
+﻿@rendermode InteractiveAuto
+<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div class="wdr-container">
             <SfTextBox @bind-Value="DamageContext.ContactEntry" Placeholder="Your name and how we can contact you (phone or email)" Multiline="true" ShowClearButton="true"
