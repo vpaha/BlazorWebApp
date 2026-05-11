@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.2" />
+		<PackageReference Include="Microsoft.Extensions.AI" Version="10.2.0" />
 
 		<PackageReference Include="Syncfusion.Blazor.Core" Version="32.1.23" />
 		<PackageReference Include="Syncfusion.Blazor.Themes" Version="32.1.23" />
@@ -34,7 +35,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Reparo.Models\Reparo.Models.csproj" />
-	  <ProjectReference Include="..\Reparo.Server.Components\Reparo.Server.Components.csproj" />
 	  <ProjectReference Include="..\Reparo.Services\Client\Reparo.Client.Services.csproj" />
 	</ItemGroup>
 
