@@ -1,9 +1,9 @@
 ﻿@if (DamageContext is not null)
 {
     <div id="damage-summary">
-        <div>Damage reported:</div>
         @if (DamageContext.DateOfLoss != default)
         {
+            <div>Damage reported:</div>
             <div>
                 <strong>@($"{DamageContext.DateOfLoss:G}")</strong>
             </div>
@@ -38,7 +38,6 @@
     #damage-summary {
         display: flex;
         flex-direction: column;
-        flex-basis: 50%;
     }
 
         #damage-summary > div {

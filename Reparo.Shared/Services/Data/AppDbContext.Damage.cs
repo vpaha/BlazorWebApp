@@ -22,16 +22,18 @@ internal static class ModelBuilderExtensions
             e.Property(x => x.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
             e.Property(x => x.StatusId).HasColumnName("status_id").HasDefaultValue(DamageStatus.Reported).IsRequired();
-            e.Property(x => x.AddressEntry).HasColumnName("address_entry").IsRequired();
+            e.Property(x => x.AIReviewCompleted).HasColumnName("ai_review_completed").HasDefaultValue(false);
 
+            e.Property(x => x.AddressEntry).HasColumnName("address_entry").IsRequired();
             e.Property(x => x.ContactEntry).HasColumnName("contact_entry").IsRequired();
+            e.Property(x => x.InsuranceEntry).HasColumnName("insurance_entry");
+
             e.Property(x => x.Street).HasColumnName("street");
             e.Property(x => x.City).HasColumnName("city");
             e.Property(x => x.State).HasColumnName("state");
             e.Property(x => x.Zip).HasColumnName("zip");
             e.Property(x => x.Placename).HasColumnName("placename");
             e.Property(x => x.Region).HasColumnName("region");
-            e.Property(x => x.InsuranceEntry).HasColumnName("insurance_entry");
             e.Property(x => x.InsuranceCarrier).HasColumnName("insurance_carrier");
             e.Property(x => x.PolicyNumber).HasColumnName("policy_number");
             e.Property(x => x.ClaimNumber).HasColumnName("claim_number");

@@ -145,9 +145,6 @@
     {
         try
         {
-            DamageContext.DateOfLoss = DateTime.UtcNow;
-            DamageContext.StatusId = DamageStatus.Reported;
-
             IReadOnlyList<DamageSectionType> types = await damageRepo.ListSectionTypesAsync(CancellationToken.None);
 
             DamageContext.Sections = types.Select(t => new DamageEntrySection
@@ -191,6 +188,9 @@
 
         try
         {
+            DamageContext.DateOfLoss = DateTime.UtcNow;
+            DamageContext.StatusId = DamageStatus.Reported;
+
             DamageContext.Sections.RemoveAll(s => string.IsNullOrWhiteSpace(s.Entry));
             DamageContext.Vendor = null;
 

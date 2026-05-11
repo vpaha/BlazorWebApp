@@ -55,7 +55,7 @@ public sealed class DamageAiService : IDamageAiService
             Temperature = 0.1f
         };
 
-        var input = entry.BuildCombinedInfo();
+        var input = entry.BuildCustomerInfo();
 
         if (!string.IsNullOrWhiteSpace(input))
         {
@@ -108,7 +108,7 @@ public sealed class DamageAiService : IDamageAiService
         }
 
         entry.UpdatedAt = DateTimeOffset.UtcNow;
-        if (entry.VendorId != null) entry.StatusId = DamageStatus.AIReviewCompleted;
+        entry.AIReviewCompleted = true;
     }
 
     private sealed class ReviewedSectionResult

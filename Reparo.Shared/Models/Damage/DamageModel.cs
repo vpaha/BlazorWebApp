@@ -27,7 +27,8 @@ public class DamageEntry : IValidatableObject
 {
     public int Id { get; set; }
     public DamageStatus StatusId { get; set; }
-
+    public bool AIReviewCompleted { get; set; }
+    
     [Required(ErrorMessage = "What's the property address? (Street, city, state, or ZIP code)")]
     public string? AddressEntry { get; set; }
 
@@ -81,7 +82,7 @@ public class DamageEntry : IValidatableObject
         }
     }
 
-    public string? BuildCombinedInfo()
+    public string? BuildCustomerInfo()
     {
         var parts = new List<string>();
 
@@ -93,7 +94,7 @@ public class DamageEntry : IValidatableObject
         return null;
     }
 
-    public string? BuildCombinedDamageInfo()
+    public string? BuildDamageInfo()
     {
         var parts = new List<string>();
         if (Sections.Count > 0 && Sections.Any(x => !string.IsNullOrWhiteSpace(x.Entry)))
@@ -113,7 +114,7 @@ public class DamageEntry : IValidatableObject
         {
             DamageStatus.Reported => MessageSeverity.Error,
             DamageStatus.VendorAssigned or DamageStatus.ServiceScheduled => MessageSeverity.Info,
-            DamageStatus.AIReviewCompleted or DamageStatus.WorkCompleted => MessageSeverity.Success,
+            DamageStatus.WorkCompleted => MessageSeverity.Success,
             DamageStatus.Closed => MessageSeverity.Normal,
             DamageStatus.Cancelled => MessageSeverity.Warning,
             _ => MessageSeverity.Normal

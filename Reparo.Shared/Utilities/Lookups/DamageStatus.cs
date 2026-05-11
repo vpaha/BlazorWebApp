@@ -3,9 +3,8 @@
     Reported = 1,
     VendorAssigned = 2,
     ServiceScheduled = 3,
-    AIReviewCompleted = 4,
-    WorkCompleted = 5,
+    WorkCompleted = 4,
 
-    Closed = 6,
-    Cancelled = 7
+    Closed = 5,
+    Cancelled = 6
 }

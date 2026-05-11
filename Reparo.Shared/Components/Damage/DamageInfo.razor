@@ -1,11 +1,11 @@
 ﻿<SfCard role="link">
     <CardContent>
+        <Description DamageContext="DamageContext"></Description>
         <div class="spread-across">
-            <Description DamageContext="DamageContext"></Description>
-            <SfMessage Severity="@DamageContext.GetSeverity()" Variant="MessageVariant.Filled">@DamageContext.StatusId</SfMessage>
             <SfButton type="button" CssClass="e-success e-outline" OnClick="OnReview"
-                      Content="Review by AI" IconCss="e-icons e-resizer-1" Disabled="isDisabled()"
+                      Content="Review by AI" IconCss="e-icons e-resizer-1" Disabled="@DamageContext.AIReviewCompleted"
                       IconPosition="IconPosition.Right" title="Review by AI"></SfButton>
+            <SfMessage Severity="@DamageContext.GetSeverity()" Variant="MessageVariant.Filled">@DamageContext.StatusId</SfMessage>
             <SfButton type="button" IsPrimary="true" CssClass="e-outline" OnClick="ToggleBlade"
                       Content="@(IsBladeOpen ? "Hide" : "Review damage report")" IconCss="@(IsBladeOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
                       IconPosition="IconPosition.Right" title="Review damage report">
@@ -18,7 +18,7 @@
                       OnClick="OnSubmit"
                       IconCss="e-icons e-check" IconPosition="IconPosition.Right" IsPrimary="true"
                       CssClass="e-outline"
-                      Content="isProceeded()" title="Proceed with Service">
+                      Content="@isProceeded()" title="Proceed with Service">
             </SfButton>
             <SfButton type="button" OnClick="OnChat" IconCss="e-icons e-comment-show" IconPosition="IconPosition.Right" IsPrimary="true"
                       CssClass="e-outline"
@@ -54,5 +54,4 @@
     }
 
     private string isProceeded() => DamageContext.StatusId == DamageStatus.Reported ? "Proceed with Service" : "Scheduled";
-    private bool isDisabled() => DamageContext.StatusId >= DamageStatus.AIReviewCompleted;
 }
