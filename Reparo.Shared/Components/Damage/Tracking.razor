@@ -24,23 +24,13 @@
         </div>
     </CardContent>
     <CardContent EnableSeparator="true">
-        @if (DamageContext.Vendor is not null)
-        {
-            <div class="spread-across">
-                <SfButton CssClass="e-success e-outline" OnClick="ShowVendor" title="View Vendor Details">@DamageContext.Vendor.Name</SfButton>
-                <SfButton type="button" OnClick="OnChat" IconCss="e-icons e-comment-show" IconPosition="IconPosition.Right" IsPrimary="true"
-                          CssClass="e-outline"
-                          Content="Chat" title="Chat with Vendor">
-                </SfButton>
-            </div>
-        }
-        else
-        {
-            <SfButton type="button" CssClass="e-info e-outline" OnClick="toggleSearch"
-                      Content="Find a local contractor" IconCss="e-icons e-search"
-                      IconPosition="IconPosition.Right" title="Find a local contractor"></SfButton>
-            <h3>No Contractor is selected</h3>
-        }
+        <div class="spread-across">
+            <VendorSearch DamageContext="DamageContext"></VendorSearch>
+            <SfButton type="button" OnClick="OnChat" IconCss="e-icons e-comment-show" IconPosition="IconPosition.Right" IsPrimary="true"
+                      CssClass="e-outline"
+                      Content="Chat" title="Chat with Vendor">
+            </SfButton>
+        </div>
     </CardContent>
 </SfCard>
 @code {
@@ -54,6 +44,10 @@
     private async Task ToggleBlade()
     {
         await OnToggleBladeEvent.InvokeAsync(DamageContext);
+    }
+
+    private async Task OnChat()
+    {
     }
 
     private async Task ShowVendor()
@@ -106,10 +100,6 @@
         {
             IsSearchDialogOpen = false;
         }
-    }
-
-    private async Task OnChat()
-    {
     }
 
     private async Task OnReview()

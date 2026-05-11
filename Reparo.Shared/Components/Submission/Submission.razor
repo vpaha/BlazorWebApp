@@ -1,18 +1,8 @@
 ﻿@inject IJSRuntime jSRuntime
 @inject NavigationManager nav
-@inject SfDialogService dialogService
 @inject ToastService toastService
 @inject IDamageRepo damageRepo
-@inject IVendorRepo vendorRepo
 
-<SfDialog Width="90vw" ShowCloseIcon="true" @bind-Visible="IsSearchDialogOpen">
-    <DialogTemplates>
-        <Header>Local contractors near the property</Header>
-        <Content>
-            <GoogleMap Latitude="DamageContext.Latitude" Longitude="DamageContext.Longitude" OnSelectionEvent="SelectedVendor" />
-        </Content>
-    </DialogTemplates>
-</SfDialog>
 @if (EditContext is not null)
 {
     <CascadingValue Value="EditContext" IsFixed="false">
@@ -36,7 +26,7 @@
                     {
                         foreach (var item in DamageContext.Sections)
                         {
-                            <Trade DamageContext="item"></Trade>
+                            <Trade DamageSection="item"></Trade>
                         }
                     }
                     else if (currentStep == 1)
@@ -45,20 +35,7 @@
                     }
                     <SfCard role="article" CssClass="zoom-in">
                         <CardContent>
-                            @if (DamageContext.Vendor is not null)
-                            {
-                                <div class="spread-across">
-                                    <SfButton CssClass="e-success e-outline"
-                                              OnClick="ShowVendor" title="View Vendor Details">@DamageContext.Vendor.Name</SfButton>
-                                    <SfButton CssClass="e-round e-outline" OnClick="RemoveVendor" IconCss="e-icons e-close" title="Remove this vendor"></SfButton>
-                                </div>
-                            }
-                            else
-                            {
-                                <SfButton type="button" CssClass="e-info e-outline" OnClick="toggleSearch"
-                                          Content="Find a local contractor" IconCss="e-icons e-search"
-                                          IconPosition="IconPosition.Right" title="Find a local contractor"></SfButton>
-                            }
+                            <VendorSearch DamageContext="DamageContext"></VendorSearch>
                         </CardContent>
                         <CardContent EnableSeparator="true">
                             <ValidationSummary></ValidationSummary>
@@ -120,8 +97,6 @@
     private StepperStep? stepperStep3;
 
     private int currentStep { get; set; } = 0;
-
-    private bool IsSearchDialogOpen { get; set; }
 
     public void StepClicked(StepperClickedEventArgs args)
     {
@@ -201,54 +176,6 @@
         } catch (Exception ex)
         {
             toastService.ShowError(ex.Message);
-        }
-    }
-
-    private async Task ShowVendor()
-    {
-        await dialogService.AlertAsync(null, DamageContext.Vendor?.Name, new DialogOptions
-        {
-            CssClass = "popup-dialog",
-            ShowCloseIcon = true,
-            Height = "80%",
-
-            PrimaryButtonOptions = new DialogButtonOptions
-            {
-                Content = "Close", IconCss = "e-icons e-close"
-            },
-            ChildContent = builder =>
-            {
-                builder.OpenComponent<VendorDetails>(0);
-                builder.AddAttribute(1, "Vendor", DamageContext.Vendor);
-                builder.CloseComponent();
-            }
-        });
-    }
-
-    private async Task RemoveVendor()
-    {
-        DamageContext.Vendor = null;
-        DamageContext.VendorId = null;
-        StateHasChanged();
-    }
-
-    private async Task toggleSearch()
-    {
-        IsSearchDialogOpen = true;
-    }
-
-    private async Task SelectedVendor(string placeId)
-    {
-        try
-        {
-            DamageState.Context.Vendor = await vendorRepo.GetVendorByPlaceAsync(placeId);
-            DamageState.Context.VendorId = DamageState.Context.Vendor?.Id;
-            DamageContext.StatusId = DamageStatus.VendorAssigned;
-        } catch (Exception)
-        {
-        } finally
-        {
-            IsSearchDialogOpen = false;
         }
     }
 }

@@ -1,0 +1,79 @@
+﻿@inject SfDialogService dialogService
+@inject IVendorRepo vendorRepo
+
+<SfDialog Width="90vw" ShowCloseIcon="true" @bind-Visible="IsSearchDialogOpen">
+    <DialogTemplates>
+        <Header>Local contractors near the property</Header>
+        <Content>
+            <GoogleMap Latitude="DamageContext.Latitude" Longitude="DamageContext.Longitude" OnSelectionEvent="SelectedVendor" />
+        </Content>
+    </DialogTemplates>
+</SfDialog>
+@if (DamageContext.Vendor is not null)
+{
+    <div>
+        <SfButton CssClass="e-success e-outline"
+                  OnClick="ShowVendor" title="View Vendor Details">@DamageContext.Vendor.Name</SfButton>
+        <SfButton CssClass="e-small e-round e-outline" OnClick="RemoveVendor" IconCss="e-icons e-close" title="Remove this vendor"></SfButton>
+    </div>
+}
+else
+{
+    <SfButton type="button" CssClass="e-info e-outline" OnClick="toggleSearch"
+              Content="Find a local contractor" IconCss="e-icons e-search"
+              IconPosition="IconPosition.Right" title="Find a local contractor"></SfButton>
+}
+
+@code {
+    [Parameter] public DamageEntry DamageContext { get; set; } = default!;
+
+    private bool IsSearchDialogOpen { get; set; }
+
+    private async Task ShowVendor()
+    {
+        await dialogService.AlertAsync(null, DamageContext.Vendor?.Name, new DialogOptions
+        {
+            CssClass = "popup-dialog",
+            ShowCloseIcon = true,
+            Height = "80%",
+
+            PrimaryButtonOptions = new DialogButtonOptions
+            {
+                Content = "Close", IconCss = "e-icons e-close"
+            },
+            ChildContent = builder =>
+            {
+                builder.OpenComponent<VendorDetails>(0);
+                builder.AddAttribute(1, "Vendor", DamageContext.Vendor);
+                builder.CloseComponent();
+            }
+        });
+    }
+
+    private async Task toggleSearch()
+    {
+        IsSearchDialogOpen = !IsSearchDialogOpen;
+    }
+
+    private async Task RemoveVendor()
+    {
+        DamageContext.Vendor = null;
+        DamageContext.VendorId = null;
+        StateHasChanged();
+    }
+    
+    private async Task SelectedVendor(string placeId)
+    {
+        try
+        {
+            DamageContext.Vendor = await vendorRepo.GetVendorByPlaceAsync(placeId);
+            DamageContext.VendorId = DamageContext.Vendor?.Id;
+            DamageContext.StatusId = DamageStatus.VendorAssigned;
+        } catch (Exception)
+        {
+        } finally
+        {
+            IsSearchDialogOpen = false;
+        }
+    }
+}
