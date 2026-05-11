@@ -16,6 +16,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Misc\Utilities\Reparo.Utilities.csproj" />
+    <ProjectReference Include="..\Misc\Utilities\Reparo.Utilities.csproj" />
   </ItemGroup>
 </Project>

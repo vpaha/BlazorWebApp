@@ -33,6 +33,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Reparo.Models\Reparo.Models.csproj" />
 		<ProjectReference Include="..\..\Reparo.Services\Reparo.Client.Services\Reparo.Client.Services.csproj" />
 		<ProjectReference Include="..\Models\Reparo.Models.csproj" />
 	</ItemGroup>
