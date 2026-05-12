@@ -2,11 +2,11 @@
 @rendermode InteractiveAuto
 @attribute [AllowAnonymous]
 
-@inject ToastService toastService
-@inject IDamageRepo damageRepo
 @inject IAuthorizationService authz
-@inject SfDialogService dialogService
 @inject IDamageAiService damageAiService
+@inject IDamageRepo damageRepo
+@inject ToastService toastService
+@inject SfDialogService dialogService
 
 <PageTitle>Track Property Repair Status | Property Claims</PageTitle>
 
@@ -32,9 +32,10 @@
         }
         @if (isSideBarOpen)
         {
-            <SfButton type="button" CssClass="e-round" IsPrimary="true" OnClick="toggleBar" IconCss="e-icons e-decrease-indent-rtl" title="Close the sidebar"></SfButton>
+            <SfButton type="button" CssClass="e-round" IsPrimary="true" OnClick="@(() => ToggleBlade(selectedDamage))" IconCss="e-icons e-decrease-indent-rtl" title="Close the sidebar"></SfButton>
         }
     </SfAppBar>
+    <DamageForm DamageContext="selectedDamage" IsOpen="@isEditDialogOpen" IsReadOnly="@isVendor" IsSaveClicked="@SaveClicked"></DamageForm>
     <div id="main-container">
         <div id="data-container">
             @if (damageList?.Any() == true)
@@ -49,7 +50,7 @@
                                           Content="@(item.AIReviewCompleted?"Reviewed by AI":"Run AI review")" Disabled="@item.AIReviewCompleted"
                                           CssClass="@(item.AIReviewCompleted?"e-success":"e-primary")"
                                           IconPosition="IconPosition.Right" title="Smart review"></SfButton>
-                                <SfButton type="button" CssClass="e-outline e-success" OnClick="@(() => ToggleBlade(item))"
+                                <SfButton type="button" CssClass="@item.GetStatusStyle()" OnClick="@(() => ToggleBlade(item))"
                                           Content="@(isSideBarOpen ? "Hide" : item.GetStatusDescription())" IconCss="@(isSideBarOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
                                           IconPosition="IconPosition.Right" title="Review damage report">
                                 </SfButton>
@@ -68,40 +69,45 @@
                     </SfCard>
                 }
             }
+        
         </div>
     </div>
     <SfSidebar ID="side-bar-blade" Width="@(IsDesktopView ? "30vw" : "")" @bind-IsOpen="isSideBarOpen"
-               Type="(IsDesktopView ? SidebarType.Push : SidebarType.Over)" Target="#main-container"
+               Type="@(IsDesktopView ? SidebarType.Push : SidebarType.Over)" Target="#main-container"
                Position="SidebarPosition.Right">
         <ChildContent>
-            @if (damageContext is not null)
+            @if (selectedDamage != default)
             {
                 <SfCard role="region">
-                    @foreach (var item in damageContext.Sections)
-                        if (!string.IsNullOrWhiteSpace(item.Entry))
+                    <CardContent EnableSeparator="true">
+                        @foreach (var item in selectedDamage.Sections)
                         {
-                            <CardContent EnableSeparator="true">
-                                <strong>@item.DamageSectionType?.Name</strong>
-                                <div>@item.Entry</div>
-                            </CardContent>
+                            if (!string.IsNullOrWhiteSpace(item.Entry))
+                            {
+                                <div>
+                                    <strong>@item.DamageSectionType?.Name</strong>
+                                    <div>@item.Entry</div>
+                                </div>
+                            }
                         }
+                    </CardContent>
                     <CardContent EnableSeparator="true">
                         <div class="spread-across">
                             <SfButton type="button" Content="Damage Details"
                                       IconCss="e-icons e-circle-info" IconPosition="IconPosition.Right" IsPrimary="true"
                                       CssClass="e-outline"
-                                      OnClick="OnEdit" title="Damage Details">
+                                      OnClick="@(()=>OpenEditDialog(selectedDamage))" title="Damage report Details">
                             </SfButton>
                             <SfButton type="button" Content="View Images"
                                       IconCss="e-icons e-pentagon" IconPosition="IconPosition.Left" IsPrimary="true"
-                                      OnClick="OnShowImages" title="View Images">
+                                      OnClick="@(()=>OnShowImages(selectedDamage.Id))" title="Damage report Images">
                             </SfButton>
                         </div>
                     </CardContent>
                 </SfCard>
                 @if (!isVendor)
                 {
-                    <FileUpload damageId="damageContext.Id"></FileUpload>
+                    <FileUpload damageId="selectedDamage.Id"></FileUpload>
                 }
             }
         </ChildContent>
@@ -130,12 +136,12 @@
     [CascadingParameter] private Task<AuthenticationState> authStateTask { get; set; } = default!;
     [CascadingParameter(Name = CascadingParams.MediaQuery)] private bool IsDesktopView { get; set; }
 
-    private bool isSideBarOpen { get; set; } = false;
-    private void toggleBar() => isSideBarOpen = !isSideBarOpen;
-
     IReadOnlyList<DamageEntry> damageList { get; set; } = default!;
-    DamageEntry damageContext { get; set; } = default!;
 
+    DamageEntry selectedDamage { get; set; } = default!;
+
+    private bool isSideBarOpen { get; set; } = false;
+    private bool isEditDialogOpen { get; set; } = false;
     private bool isLoading { get; set; } = true;
     private bool isVendor { get; set; } = true;
 
@@ -162,75 +168,11 @@
         }
     }
 
-    private void ToggleBlade(DamageEntry damage)
+    private async Task OnShowImages(int damageId)
     {
-        damageContext = damage;
-        toggleBar();
-    }
+        isEditDialogOpen = false;
 
-    private async Task OnEdit()
-    {
-        if (isVendor)
-        {
-            await dialogService.AlertAsync(null, $"Damage report #{damageContext.Id}", new DialogOptions
-            {
-                ShowCloseIcon = true,
-                CssClass = "popup-dialog",
-                PrimaryButtonOptions = new DialogButtonOptions
-                {
-                    Content = "Close", IconCss = "e-icons e-close"
-                },
-                AnimationSettings = new DialogAnimationOptions
-                {
-                    Effect = DialogEffect.FlipXUp
-                },
-                ChildContent = builder =>
-                {
-                    builder.OpenComponent<DamageForm>(0);
-                    builder.AddAttribute(1, "damageContext", damageContext);
-                    builder.AddAttribute(2, "isReadOnly", true);
-                    builder.CloseComponent();
-                }
-            });
-        }
-        else
-        {
-            bool isConfirm = await dialogService.ConfirmAsync(null, $"Damage report #{damageContext.Id}", new DialogOptions
-            {
-                CssClass = "popup-dialog",
-                CancelButtonOptions = new DialogButtonOptions
-                {
-                    Content = "Cancel",
-                    IconCss = "e-icons e-close"
-                },
-                PrimaryButtonOptions = new DialogButtonOptions
-                {
-                    Content = "Submit changes",
-                    IconCss = "e-icons e-check-large"
-                },
-                AnimationSettings = new DialogAnimationOptions
-                {
-                    Effect = DialogEffect.SlideTop
-                },
-                ChildContent = builder =>
-                {
-                    builder.OpenComponent<DamageForm>(0);
-                    builder.AddAttribute(1, "damageContext", damageContext);
-                    builder.AddAttribute(2, "isReadOnly", false);
-                    builder.CloseComponent();
-                }
-            });
-            if (isConfirm)
-            {
-                await damageRepo.UpdateEntryAsync(damageContext, CancellationToken.None);
-                StateHasChanged();
-            }
-        }
-    }
-
-    private async Task OnShowImages()
-    {
-        await dialogService.AlertAsync(null, $"Damage report #{damageContext.Id}", new DialogOptions
+        await dialogService.AlertAsync(null, $"Damage report #{damageId}", new DialogOptions
         {
             CssClass = "popup-dialog",
 
@@ -239,10 +181,14 @@
             {
                 Content = "Close", IconCss = "e-icons e-close"
             },
+            AnimationSettings = new DialogAnimationOptions
+            {
+                Effect = DialogEffect.Zoom
+            },
             ChildContent = builder =>
             {
                 builder.OpenComponent<PictureList>(0);
-                builder.AddAttribute(1, "DamageId", damageContext.Id);
+                builder.AddAttribute(1, "DamageId", damageId);
                 builder.CloseComponent();
             }
         });
@@ -250,6 +196,8 @@
 
     private async Task OnSubmit(DamageEntry damage)
     {
+        if (damage.StatusId == DamageStatus.ServiceScheduled) return;
+
         try
         {
             isLoading = true;
@@ -272,13 +220,44 @@
         try
         {
             isLoading = true;
-
             await damageAiService.ProcessEntryAsync(damage, CancellationToken.None);
-            toastService.ShowSuccess("Damage report reviewed by AI");
+            toastService.ShowSuccess($"Damage report #{damage.Id} reviewed by AI");
+        } catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+        } finally
+        {
+            isLoading = false;
+        }
+    }
 
-            damageContext = damage;
-            isSideBarOpen = true;
-            await OnEdit();
+    private void ToggleBlade(DamageEntry damage)
+    {
+        isEditDialogOpen = false;
+
+        isSideBarOpen = !isSideBarOpen;
+        if (isSideBarOpen) selectedDamage = damage;
+    }
+
+    private void OpenEditDialog(DamageEntry damage)
+    {
+        selectedDamage = damage;
+        isEditDialogOpen = true;
+    }
+
+    private void CloseEditDialog()
+    {
+        isEditDialogOpen = false;
+    }
+
+    private async Task SaveClicked(DamageEntry damage)
+    {
+        try
+        {
+            isEditDialogOpen = false;
+            isLoading = true;
+            await damageRepo.UpdateEntryAsync(damage, CancellationToken.None);
+            toastService.ShowSuccess("Damage details updated successfully");
         } catch (Exception ex)
         {
             toastService.ShowError(ex.Message);

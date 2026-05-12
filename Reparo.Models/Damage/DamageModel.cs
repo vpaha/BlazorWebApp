@@ -128,6 +128,20 @@ public class DamageEntry : IValidatableObject
             _ => "Status: Unknown"
         };
     }
+
+    public string GetStatusStyle()
+    {
+        return (DamageStatus)StatusId switch
+        {
+            DamageStatus.Reported => "e-primary",
+            DamageStatus.VendorAssigned => "e-outline e-primary",
+            DamageStatus.ServiceScheduled => "e-outline e-success",
+            DamageStatus.WorkCompleted => "e-outline e-info",
+            DamageStatus.Closed => "e-outline e-dark",
+            DamageStatus.Cancelled => "e-outline e-danger",
+            _ => "e-warning"
+        };
+    }
 }
 
 public sealed class DateGreaterThanAttribute : ValidationAttribute

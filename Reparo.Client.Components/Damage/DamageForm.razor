@@ -1,65 +1,87 @@
-﻿<SfDataForm Model="damageContext" LabelPosition="FormLabelPosition.Top">
-    <FormValidator>
-        <DataAnnotationsValidator></DataAnnotationsValidator>
-    </FormValidator>
-    <FormTemplate>
-        <div id="damage-info">
-            <SfCard role="article">
-                <CardContent>
-                    <SfTextBox @bind-Value="damageContext.Street" Width="100%" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly" 
-                               Placeholder="Street" HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Street address" },{ "autocomplete" , "address-line1" }})" autofocus />
-                    <ValidationMessage For="@(() => damageContext.Street)" />
-                    <div style="display:flex;column-gap:5px;">
-                        <SfTextBox @bind-Value="damageContext.City" Width="auto" CssClass="e-small" Placeholder="City" FloatLabelType="FloatLabelType.Auto" Readonly="isReadOnly"
-                                   HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "City" },{ "autocomplete", "address-level2" }})" />
-                        <ValidationMessage For="@(() => damageContext.City)" />
-                        <SfDropDownList TValue="string" Width="auto" CssClass="e-small" TItem="string" Placeholder="State" DataSource="States" Readonly="isReadOnly"
-                                        @bind-Value="damageContext.State" FloatLabelType="FloatLabelType.Auto"
-                                        HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "State" },{ "autocomplete", "address-level1" }})" />
-                        <ValidationMessage For="@(() => damageContext.State)" />
-                    </div>
-                    <SfTextBox @bind-Value="damageContext.Zip" Width="auto" Placeholder="Zip code" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly"
-                               HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "ZIP code" },{ "autocomplete", "postal-code" },{ "inputmode", "numeric" },{ "pattern", "[0-9]*" }})" />
-                    <ValidationMessage For="@(() => damageContext.Zip)" />
-                </CardContent>
-            </SfCard>
-            <SfCard role="article">
-                <CardContent>
-                    <SfTextBox Width="100%" @bind-Value="damageContext.InsuranceCarrier" CssClass="e-small" Placeholder="Insurance Carrier" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly" />
-                    <ValidationMessage For="@(() => damageContext.InsuranceCarrier)" />
-                    <div style="display:flex;column-gap:5px;">
-                        <SfTextBox Width="auto" @bind-Value="damageContext.PolicyNumber" CssClass="e-small" Placeholder="Policy #" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly" />
-                        <ValidationMessage For="@(() => damageContext.PolicyNumber)" />
-                        <SfTextBox Width="auto" @bind-Value="damageContext.ClaimNumber" CssClass="e-small" Placeholder="Claim #" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly" />
-                        <ValidationMessage For="@(() => damageContext.ClaimNumber)" />
-                    </div>
-                    <SfDatePicker CssClass="e-small" Width="auto" TValue="DateOnly" @bind-Value="@damageContext.DateOfLoss" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern"
-                                  FloatLabelType="FloatLabelType.Auto" Placeholder="Loss Date" EnableMask="true" Readonly="isReadOnly">
-                        <DatePickerMaskPlaceholder Day="dd" Month="mm" Year="yyyy"></DatePickerMaskPlaceholder>
-                    </SfDatePicker>
-                    <ValidationMessage For="@(() => damageContext.DateOfLoss)" />
-                </CardContent>
-            </SfCard>
-            <SfCard role="article">
-                <CardContent>
-                    <SfTextBox Width="100%" @bind-Value="damageContext.FullName" CssClass="e-small" Placeholder="Full Name" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly"
-                               HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Full name" },{ "autocomplete", "name" }})" />
-                    <ValidationMessage For="@(() => damageContext.FullName)" />
-                    <div style="display:flex;column-gap:5px;">
-                        <SfTextBox Width="auto" @bind-Value="damageContext.Phone" CssClass="e-small" Placeholder="Phone #" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly"
-                                   HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Phone number" },{ "autocomplete", "tel" }, { "inputmode", "tel" }})" />
-                        <ValidationMessage For="@(() => damageContext.Phone)" />
-                        <SfTextBox Width="auto" @bind-Value="damageContext.Email" CssClass="e-small" Placeholder="Email address" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly"
-                                   HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Email address" },{ "autocomplete", "email" },{ "inputmode", "email" }})" />
-                        <ValidationMessage For="@(() => damageContext.Email)" />
-                    </div>
-                </CardContent>
-            </SfCard>
-        </div>
-    </FormTemplate>
-    <FormButtons>
-    </FormButtons>
-</SfDataForm>
+﻿@if (FormContext != default)
+{
+    <SfDialog Width="600px" ShowCloseIcon="true" CssClass="popup-dialog" @bind-Visible="IsOpen" IsModal="true" @ref="dialog">
+        <DialogTemplates>
+            <Header>
+                Damage report #@DamageContext.Id
+            </Header>
+            <Content>
+                <SfDataForm EditContext="FormContext" LabelPosition="FormLabelPosition.Top">
+                    <FormValidator>
+                        <DataAnnotationsValidator></DataAnnotationsValidator>
+                    </FormValidator>
+                    <FormTemplate>
+                        <div id="damage-info">
+                            <SfCard role="article">
+                                <CardContent>
+                                    <SfTextBox @bind-Value="DamageContext.Street" Width="100%" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly"
+                                               Placeholder="Street" HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Street address" },{ "autocomplete" , "address-line1" }})" autofocus />
+                                    <ValidationMessage For="@(() => DamageContext.Street)" />
+                                    <div style="display:flex;column-gap:5px;">
+                                        <SfTextBox @bind-Value="DamageContext.City" Width="auto" CssClass="e-small" Placeholder="City" FloatLabelType="FloatLabelType.Auto" Readonly="IsReadOnly"
+                                                   HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "City" },{ "autocomplete", "address-level2" }})" />
+                                        <ValidationMessage For="@(() => DamageContext.City)" />
+                                        <SfDropDownList TValue="string" Width="auto" CssClass="e-small" TItem="string" Placeholder="State" DataSource="States" Readonly="IsReadOnly"
+                                                        @bind-Value="DamageContext.State" FloatLabelType="FloatLabelType.Auto"
+                                                        HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "State" },{ "autocomplete", "address-level1" }})" />
+                                        <ValidationMessage For="@(() => DamageContext.State)" />
+                                    </div>
+                                    <SfTextBox @bind-Value="DamageContext.Zip" Width="auto" Placeholder="Zip code" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly"
+                                               HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "ZIP code" },{ "autocomplete", "postal-code" },{ "inputmode", "numeric" },{ "pattern", "[0-9]*" }})" />
+                                    <ValidationMessage For="@(() => DamageContext.Zip)" />
+                                </CardContent>
+                            </SfCard>
+                            <SfCard role="article">
+                                <CardContent>
+                                    <SfTextBox Width="100%" @bind-Value="DamageContext.InsuranceCarrier" CssClass="e-small" Placeholder="Insurance Carrier" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly" />
+                                    <ValidationMessage For="@(() => DamageContext.InsuranceCarrier)" />
+                                    <div style="display:flex;column-gap:5px;">
+                                        <SfTextBox Width="auto" @bind-Value="DamageContext.PolicyNumber" CssClass="e-small" Placeholder="Policy #" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly" />
+                                        <ValidationMessage For="@(() => DamageContext.PolicyNumber)" />
+                                        <SfTextBox Width="auto" @bind-Value="DamageContext.ClaimNumber" CssClass="e-small" Placeholder="Claim #" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly" />
+                                        <ValidationMessage For="@(() => DamageContext.ClaimNumber)" />
+                                    </div>
+                                    <SfDatePicker CssClass="e-small" Width="auto" TValue="DateOnly" @bind-Value="@DamageContext.DateOfLoss" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern"
+                                                  FloatLabelType="FloatLabelType.Auto" Placeholder="Loss Date" EnableMask="true" Readonly="IsReadOnly">
+                                        <DatePickerMaskPlaceholder Day="dd" Month="mm" Year="yyyy"></DatePickerMaskPlaceholder>
+                                    </SfDatePicker>
+                                    <ValidationMessage For="@(() => DamageContext.DateOfLoss)" />
+                                </CardContent>
+                            </SfCard>
+                            <SfCard role="article">
+                                <CardContent>
+                                    <SfTextBox Width="100%" @bind-Value="DamageContext.FullName" CssClass="e-small" Placeholder="Full Name" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly"
+                                               HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Full name" },{ "autocomplete", "name" }})" />
+                                    <ValidationMessage For="@(() => DamageContext.FullName)" />
+                                    <div style="display:flex;column-gap:5px;">
+                                        <SfTextBox Width="auto" @bind-Value="DamageContext.Phone" CssClass="e-small" Placeholder="Phone #" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly"
+                                                   HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Phone number" },{ "autocomplete", "tel" }, { "inputmode", "tel" }})" />
+                                        <ValidationMessage For="@(() => DamageContext.Phone)" />
+                                        <SfTextBox Width="auto" @bind-Value="DamageContext.Email" CssClass="e-small" Placeholder="Email address" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly"
+                                                   HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Email address" },{ "autocomplete", "email" },{ "inputmode", "email" }})" />
+                                        <ValidationMessage For="@(() => DamageContext.Email)" />
+                                    </div>
+                                </CardContent>
+                            </SfCard>
+                        </div>
+                    </FormTemplate>
+                    <FormButtons>
+                    </FormButtons>
+                </SfDataForm>
+            </Content>
+            <FooterTemplate>
+                <div class="spread-across">
+                    @if (!IsReadOnly)
+                    {
+                        <SfButton type="button" IsPrimary="true" IconCss="e-icons e-check-large" Content="Submit changes" OnClick="SaveChanges" />
+                        <SfButton type="button" IconCss="e-icons e-close" OnClick="CloseDialog">Close</SfButton>
+                    }
+                </div>
+            </FooterTemplate>
+        </DialogTemplates>
+        <DialogAnimationSettings Effect="DialogEffect.SlideTop" />
+    </SfDialog>
+}
 <style>
     #damage-info .e-card {
         box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.25);
@@ -73,8 +95,19 @@
 </style>
 
 @code {
-    [Parameter] public DamageEntry damageContext { get; set; } = default!;
-    [Parameter] public bool isReadOnly { get; set; } = true;
+    [Parameter] public DamageEntry DamageContext { get; set; } = default!;
+    [Parameter] public bool IsReadOnly { get; set; } = default!;
+    [Parameter] public bool IsOpen { get; set; } = default!;
+    [Parameter] public EventCallback<DamageEntry> IsSaveClicked { get; set; }
+
+    private SfDialog dialog { get; set; } = default!;
+    
+    private void CloseDialog()
+    {
+        IsOpen = false;
+    }
+
+    private EditContext? FormContext { get; set; } = default!;
 
     private List<string> States = new()
     {
@@ -84,4 +117,25 @@
     "NM","NY","NC","ND","OH","OK","OR","PA","RI","SC",
     "SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"
     };
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        if (parameters.TryGetValue<DamageEntry>(nameof(DamageContext), out var value) &&
+            value is not null &&
+            parameters.TryGetValue<bool>(nameof(IsOpen), out var isOpen) &&
+            isOpen)
+        {
+            FormContext = new EditContext(value);
+        }
+        await base.SetParametersAsync(parameters);
+    }
+
+    private async Task SaveChanges()
+    {
+        var IsFormValid = FormContext?.Validate() ?? false;
+        if (!IsFormValid) return;
+
+        IsReadOnly = true;
+        await IsSaveClicked.InvokeAsync(DamageContext);
+    }
 }
