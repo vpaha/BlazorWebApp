@@ -4,9 +4,8 @@
     <CardHeader>
         <h2>Image Upload</h2>
     </CardHeader>
-
     <CardContent>
-        <SfUploader ID="UploadFiles"
+        <SfUploader ID="UploadFiles" @ref="Uploader"
                     AutoUpload="true"
                     AllowMultiple="true"
                     AllowedExtensions=".jpg,.jpeg,.png,.gif,.webp"
@@ -21,6 +20,16 @@
     private const long MaxFileSize = 104_857_600; // 100 MB
 
     [Parameter] public int DamageId { get; set; }
+
+    private SfUploader Uploader { get; set; } = default!;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Uploader is not null)
+        {
+            await Uploader.ClearAllAsync();
+        }
+    }
 
     private async Task OnChange(UploadChangeEventArgs args)
     {
