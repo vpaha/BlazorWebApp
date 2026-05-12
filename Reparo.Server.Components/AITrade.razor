@@ -19,8 +19,10 @@
                                  RowCount="5" ShowSuggestionOnPopup="false">
                 </SfSmartTextArea>
                 <div @onclick:preventDefault style="align-self: center">
-                    <SfIcon Name="IconName.AIChat" Size="IconSize.Medium" Title="Smart Assist"></SfIcon>
                     <SfSpeechToText @bind-Transcript="DamageSection.Entry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnTranscriptChanged" />
+                    <div class="wdr-icon">
+                        <SfIcon Name="IconName.AIChat" Size="IconSize.Large" Title="Smart Assist"></SfIcon>
+                    </div>
                 </div>
                 <div class="validation-message">
                     <ValidationMessage For="@(() => DamageSection.Entry)" />

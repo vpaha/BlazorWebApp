@@ -33,7 +33,9 @@
             </div>
         </FormTemplate>
         <FormButtons>
-            <SfButton type="submit" CssClass="e-primary" Disabled="_isValid" OnClick="TriggerSubmit" Content="@(isMapView ? "Hide this Map" : "Local Contractors")" IconCss="@(isMapView ? "e-icons e-close" : "e-icons e-location")" title="Submit">
+            <SfButton type="submit" Disabled="_isValid" OnClick="TriggerSubmit" IsPrimary="true"
+                      Content="@(isMapView ? "Hide this Map" : "Local Contractors")"
+                      IconCss="@(isMapView ? "e-icons e-close" : "e-icons e-location")" title="Submit">
             </SfButton>
         </FormButtons>
     </SfDataForm>
@@ -56,62 +58,65 @@
             </SfAppBar>
         }
         <div class="@(IsDesktopView ? "desktop-view" : "mobile-view")">
-                <SfCard CssClass="zoom-in" role="region">
-                    <CardHeader>
-                        What We Do
-                    </CardHeader>
-                    <CardContent EnableSeparator="true">
-                        We help homeowners recover from property damage by connecting them with trusted local contractors and guiding them through the insurance claim process - from inspection to full restoration.
-                    </CardContent>
-                </SfCard>
-                <SfCard CssClass="zoom-in" role="region">
-                    <CardHeader>
-                        How It Works
-                    </CardHeader>
-                    <CardContent EnableSeparator="true">
-                        <ul style="padding-left:10px;margin:auto;">
-                            <li>
-                                Report your property damage
-                            </li>
-                            <li>
-                                Get matched with licensed contractors near you
-                            </li>
-                            <li>
-                                Receive repair estimates and start restoration
-                            </li>
-                            <li>
-                                Navigate your insurance claim with guided support
-                            </li>
-                        </ul>
-                    </CardContent>
-                </SfCard>
-                <SfCard CssClass="zoom-in" role="region">
-                    <CardHeader>
-                        Who We Serve
-                    </CardHeader>
-                    <CardContent EnableSeparator="true">
-                        <ul style="padding-left:10px;margin:auto;">
-                            <li>
-                                Homeowners dealing with property damage or home repairs
-                            </li>
-                            <li>
-                                Landlords and property managers handling rental property damage
-                            </li>
-                            <li>
-                                HOAs and community associations managing residential claims
-                            </li>
-                        </ul>
-                    </CardContent>
-                </SfCard>
-                <SfCard CssClass="flex-container zoom-in" role="region">
-                    <CardContent>
-                        Provide details about your property damage and we'll connect you with qualified local contractors while helping you navigate the insurance claim and repair process.
-                    </CardContent>
-                    <CardContent EnableSeparator="true">
-                        <a href="damage" class="e-btn e-primary e-outline" title="Add damage details to continue">Get Repair Estimates</a>
-                    </CardContent>
-                </SfCard>
-            </div>
+            <SfCard CssClass="zoom-in" role="region">
+                <CardHeader>
+                    What We Do
+                </CardHeader>
+                <CardContent EnableSeparator="true">
+                    We help homeowners recover from property damage by connecting them with trusted local contractors and guiding them through the insurance claim process - from inspection to full restoration.
+                </CardContent>
+            </SfCard>
+            <SfCard CssClass="zoom-in" role="region">
+                <CardHeader>
+                    How It Works
+                </CardHeader>
+                <CardContent EnableSeparator="true">
+                    <ol style="margin:auto">
+                        <li>
+                            Report your property damage
+                        </li>
+                        <li>
+                            Get matched with licensed contractors near you
+                        </li>
+                        <li>
+                            Receive repair estimates and start restoration
+                        </li>
+                        <li>
+                            Navigate your insurance claim with guided support
+                        </li>
+                    </ol>
+                </CardContent>
+            </SfCard>
+            <SfCard CssClass="zoom-in" role="region">
+                <CardHeader>
+                    Who We Serve
+                </CardHeader>
+                <CardContent EnableSeparator="true">
+                    <ul style="padding-left:10px;margin:auto;">
+                        <li>
+                            Homeowners dealing with property damage or home repairs
+                        </li>
+                        <li>
+                            Landlords and property managers handling rental property damage
+                        </li>
+                        <li>
+                            HOAs and community associations managing residential claims
+                        </li>
+                    </ul>
+                </CardContent>
+            </SfCard>
+            <SfCard CssClass="flex-container zoom-in" role="region">
+                <CardHeader>
+                    AI Damage Assistance
+                </CardHeader>
+                <CardContent EnableSeparator="true">
+                    Use AI-assisted guidance to describe property damage and prepare details for your insurance claim. The AI will handle the rest.
+                </CardContent>
+                <CardContent EnableSeparator="true">
+                    <a href="damage" class="e-btn e-primary e-outline" title="Report property damage">Report property damage</a>
+                </CardContent>
+            </SfCard>
+        </div>
     }
 
 </section>

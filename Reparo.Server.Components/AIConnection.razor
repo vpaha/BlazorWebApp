@@ -6,8 +6,10 @@
                              RowCount="4" ShowSuggestionOnPopup="false">
             </SfSmartTextArea>
             <div @onclick:preventDefault style="align-self: center">
-                <SfIcon Name="IconName.AIChat" Size="IconSize.Medium" Title="Smart Assist"></SfIcon>
                 <SfSpeechToText @bind-Transcript="DamageContext.ContactEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnContactTranscriptChanged" />
+                <div class="wdr-icon">
+                    <SfIcon Name="IconName.AIChat" Size="IconSize.Large" Title="Smart Assist"></SfIcon>
+                </div>
             </div>
         </div>
         <div class="validation-message">
@@ -23,8 +25,10 @@
                              RowCount="4" ShowSuggestionOnPopup="false">
             </SfSmartTextArea>
             <div @onclick:preventDefault style="align-self: center">
-                <SfIcon Name="IconName.AIChat" Size="IconSize.Medium" Title="Smart Assist"></SfIcon>
                 <SfSpeechToText @bind-Transcript="DamageContext.InsuranceEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnInsuranceTranscriptChanged" />
+                <div class="wdr-icon">
+                    <SfIcon Name="IconName.AIChat" Size="IconSize.Large" Title="Smart Assist"></SfIcon>
+                </div>
             </div>
         </div>
         <div class="validation-message">

@@ -166,6 +166,12 @@ h5 {
   display: flex;
   column-gap: 5px;
 }
+.wdr-container .wdr-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 10px;
+}
 
 .max-width-400 {
   max-width: 400px;

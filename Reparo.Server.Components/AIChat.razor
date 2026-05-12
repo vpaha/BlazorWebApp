@@ -2,11 +2,9 @@
 @inject ToastService toastService
 
 <section id="ai-container">
-    <SfAppBar>
-        <h2 style="border-bottom: 1px solid gray;">
-            AI Assistant
-        </h2>
-    </SfAppBar>
+    <h2>
+        Smart Assistant <SfIcon Name="IconName.AIChat" Size="IconSize.Large" Title="Smart Assist"></SfIcon>
+    </h2>
     <div class="chat-card">
         @if (Messages.Count > 0)
         {
@@ -50,6 +48,7 @@
             flex-direction: column;
             max-height: 198px;
             overflow-y: auto;
+            border-top: 1px solid gray;
         }
 
             #ai-container .chat-card > div {
