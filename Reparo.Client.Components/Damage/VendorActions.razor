@@ -1,0 +1,28 @@
+﻿<div class="spread-across">
+    <SfButton type="button"
+              OnClick="OnSubmit"
+              IconCss="e-icons e-check" IconPosition="IconPosition.Right" IsPrimary="true"
+              Content="@isProceeded()" title="Proceed with Service">
+    </SfButton>
+    <SfButton type="button" OnClick="OnChat" IconCss="e-icons e-comment-show" IconPosition="IconPosition.Right" IsPrimary="true"
+              CssClass="e-outline"
+              Content="Chat" title="Chat with Customer">
+    </SfButton>
+</div>
+@code {
+    [Parameter] public DamageEntry DamageContext { get; set; } = default!;
+    [Parameter] public EventCallback<DamageEntry> OnSubmitEvent { get; set; }
+    [Parameter] public EventCallback<DamageEntry> OnToggleBladeEvent { get; set; }
+
+    private async Task OnSubmit()
+    {
+        await OnSubmitEvent.InvokeAsync(DamageContext);
+    }
+
+    private async Task OnChat()
+    {
+        await OnToggleBladeEvent.InvokeAsync(DamageContext);
+    }
+
+    private string isProceeded() => DamageContext.StatusId == DamageStatus.Reported ? "Proceed with Service" : "Scheduled";
+}

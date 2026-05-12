@@ -41,14 +41,31 @@
             {
                 @foreach (var item in damageList)
                 {
-                    @if (isVendor)
-                    {
-                        <DamageInfo DamageContext="@item" OnToggleBladeEvent="ToggleBlade" IsBladeOpen="isSideBarOpen" OnReviewEvent="OnReview" OnSubmitEvent="OnSubmit" />
-                    }
-                    else
-                    {
-                        <Tracking DamageContext="@item" OnToggleBladeEvent="ToggleBlade" IsBladeOpen="isSideBarOpen" OnReviewEvent="OnReview" />
-                    }
+                    <SfCard role="link">
+                        <CardContent EnableSeparator="true">
+                            <Description DamageContext="item"></Description>
+                            <div class="spread-across">
+                                <SfButton type="button" OnClick="@(() => OnReview(item))" IconCss="e-icons e-resizer-1"
+                                          Content="@(item.AIReviewCompleted?"Reviewed by AI":"Run AI review")" Disabled="@item.AIReviewCompleted"
+                                          CssClass="@(item.AIReviewCompleted?"e-success":"e-primary")"
+                                          IconPosition="IconPosition.Right" title="Smart review"></SfButton>
+                                <SfButton type="button" CssClass="e-outline e-success" OnClick="@(() => ToggleBlade(item))"
+                                          Content="@(isSideBarOpen ? "Hide" : item.GetStatusDescription())" IconCss="@(isSideBarOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
+                                          IconPosition="IconPosition.Right" title="Review damage report">
+                                </SfButton>
+                            </div>
+                        </CardContent>
+                        <CardContent EnableSeparator="true">
+                            @if (isVendor)
+                            {
+                                <VendorActions DamageContext="@item" OnSubmitEvent="OnSubmit" OnToggleBladeEvent="ToggleBlade" />
+                            }
+                            else
+                            {
+                                <OwnerActions DamageContext="@item" OnToggleBladeEvent="ToggleBlade" />
+                            }
+                        </CardContent>
+                    </SfCard>
                 }
             }
         </div>

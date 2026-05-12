@@ -115,16 +115,17 @@ public class DamageEntry : IValidatableObject
         return null;
     }
 
-    public MessageSeverity GetSeverity()
+    public string GetStatusDescription()
     {
-        return StatusId switch
+        return (DamageStatus)StatusId switch
         {
-            DamageStatus.Reported => MessageSeverity.Error,
-            DamageStatus.VendorAssigned or DamageStatus.ServiceScheduled => MessageSeverity.Info,
-            DamageStatus.WorkCompleted => MessageSeverity.Success,
-            DamageStatus.Closed => MessageSeverity.Normal,
-            DamageStatus.Cancelled => MessageSeverity.Warning,
-            _ => MessageSeverity.Normal
+            DamageStatus.Reported => "Status: Reported",
+            DamageStatus.VendorAssigned => "Status: Vendor assigned",
+            DamageStatus.ServiceScheduled => "Status: Service scheduled",
+            DamageStatus.WorkCompleted => "Status: Work completed",
+            DamageStatus.Closed => "Status: Closed",
+            DamageStatus.Cancelled => "Status: Canceled",
+            _ => "Status: Unknown"
         };
     }
 }

@@ -1,0 +1,50 @@
+﻿@inject SfDialogService dialogService
+@inject IVendorRepo vendorRepo
+
+<div class="spread-across">
+    <VendorSearch DamageContext="DamageContext"></VendorSearch>
+    <SfButton type="button" OnClick="OnChat" IconCss="e-icons e-comment-show" IconPosition="IconPosition.Right" IsPrimary="true"
+              CssClass="e-outline"
+              Content="Chat" title="Chat with Vendor">
+    </SfButton>
+</div>
+@code {
+    [Parameter] public DamageEntry DamageContext { get; set; } = default!;
+    [Parameter] public EventCallback<DamageEntry> OnToggleBladeEvent { get; set; }
+
+    private async Task OnChat()
+    {
+        await OnToggleBladeEvent.InvokeAsync(DamageContext);
+    }
+
+    private async Task ShowVendor()
+    {
+        await dialogService.AlertAsync(null, DamageContext.Vendor?.Name, new DialogOptions
+        {
+            CssClass = "popup-dialog",
+            ShowCloseIcon = true,
+
+            PrimaryButtonOptions = new DialogButtonOptions
+            {
+                Content = "Close", IconCss = "e-icons e-close"
+            },
+            AnimationSettings = new DialogAnimationOptions
+            {
+                Effect = DialogEffect.FlipXUp
+            },
+            ChildContent = builder =>
+            {
+                builder.OpenComponent<VendorDetails>(0);
+                builder.AddAttribute(1, "Vendor", DamageContext.Vendor);
+                builder.CloseComponent();
+            }
+        });
+    }
+
+    private async Task SelectedVendor(string placeId)
+    {
+        DamageContext.Vendor = await vendorRepo.GetVendorByPlaceAsync(placeId);
+        DamageContext.VendorId = DamageContext.Vendor?.Id;
+        DamageContext.StatusId = DamageStatus.VendorAssigned;
+    }
+}
