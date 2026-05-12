@@ -26,7 +26,7 @@
             <SfSpeechToText @bind-Transcript="MessageText" CssClass="e-info e-outline" />
         </div>
     </div>
-    <SfButton type="button"
+    <SfButton type="submit"
               CssClass="e-primary"
               IconCss="e-icons e-ai-chat"
               OnClick="CommunicateAsync"
@@ -69,9 +69,9 @@
         }
         try
         {
-            Messages.Insert(0, $"You: <i>{MessageText}</i>");
+            Messages.Add($"You: <i>{MessageText}</i>");
             var response = await client.GetResponseAsync(MessageText);
-            Messages.Insert(0, $"<strong>AI:</strong> {response}");
+            Messages.Add($"<strong>AI:</strong> {response}");
             MessageText = string.Empty;
         } catch (Exception ex)
         {

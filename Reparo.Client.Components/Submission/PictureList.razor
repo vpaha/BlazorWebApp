@@ -2,26 +2,24 @@
 
 @inject IImageService ImageService
 
-<SfCarousel ID="control-container" AnimationEffect="CarouselAnimationEffect.Slide">
-    @if (!Images.Any())
+@if (!Images.Any())
+{
+        <h2 style="min-height: 100px;">No images have been uploaded.</h2>
+}
+else
+{
+    <SfCarousel ID="control-container" AnimationEffect="CarouselAnimationEffect.Slide">
+    @foreach (var image in Images)
     {
         <CarouselItem>
-            <h2>No images have been uploaded.</h2>
+            <figure>
+                <img src="@image.Url" alt="@image.FileName" />
+                <figcaption>@image.FileName</figcaption>
+            </figure>
         </CarouselItem>
     }
-    else
-    {
-        @foreach (var image in Images)
-        {
-            <CarouselItem>
-                <figure>
-                    <img src="@image.Url" alt="@image.FileName" />
-                    <figcaption>@image.FileName</figcaption>
-                </figure>
-            </CarouselItem>
-        }
-    }
-</SfCarousel>
+    </SfCarousel>
+}
 
 <style>
     #control-container {
