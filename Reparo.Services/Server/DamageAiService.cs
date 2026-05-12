@@ -10,6 +10,7 @@ public sealed class DamageAiService : IDamageAiService
         PropertyNameCaseInsensitive = true
     };
 
+    private const string ReviewPrompt = "Review and correct the grammar of this text. Keep the original logic and meaning unchanged.";
     private const string ExtractionPrompt =
     """
     Extract structured property damage claim information from the user text.
@@ -32,21 +33,39 @@ public sealed class DamageAiService : IDamageAiService
     - Use null when information is missing.
     - Return valid JSON only.
     """;
+    private const string ReviewPromptJson =
+    """
+    Review and correct grammar for each item.
+    Keep the original logic and meaning unchanged.
+    Return JSON only using this schema:
+    [
+        { "index": 0, "text": "" }
+    ]
+    """;
+
+    private ChatOptions options { get; set; } = default!;
 
     public DamageAiService(IChatClient chatClient)
     {
         _chatClient = chatClient;
+        options = new()
+        {
+            MaxOutputTokens = 800,
+            Temperature = 0.1f
+        };
+    }
+
+    public async Task<string> ProcessTextAsync(string entry, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        List<ChatMessage> messages = [new(ChatRole.User, ReviewPrompt), new(ChatRole.User, $"Text:\n{entry}")];
+        ChatResponse response = await _chatClient.GetResponseAsync(messages, options, cancellationToken);
+        return response.Text;
     }
 
     public async Task ProcessEntryAsync(DamageEntry entry, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entry);
-
-        ChatOptions options = new()
-        {
-            MaxOutputTokens = 800,
-            Temperature = 0.1f
-        };
 
         var input = entry.BuildCustomerInfo();
 
@@ -75,15 +94,7 @@ public sealed class DamageAiService : IDamageAiService
         if (sections.Count > 0)
         {
             var sectionInput = JsonSerializer.Serialize(sections.Select((section, index) => new { index, text = section.Entry }));
-            List<ChatMessage> messages = [new(ChatRole.User,
-            """
-            Review and correct grammar for each item.
-            Keep the original logic and meaning unchanged.
-            Return JSON only using this schema:
-            [
-              { "index": 0, "text": "" }
-            ]
-            """), new(ChatRole.User, sectionInput)
+            List<ChatMessage> messages = [new(ChatRole.User, ReviewPromptJson), new(ChatRole.User, sectionInput)
             ];
 
             ChatResponse response = await _chatClient.GetResponseAsync(messages, options, cancellationToken);

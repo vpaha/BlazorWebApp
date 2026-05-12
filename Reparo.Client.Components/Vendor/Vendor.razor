@@ -1,23 +1,10 @@
 ﻿@inject IVendorRepo vendorRepo
 @inject ToastService toastService
 
-<section id="vendor-page" class="zoom-in">
+<section class="fade-in">
     <SfSpinner @bind-Visible="@isLoading"></SfSpinner>
     <VendorDetails Vendor="model"></VendorDetails>
 </section>
-<style>
-    #vendor-page {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
-        min-height: 80px;
-        align-content: center;
-    }
-
-        #vendor-page .e-card {
-            flex: 1 1 260px;
-        }
-</style>
 
 @code {
     [Parameter]

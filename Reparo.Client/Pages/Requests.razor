@@ -36,7 +36,7 @@
         }
     </SfAppBar>
     <div id="main-container">
-        <div id="data-container" class="zoom-in">
+        <div id="data-container">
             @if (damageList?.Any() == true)
             {
                 @foreach (var item in damageList)
@@ -181,7 +181,6 @@
             bool isConfirm = await dialogService.ConfirmAsync(null, $"Damage report #{damageContext.Id}", new DialogOptions
             {
                 CssClass = "popup-dialog",
-                Width = "40vw",
                 CancelButtonOptions = new DialogButtonOptions
                 {
                     Content = "Cancel",
@@ -216,7 +215,6 @@
     {
         await dialogService.AlertAsync(null, $"Damage report #{damageContext.Id}", new DialogOptions
         {
-            Height = "80vh",
             CssClass = "popup-dialog",
 
             ShowCloseIcon = true,

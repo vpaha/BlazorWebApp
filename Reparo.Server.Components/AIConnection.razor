@@ -1,14 +1,19 @@
-﻿<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
+﻿@inject IDamageAiService damageAiService
+@inject ToastService toastService
+
+<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div class="wdr-container">
             <SfSmartTextArea UserRole="property owner" Placeholder="Your name and how we can contact you (phone or email)" @bind-Value="DamageContext.ContactEntry"
-                             ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
+                             ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%" Enabled="@(!isDisabled)"
                              RowCount="4" ShowSuggestionOnPopup="false">
             </SfSmartTextArea>
-            <div @onclick:preventDefault style="align-self: center">
-                <SfSpeechToText @bind-Transcript="DamageContext.ContactEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnContactTranscriptChanged" />
-                <div class="wdr-icon">
-                    <SfIcon Name="IconName.AIChat" Size="IconSize.Large" Title="Smart Assist"></SfIcon>
+            <div class="wdr-icon">
+                <SfButton type="button" CssClass="e-round e-outline e-primary" OnClick="AiProcessAsync1">
+                    <SfIcon Size="IconSize.Medium" Name="IconName.AIChat" Title="AI Process"></SfIcon>
+                </SfButton>
+                <div @onclick:preventDefault>
+                    <SfSpeechToText @bind-Transcript="DamageContext.ContactEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnContactTranscriptChanged" />
                 </div>
             </div>
         </div>
@@ -21,13 +26,15 @@
     <CardContent>
         <div class="wdr-container">
             <SfSmartTextArea UserRole="property owner" Placeholder="Your insurance carrier, policy number, and claim number" @bind-Value="DamageContext.InsuranceEntry"
-                             ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
+                             ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%" Enabled="@(!isDisabled)"
                              RowCount="4" ShowSuggestionOnPopup="false">
             </SfSmartTextArea>
-            <div @onclick:preventDefault style="align-self: center">
-                <SfSpeechToText @bind-Transcript="DamageContext.InsuranceEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnInsuranceTranscriptChanged" />
-                <div class="wdr-icon">
-                    <SfIcon Name="IconName.AIChat" Size="IconSize.Large" Title="Smart Assist"></SfIcon>
+            <div class="wdr-icon">
+                <SfButton type="button" CssClass="e-round e-outline e-primary" OnClick="AiProcessAsync2">
+                    <SfIcon Size="IconSize.Medium" Name="IconName.AIChat" Title="AI Process"></SfIcon>
+                </SfButton>
+                <div @onclick:preventDefault>
+                    <SfSpeechToText @bind-Transcript="DamageContext.InsuranceEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnInsuranceTranscriptChanged" />
                 </div>
             </div>
         </div>
@@ -41,6 +48,8 @@
     [CascadingParameter(Name = CascadingParams.MediaQuery)] private bool IsDesktopView { get; set; }
     [CascadingParameter] private EditContext EditContext { get; set; } = default!;
     [Parameter] public DamageEntry DamageContext { get; set; } = default!;
+
+    private bool isDisabled { get; set; }
 
     private void OnContactTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
     {
@@ -57,5 +66,41 @@
     private void AddressChanged(bool isValid)
     {
         EditContext.NotifyFieldChanged(new FieldIdentifier(DamageContext, nameof(DamageContext.AddressEntry)));
+    }
+
+    private async Task AiProcessAsync1()
+    {
+        if (!string.IsNullOrWhiteSpace(DamageContext.ContactEntry))
+        {
+            try
+            {
+                isDisabled = true;
+                DamageContext.ContactEntry = await damageAiService.ProcessTextAsync(DamageContext.ContactEntry, CancellationToken.None);
+            } catch (Exception ex)
+            {
+                toastService.ShowError(ex.Message);
+            } finally
+            {
+                isDisabled = false;
+            }
+        }
+    }
+
+    private async Task AiProcessAsync2()
+    {
+        if (!string.IsNullOrWhiteSpace(DamageContext.InsuranceEntry))
+        {
+            try
+            {
+                isDisabled = true;
+                DamageContext.InsuranceEntry = await damageAiService.ProcessTextAsync(DamageContext.InsuranceEntry, CancellationToken.None);
+            } catch (Exception ex)
+            {
+                toastService.ShowError(ex.Message);
+            } finally
+            {
+                isDisabled = false;
+            }
+        }
     }
 }

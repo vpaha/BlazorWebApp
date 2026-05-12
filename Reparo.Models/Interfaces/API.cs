@@ -23,7 +23,6 @@ public interface IUserService
 
 public interface IDamageAiService
 {
-    Task ProcessEntryAsync(
-        DamageEntry entry,
-        CancellationToken cancellationToken = default);
+    Task ProcessEntryAsync(DamageEntry entry, CancellationToken cancellationToken = default);
+    Task<string> ProcessTextAsync(string entry, CancellationToken cancellationToken = default);
 }

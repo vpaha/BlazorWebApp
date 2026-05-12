@@ -167,10 +167,10 @@ h5 {
   column-gap: 5px;
 }
 .wdr-container .wdr-icon {
+  flex-direction: column;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding-top: 10px;
+  justify-content: space-around;
 }
 
 .max-width-400 {

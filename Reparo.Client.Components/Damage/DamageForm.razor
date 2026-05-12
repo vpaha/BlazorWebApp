@@ -1,4 +1,4 @@
-﻿<SfDataForm Model="damageContext" LabelPosition="FormLabelPosition.Top" EnableFloatingLabel="true">
+﻿<SfDataForm Model="damageContext" LabelPosition="FormLabelPosition.Top">
     <FormValidator>
         <DataAnnotationsValidator></DataAnnotationsValidator>
     </FormValidator>
@@ -6,7 +6,7 @@
         <div id="damage-info">
             <SfCard role="article">
                 <CardContent>
-                    <SfTextBox @bind-Value="damageContext.Street" Width="100%" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly"
+                    <SfTextBox @bind-Value="damageContext.Street" Width="100%" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="isReadOnly" 
                                Placeholder="Street" HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Street address" },{ "autocomplete" , "address-line1" }})" autofocus />
                     <ValidationMessage For="@(() => damageContext.Street)" />
                     <div style="display:flex;column-gap:5px;">

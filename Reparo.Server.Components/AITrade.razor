@@ -1,4 +1,7 @@
-﻿<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
+﻿@inject IDamageAiService damageAiService
+@inject ToastService toastService
+
+<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div id="spacebetween">
             <SfButton type="button" title="Click to open" CssClass="@btnStyle" IconPosition="IconPosition.Right" IconCss="e-icons e-chevron-right-double" OnClick="toggleTop">
@@ -15,13 +18,15 @@
             <div class="wdr-container">
                 <SfSmartTextArea UserRole="property owner" Placeholder="@DamageSection.DamageSectionType?.Name" @bind-Value="DamageSection.Entry"
                                  CssClass="@(DamageSection.DamageSectionType?.IsEmergency == true ? "e-warning" : "")"
-                                 ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
+                                 ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%" Enabled="@(!isDisabled)"
                                  RowCount="5" ShowSuggestionOnPopup="false">
                 </SfSmartTextArea>
-                <div @onclick:preventDefault style="align-self: center">
-                    <SfSpeechToText @bind-Transcript="DamageSection.Entry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnTranscriptChanged" />
-                    <div class="wdr-icon">
-                        <SfIcon Name="IconName.AIChat" Size="IconSize.Large" Title="Smart Assist"></SfIcon>
+                <div class="wdr-icon">
+                    <SfButton type="button" CssClass="e-round e-outline e-primary" OnClick="AiProcessAsync">
+                        <SfIcon Size="IconSize.Medium" Name="IconName.AIChat" Title="AI Process"></SfIcon>
+                    </SfButton>
+                    <div @onclick:preventDefault>
+                        <SfSpeechToText @bind-Transcript="DamageSection.Entry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnTranscriptChanged" />
                     </div>
                 </div>
                 <div class="validation-message">
@@ -69,4 +74,24 @@
     private bool infoExpanded { get; set; }
     private void toggleTop() => topExpanded = !topExpanded;
     private void toggleInfo() => infoExpanded = !infoExpanded;
+
+    private bool isDisabled { get; set; }
+
+    private async Task AiProcessAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(DamageSection.Entry))
+        {
+            try
+            {
+                isDisabled = true;
+                DamageSection.Entry = await damageAiService.ProcessTextAsync(DamageSection.Entry, CancellationToken.None);
+            } catch (Exception ex)
+            {
+                toastService.ShowError(ex.Message);
+            } finally
+            {
+                isDisabled = false;
+            }
+        }
+    }
 }
