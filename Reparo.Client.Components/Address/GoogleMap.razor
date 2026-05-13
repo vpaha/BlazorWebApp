@@ -21,9 +21,6 @@
     [Parameter] public double? Longitude { get; set; }
     [Parameter] public EventCallback<string> OnSelectionEvent { get; set; }
 
-    [Inject]
-    private DamageState DamageState { get; set; } = default!;
-
     private DotNetObjectReference<GoogleMap>? _objRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

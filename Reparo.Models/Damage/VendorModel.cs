@@ -37,9 +37,9 @@ public sealed class VendorModel
     public string? Country { get; set; } = "US";
 
     // Geo
-    public decimal? Latitude { get; set; }
+    public double? Latitude { get; set; }
 
-    public decimal? Longitude { get; set; }
+    public double? Longitude { get; set; }
 
     // Classification
     public string? LicenseNumber { get; set; }

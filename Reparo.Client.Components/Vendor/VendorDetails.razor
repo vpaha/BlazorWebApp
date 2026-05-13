@@ -42,6 +42,34 @@
         </SfCard>
         <SfCard>
             <CardHeader>
+                <h3>Vendor Status</h3>
+            </CardHeader>
+            <CardContent>
+                <div>
+                    <strong>Active</strong> @(Vendor.IsActive ? "Yes" : "No")
+                </div>
+                <div>
+                    <strong>Verified</strong> @(Vendor.IsVerified ? "Yes" : "No")
+                </div>
+                <div>
+                    <strong>Preferred</strong> @(Vendor.IsPreferred ? "Yes" : "No")
+                </div>
+                @if (Vendor.Rating.HasValue)
+                {
+                    <div>
+                        <strong>Rating</strong> @Vendor.Rating.Value.ToString("0.0")
+                    </div>
+                }
+                @if (Vendor.ReviewCount.HasValue)
+                {
+                    <div>
+                        <strong>Review Count</strong> @Vendor.ReviewCount
+                    </div>
+                }
+            </CardContent>
+        </SfCard>
+        <SfCard>
+            <CardHeader>
                 <h3>Contact</h3>
             </CardHeader>
             <CardContent>
@@ -86,34 +114,7 @@
                 </CardContent>
             </SfCard>
         }
-        <SfCard>
-            <CardHeader>
-                <h3>Vendor Status</h3>
-            </CardHeader>
-            <CardContent>
-                <div>
-                    <strong>Active</strong> @(Vendor.IsActive ? "Yes" : "No")
-                </div>
-                <div>
-                    <strong>Verified</strong> @(Vendor.IsVerified ? "Yes" : "No")
-                </div>
-                <div>
-                    <strong>Preferred</strong> @(Vendor.IsPreferred ? "Yes" : "No")
-                </div>
-                @if (Vendor.Rating.HasValue)
-                {
-                    <div>
-                        <strong>Rating</strong> @Vendor.Rating.Value.ToString("0.0")
-                    </div>
-                }
-                @if (Vendor.ReviewCount.HasValue)
-                {
-                    <div>
-                        <strong>Review Count</strong> @Vendor.ReviewCount
-                    </div>
-                }
-            </CardContent>
-        </SfCard>
+        <VendorMap Latitude="@Vendor.Latitude" Longitude="@Vendor.Longitude" VendorPlaceId="@Vendor.PlaceId"></VendorMap>
     }
 </div>
 <style>

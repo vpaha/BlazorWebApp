@@ -68,6 +68,15 @@
         return true;
     }
 
+    async function searchPlaceById(placeId)
+    {
+        const { PlaceCtor } = await ensureReady();
+
+        bounds = new google.maps.LatLngBounds();
+        await addMarkerByPlaceId(placeId);
+        getMapOrThrow().setCenter(bounds.getCenter());
+    }
+
     async function searchPlaces(lat, lng)
     {
         const { PlaceCtor } = await ensureReady();
@@ -127,12 +136,14 @@
             const content = document.createElement("div");
             content.style = "cursor:pointer;"
 
-            content.addEventListener("click", () =>
+            if (dotNetHelper != null)
             {
-                infoWindow.close();
-                dotNetHelper.invokeMethodAsync("OpenVendorDialog", placeId, displayNameText);
-            });
-
+                content.addEventListener("click", () =>
+                {
+                    infoWindow.close();
+                    dotNetHelper.invokeMethodAsync("OpenVendorDialog", placeId, displayNameText);
+                });
+            }
             const nameDiv = document.createElement("div");
             nameDiv.textContent = displayNameText;
             nameDiv.style.fontWeight = "bold";
@@ -184,5 +195,5 @@
         markers = [];
     }
 
-    return { ensureReady, initMap, searchPlaces, clearMarkers };
+    return { ensureReady, initMap, searchPlaces, searchPlaceById, clearMarkers };
 })();

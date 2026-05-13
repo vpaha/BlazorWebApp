@@ -29,11 +29,11 @@
         <SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
             <CardContent>
                 <label id="map-label">
-                    Serving @DamageContext.Placename and surrounding areas
+                    @DamageContext.Placename
                 </label>
                 @if (IsDesktopView)
                 {
-                    <Map Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude"></Map>
+                    <LocalMap Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude"></LocalMap>
                 }
             </CardContent>
         </SfCard>

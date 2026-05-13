@@ -24,8 +24,8 @@ internal static class VendorModelBuilderExtensions
             e.Property(x => x.State).HasColumnName("state").HasMaxLength(100);
             e.Property(x => x.PostalCode).HasColumnName("postal_code").HasMaxLength(20);
             e.Property(x => x.Country).HasColumnName("country").HasMaxLength(100).HasDefaultValue("US");
-            e.Property(x => x.Latitude).HasColumnName("latitude").HasColumnType("numeric(9,6)");
-            e.Property(x => x.Longitude).HasColumnName("longitude").HasColumnType("numeric(9,6)");
+            e.Property(x => x.Latitude).HasColumnName("latitude").HasColumnType("double precision");
+            e.Property(x => x.Longitude).HasColumnName("longitude").HasColumnType("double precision");
             e.Property(x => x.LicenseNumber).HasColumnName("license_number").HasMaxLength(100);
             e.Property(x => x.IsActive).HasColumnName("is_active").HasDefaultValue(true);
             e.Property(x => x.IsVerified).HasColumnName("is_verified").HasDefaultValue(false);
