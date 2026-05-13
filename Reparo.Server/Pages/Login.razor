@@ -13,9 +13,9 @@
             @foreach (var provider in externalLogins)
             {
                 <div>
-                    <Syncfusion.Blazor.Buttons.SfButton CssClass="e-outline e-primary" type="submit" name="provider" value="@provider.Name">
+                    <SfButton CssClass="e-outline" IsPrimary="true" type="submit" name="provider" value="@provider.Name">
                         Connect with @provider.DisplayName
-                    </Syncfusion.Blazor.Buttons.SfButton>
+                    </SfButton>
                 </div>
             }
             <div>

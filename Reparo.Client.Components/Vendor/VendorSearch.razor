@@ -16,14 +16,14 @@
     <div>
         <SfButton CssClass="e-success e-outline"
                   OnClick="ShowVendor" title="View Vendor Details">@DamageContext.Vendor.Name</SfButton>
-        <SfButton CssClass="e-small e-round e-outline" OnClick="RemoveVendor" IconCss="e-icons e-close" title="Remove this vendor"></SfButton>
+        <SfButton CssClass="e-small e-round e-outline" OnClick="RemoveVendor" IconCss="e-icons e-close" title="Unassign this vendor"></SfButton>
     </div>
 }
 else
 {
-    <SfButton type="button" CssClass="e-primary e-outline" OnClick="toggleSearch"
+    <SfButton type="button" CssClass="e-success" OnClick="toggleSearch"
               Content="Find a local contractor" IconCss="e-icons e-search"
-              IconPosition="IconPosition.Right" title="Find a local contractor"></SfButton>
+              IconPosition="IconPosition.Right" title="Find a local vendor"></SfButton>
 }
 
 @code {
