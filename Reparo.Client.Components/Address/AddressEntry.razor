@@ -7,8 +7,8 @@
         <div class="wdr-container">
             <SfTextBox @bind-Value="DamageContext.AddressEntry" Placeholder="Property Address" ShowClearButton="true"
                        FloatLabelType="FloatLabelType.Auto" OnChange="onChanged" Width="100%" />
-            <div @onclick:preventDefault style="align-self:end">
-                <SfSpeechToText @bind-Transcript="DamageContext.AddressEntry" CssClass="e-info e-outline e-primary" SpeechRecognitionStopped="OnTranscriptChanged" />
+            <div @onclick:preventDefault>
+                <SfSpeechToText @bind-Transcript="DamageContext.AddressEntry" SpeechRecognitionStopped="OnTranscriptChanged" />
             </div>
         </div>
         <div class="validation-message">

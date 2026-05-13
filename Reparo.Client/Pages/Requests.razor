@@ -48,10 +48,10 @@
                             <div class="spread-across">
                                 <SfButton type="button" OnClick="@(() => OnReview(item))" IconCss="e-icons e-resizer-1"
                                           Content="@(item.AIReviewCompleted?"Reviewed by AI":"Run AI review")" Disabled="@item.AIReviewCompleted"
-                                          CssClass="@(item.AIReviewCompleted?"e-success":"e-primary")"
+                                          CssClass="@(item.AIReviewCompleted?"e-primary":"e-warning")"
                                           IconPosition="IconPosition.Right" title="Smart review"></SfButton>
                                 <SfButton type="button" CssClass="@item.GetStatusStyle()" OnClick="@(() => ToggleBlade(item))"
-                                          Content="@(isSideBarOpen ? "Hide" : item.GetStatusDescription())" IconCss="@(isSideBarOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
+                                          Content="@(isSideBarOpen ? "Hide Sidebar" : item.GetStatusDescription())" IconCss="@(isSideBarOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
                                           IconPosition="IconPosition.Right" title="Review damage report">
                                 </SfButton>
                             </div>
@@ -94,12 +94,12 @@
                     <CardContent EnableSeparator="true">
                         <div class="spread-across">
                             <SfButton type="button" Content="Damage Details"
-                                      IconCss="e-icons e-circle-info" IconPosition="IconPosition.Right" IsPrimary="true"
-                                      CssClass="e-outline"
+                                      IconCss="e-icons e-circle-info" IconPosition="IconPosition.Right"
+                                      CssClass="@(selectedDamage.AIReviewCompleted? "e-primary":"e-warning")"
                                       OnClick="@(()=>OpenEditDialog(selectedDamage))" title="Damage report Details">
                             </SfButton>
                             <SfButton type="button" Content="View Images"
-                                      IconCss="e-icons e-pentagon" IconPosition="IconPosition.Left" IsPrimary="true"
+                                      IconCss="e-icons e-pentagon" IconPosition="IconPosition.Left"
                                       OnClick="@(()=>OnShowImages(selectedDamage.Id))" title="Damage report Images">
                             </SfButton>
                         </div>
@@ -245,7 +245,12 @@
 
     private async Task OpenEditDialog(DamageEntry damage)
     {
-        if (!damage.AIReviewCompleted)
+        if (damage.AIReviewCompleted)
+        {
+            this.selectedDamage = damage;
+            isEditDialogOpen = true;
+        }
+        else
         {
             var confirm = await OnReview(damage);
             if (confirm)
@@ -253,11 +258,6 @@
                 this.selectedDamage = damage;
                 isEditDialogOpen = true;
             }
-        }
-        else
-        {
-            this.selectedDamage = damage;
-            isEditDialogOpen = true;
         }
     }
 

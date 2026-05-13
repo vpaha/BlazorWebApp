@@ -168,6 +168,7 @@ h5 {
 .wdr-container {
   display: flex;
   column-gap: 5px;
+  align-items: end;
 }
 .wdr-container .wdr-icon {
   flex-direction: column;

@@ -13,8 +13,8 @@
             <div class="wdr-container">
                 <SfTextBox @bind-Value="ClaimFilter.MemId" CssClass="e-small" Placeholder="Member ID/Name" ShowClearButton="true"
                            FloatLabelType="FloatLabelType.Always" />
-                <div @onclick:preventDefault style="align-self: center">
-                    <SfSpeechToText @bind-Transcript="ClaimFilter.MemId" CssClass="e-info e-outline" SpeechRecognitionStopped="OnTranscriptChanged" />
+                <div @onclick:preventDefault>
+                    <SfSpeechToText @bind-Transcript="ClaimFilter.MemId" SpeechRecognitionStopped="OnTranscriptChanged" />
                 </div>
             </div>
             <div class="validation-message">

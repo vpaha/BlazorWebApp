@@ -136,10 +136,10 @@ public class DamageEntry : IValidatableObject
             DamageStatus.Reported => "e-primary",
             DamageStatus.VendorAssigned => "e-outline e-primary",
             DamageStatus.ServiceScheduled => "e-outline e-success",
-            DamageStatus.WorkCompleted => "e-outline e-info",
-            DamageStatus.Closed => "e-outline e-dark",
-            DamageStatus.Cancelled => "e-outline e-danger",
-            _ => "e-warning"
+            DamageStatus.WorkCompleted => "",
+            DamageStatus.Closed => "e-outline e-info",
+            DamageStatus.Cancelled => "e-outline e-warning",
+            _ => "e-danger"
         };
     }
 }

@@ -13,7 +13,7 @@
                     <SfIcon Size="IconSize.Medium" Name="IconName.AIChat" Title="AI Process"></SfIcon>
                 </SfButton>
                 <div @onclick:preventDefault>
-                    <SfSpeechToText @bind-Transcript="DamageContext.ContactEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnContactTranscriptChanged" />
+                    <SfSpeechToText @bind-Transcript="DamageContext.ContactEntry" SpeechRecognitionStopped="OnContactTranscriptChanged" />
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
                     <SfIcon Size="IconSize.Medium" Name="IconName.AIChat" Title="AI Process"></SfIcon>
                 </SfButton>
                 <div @onclick:preventDefault>
-                    <SfSpeechToText @bind-Transcript="DamageContext.InsuranceEntry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnInsuranceTranscriptChanged" />
+                    <SfSpeechToText @bind-Transcript="DamageContext.InsuranceEntry" SpeechRecognitionStopped="OnInsuranceTranscriptChanged" />
                 </div>
             </div>
         </div>

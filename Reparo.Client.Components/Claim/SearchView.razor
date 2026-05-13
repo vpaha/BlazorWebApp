@@ -1,8 +1,8 @@
 ﻿@attribute [Authorize]
 <section>
     <SfAppBar Role="button" Id="headerAppBar" ColorMode="AppBarColor.Primary">
-        <SfButton CssClass="e-round e-outline e-info" OnClick="ToggleMenu" >
-            <SfIcon Name="IconName.Adjustment" Title="Toggle filter" Style="color: white" />
+        <SfButton CssClass="e-round" OnClick="ToggleMenu" >
+            <SfIcon Name="IconName.Adjustment" Title="Toggle filter" />
         </SfButton>
         <h3>Filter</h3>
         <AppBarSeparator />
@@ -10,8 +10,8 @@
         <AppBarSeparator />
         <UserPanel />
     </SfAppBar>
-    <div id="main-container">
-        <SfSidebar Position="SidebarPosition.Left" Target="#main-container" @bind-IsOpen="IsMenuOpen" Type="SidebarType.Push" EnableGestures="false">
+    <div id="claim-search-container">
+        <SfSidebar Position="SidebarPosition.Left" Target="#claim-search-container" @bind-IsOpen="IsMenuOpen" Type="SidebarType.Push" EnableGestures="false">
             <ChildContent>
                 <ClaimSearchForm OnFilterEvent="HandleFormSubmission" />
             </ChildContent>
@@ -19,7 +19,7 @@
         <div class="grid-stretch">
             <ClaimResultGrid @ref="ClaimResultGrid" OnOpenBladeEvent="HandleSideBar" />
         </div>
-        <SfSidebar Position="SidebarPosition.Right" Target="#main-container" @bind-IsOpen="IsSideBarOpen" Type="SidebarType.Push">
+        <SfSidebar Position="SidebarPosition.Right" Target="#claim-search-container" @bind-IsOpen="IsSideBarOpen" Type="SidebarType.Push">
             <ChildContent>
                 <ClaimSummary claim="SelectedClaim" />
             </ChildContent>
@@ -31,10 +31,8 @@
         column-gap: 16px;
     }
 
-    #main-container {
-        background-color: gainsboro;
+    #claim-search-container {
         margin-top: 2px;
-        display: flex;
         flex-basis: 100%;
     }
 </style>

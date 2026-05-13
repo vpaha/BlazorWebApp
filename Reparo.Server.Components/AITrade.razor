@@ -5,7 +5,7 @@
     <CardContent>
         <div id="spacebetween">
             <SfButton type="button" title="Click to open" CssClass="e-large-button e-outline" IsPrimary="true" IconPosition="IconPosition.Right" IconCss="e-icons e-chevron-right-double" OnClick="toggleTop">
-                @(topExpanded ? "Hide Sidebar" : DamageSection.DamageSectionType?.Name)
+                @(topExpanded ? "Hide" : DamageSection.DamageSectionType?.Name)
             </SfButton>
             <SfButton type="button" title="Get help" CssClass="e-link" OnClick="toggleInfo">
                 @(infoExpanded ? "Collapse" : "More info")
@@ -26,7 +26,7 @@
                         <SfIcon Size="IconSize.Medium" Name="IconName.AIChat" Title="AI Process"></SfIcon>
                     </SfButton>
                     <div @onclick:preventDefault>
-                        <SfSpeechToText @bind-Transcript="DamageSection.Entry" CssClass="e-info e-outline" SpeechRecognitionStopped="OnTranscriptChanged" />
+                        <SfSpeechToText @bind-Transcript="DamageSection.Entry" SpeechRecognitionStopped="OnTranscriptChanged" />
                     </div>
                 </div>
                 <div class="validation-message">
