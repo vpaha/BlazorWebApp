@@ -1,0 +1,87 @@
+﻿@using Microsoft.Extensions.Hosting;
+@inject IJSRuntime jSRuntime
+@inject IHostEnvironment environment
+
+@implements IAsyncDisposable
+
+<SfCard>
+    <CardHeader><h2>Vendor management</h2></CardHeader>
+    <CardContent EnableSeparator="true">
+        <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top"
+                    ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
+            <FormValidator>
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+            </FormValidator>
+            <FormTemplate>
+                <AddressEntry DamageContext="DamageContext" AddressChanged="AddressChanged" ShowMap="true"></AddressEntry>
+            </FormTemplate>
+            <FormButtons>
+                <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Manage vendors</SfButton>
+            </FormButtons>
+        </SfDataForm>
+    </CardContent>
+    <CardContent EnableSeparator="true">
+        @if (isRunning)
+        {
+            <progress></progress>
+            <div>Looking for general contractors</div>
+        }
+        <gmp-map id="localmap" role="region"></gmp-map>
+    </CardContent>
+</SfCard>
+<style>
+    #localmap {
+        height: 400px;
+    }
+</style>
+
+@code {
+    public EditContext EditContext { get; set; } = default!;
+    public DamageEntry DamageContext { get; set; } = new();
+
+    private bool isRunning { get; set; } = false;
+    private bool _isValid;
+
+    private DotNetObjectReference<VendorManagement>? _objRef;
+
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(DamageContext);
+    }
+
+    private void AddressChanged(bool isValid)
+    {
+        _isValid = isValid;
+        if (!isValid) EditContext.Validate();
+    }
+
+    private async Task UpdateVendors()
+    {
+        isRunning = true;
+
+        //   if (!environment.IsDevelopment())
+        // {
+        await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces");
+        //}
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        _objRef = DotNetObjectReference.Create(this);
+
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", DamageContext.Latitude, DamageContext.Longitude, 13, _objRef);
+    }
+
+    [JSInvokable]
+    public async Task OpenVendorDialog(string placeId, string vendorName)
+    {
+    }
+    
+    public ValueTask DisposeAsync()
+    {
+        _objRef?.Dispose();
+        return ValueTask.CompletedTask;
+    }
+}

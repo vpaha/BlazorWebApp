@@ -23,7 +23,7 @@ internal static class RouteExtensions
         string? state = null;
         string? city = null;
 
-        foreach (var component in response.AddressComponents)
+        foreach (var component in response.AddressComponents!)
         {
             if (component.Types == null) continue;
 

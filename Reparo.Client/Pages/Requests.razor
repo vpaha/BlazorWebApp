@@ -215,16 +215,20 @@
         }
     }
 
-    private async Task OnReview(DamageEntry damage)
+    private async Task<bool> OnReview(DamageEntry damage)
     {
         try
         {
             isLoading = true;
             await damageAiService.ProcessEntryAsync(damage, CancellationToken.None);
             toastService.ShowSuccess($"Damage report #{damage.Id} reviewed by AI");
+
+            var result = await SaveClicked(damage);
+            return result;
         } catch (Exception ex)
         {
             toastService.ShowError(ex.Message);
+            return false;
         } finally
         {
             isLoading = false;
@@ -236,13 +240,25 @@
         isEditDialogOpen = false;
 
         isSideBarOpen = !isSideBarOpen;
-        if (isSideBarOpen) selectedDamage = damage;
+        if (isSideBarOpen) this.selectedDamage = damage;
     }
 
-    private void OpenEditDialog(DamageEntry damage)
+    private async Task OpenEditDialog(DamageEntry damage)
     {
-        selectedDamage = damage;
-        isEditDialogOpen = true;
+        if (!damage.AIReviewCompleted)
+        {
+            var confirm = await OnReview(damage);
+            if (confirm)
+            {
+                this.selectedDamage = damage;
+                isEditDialogOpen = true;
+            }
+        }
+        else
+        {
+            this.selectedDamage = damage;
+            isEditDialogOpen = true;
+        }
     }
 
     private void CloseEditDialog()
@@ -250,7 +266,7 @@
         isEditDialogOpen = false;
     }
 
-    private async Task SaveClicked(DamageEntry damage)
+    private async Task<bool> SaveClicked(DamageEntry damage)
     {
         try
         {
@@ -258,9 +274,11 @@
             isLoading = true;
             await damageRepo.UpdateEntryAsync(damage, CancellationToken.None);
             toastService.ShowSuccess("Damage details updated successfully");
+            return true;
         } catch (Exception ex)
         {
             toastService.ShowError(ex.Message);
+            return false;
         } finally
         {
             isLoading = false;
