@@ -172,6 +172,7 @@ h5 {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  align-self: stretch;
 }
 
 .max-width-400 {

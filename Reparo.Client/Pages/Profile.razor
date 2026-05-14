@@ -11,13 +11,11 @@
 
 <section class="zoom-in">
     <SfSpinner @bind-Visible="@isLoading"></SfSpinner>
+    <UserContextInfo RefreshVersion="refreshVersion"></UserContextInfo>
     <AuthorizeView Policy="Vendor">
         <Authorized>
             <VendorDetails Vendor="model"></VendorDetails>
         </Authorized>
-        <NotAuthorized>
-            <UserContextInfo RefreshVersion="refreshVersion"></UserContextInfo>
-        </NotAuthorized>
     </AuthorizeView>
     <AuthorizeView Policy="Admin">
         <Authorized>

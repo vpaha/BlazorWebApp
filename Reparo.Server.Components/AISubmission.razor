@@ -1,6 +1,6 @@
 ﻿@inject NavigationManager nav
 @inject ToastService toastService
-@inject IDamageService damageService
+@inject IDamageRepo damageRepo
 
 @if (EditContext is not null)
 {
@@ -119,7 +119,7 @@
     {
         try
         {
-            IReadOnlyList<DamageSectionType> types = await damageService.ListSectionTypesAsync(CancellationToken.None);
+            IReadOnlyList<DamageSectionType> types = await damageRepo.ListSectionTypesAsync(CancellationToken.None);
 
             DamageContext.Sections = types.Select(t => new DamageEntrySection
             {
@@ -168,7 +168,7 @@
             DamageContext.Sections.RemoveAll(s => string.IsNullOrWhiteSpace(s.Entry));
             DamageContext.Vendor = null;
 
-            var claimId = await damageService.AddEntryAsync(DamageContext, CancellationToken.None);
+            var claimId = await damageRepo.AddEntryAsync(DamageContext, CancellationToken.None);
 
             toastService.ShowSuccess($"Claim #{claimId} has been saved.", "System");
             nav.NavigateTo("requests");
