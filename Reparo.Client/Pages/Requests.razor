@@ -69,7 +69,14 @@
                     </SfCard>
                 }
             }
-        
+            else
+            {
+                <SfCard role="region">
+                    <CardContent>
+                        No damage reports found. Please check back later.
+                    </CardContent>
+                </SfCard>
+            }
         </div>
     </div>
     <SfSidebar ID="side-bar-blade" Width="@(IsDesktopView ? "30vw" : "")" @bind-IsOpen="isSideBarOpen"
