@@ -5,6 +5,7 @@
 @inject IAuthorizationService authz
 @inject IVendorRepo vendorRepo
 @inject ToastService toastService
+@inject IUserService userService
 
 <PageTitle>Profile | Property Claims</PageTitle>
 
@@ -15,8 +16,13 @@
             <VendorDetails Vendor="model"></VendorDetails>
         </Authorized>
         <NotAuthorized>
-            <UserContextInfo></UserContextInfo>
+            <UserContextInfo RefreshVersion="refreshVersion"></UserContextInfo>
         </NotAuthorized>
+    </AuthorizeView>
+    <AuthorizeView Policy="Admin">
+        <Authorized>
+            <UserList RefreshRequested="RefreshPageAsync"></UserList>
+        </Authorized>
     </AuthorizeView>
 </section>
 @code {
@@ -44,4 +50,20 @@
             isLoading = false;
         }
     }
+    
+    private int refreshVersion;
+
+    private async Task RefreshPageAsync(AppUser user)
+    {
+        await userService.UpdateUserAsync(user);
+
+        var authState = await authStateTask;
+        await userService.ProvisionAsync(authState.User);
+
+        refreshVersion++;
+        StateHasChanged();
+
+        toastService.ShowSuccess($"{authState.User.Identity?.Name}'s user updated successfully.");
+    }
+
 }

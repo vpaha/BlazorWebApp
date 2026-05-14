@@ -4,28 +4,33 @@
 
 @implements IAsyncDisposable
 
+@if (isRunning)
+{
+    <progress></progress>
+    <div>Looking for general contractors</div>
+}
+<SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top"
+            ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
+    <FormValidator>
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+    </FormValidator>
+    <FormTemplate>
+        <SfCard>
+            <CardHeader><h2>Vendor management</h2></CardHeader>
+            <CardContent EnableSeparator="true">
+                <SfTextBox @bind-Value="Category" Placeholder="Category" ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" />
+            </CardContent>
+            <CardContent>
+                <AddressEntry DamageContext="Location" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
+            </CardContent>
+        </SfCard>
+    </FormTemplate>
+    <FormButtons>
+        <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Manage vendors</SfButton>
+    </FormButtons>
+</SfDataForm>
 <SfCard>
-    <CardHeader><h2>Vendor management</h2></CardHeader>
     <CardContent EnableSeparator="true">
-        <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top"
-                    ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
-            <FormValidator>
-                <DataAnnotationsValidator></DataAnnotationsValidator>
-            </FormValidator>
-            <FormTemplate>
-                <AddressEntry DamageContext="DamageContext" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
-            </FormTemplate>
-            <FormButtons>
-                <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Manage vendors</SfButton>
-            </FormButtons>
-        </SfDataForm>
-    </CardContent>
-    <CardContent EnableSeparator="true">
-        @if (isRunning)
-        {
-            <progress></progress>
-            <div>Looking for general contractors</div>
-        }
         <gmp-map id="localmap" role="region"></gmp-map>
     </CardContent>
 </SfCard>
@@ -37,7 +42,9 @@
 
 @code {
     public EditContext EditContext { get; set; } = default!;
-    public DamageEntry DamageContext { get; set; } = new();
+    
+    DamageEntry Location { get; set; } = new();
+    string Category { get; set; } = string.Empty;
 
     private bool isRunning { get; set; } = false;
     private bool _isValid;
@@ -46,7 +53,7 @@
 
     protected override void OnInitialized()
     {
-        EditContext = new EditContext(DamageContext);
+        EditContext = new EditContext(Location);
     }
 
     private void AddressChanged(bool isValid)
@@ -61,8 +68,9 @@
 
         //   if (!environment.IsDevelopment())
         // {
-        await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces");
+        await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces", Location.Latitude, Location.Longitude);
         //}
+        isRunning = false;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -70,8 +78,7 @@
         if (!firstRender) return;
 
         _objRef = DotNetObjectReference.Create(this);
-
-        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", DamageContext.Latitude, DamageContext.Longitude, 13, _objRef);
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", Location.Latitude, Location.Longitude, 13, _objRef);
     }
 
     [JSInvokable]

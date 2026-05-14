@@ -8,12 +8,15 @@
 @inject IJSRuntime JSRuntime
 @inject NavigationManager nav
 @inject HttpClient _httpClient
-@inject IUserService userService
-@inject ToastService toastService
 
 <PageTitle>Settings</PageTitle>
 
 <section class="show-image">
+    <AuthorizeView Policy="Admin">
+        <Authorized>
+            <VendorManagement></VendorManagement>
+        </Authorized>
+    </AuthorizeView>
     <SfCard role="region">
         <CardHeader><h1>Settings</h1></CardHeader>
         <CardContent EnableSeparator="true">
@@ -64,17 +67,6 @@
             </div>
         </CardContent>
     </SfCard>
-    <AuthorizeView>
-        <Authorized>
-            <UserContextInfo RefreshVersion="refreshVersion"></UserContextInfo>
-        </Authorized>
-    </AuthorizeView>
-    <AuthorizeView Policy="Admin">
-        <Authorized>
-            <VendorManagement></VendorManagement>
-            <UserList RefreshRequested="RefreshPageAsync"></UserList>
-        </Authorized>
-    </AuthorizeView>
 </section>
 <style>
     .settings-row {
@@ -156,20 +148,5 @@
     {
         await JSRuntime.InvokeVoidAsync("setTheme", theme);
         await _httpClient.PostAsJsonAsync(nav.ToAbsoluteUri("config/theme"), theme);
-    }
-
-    private int refreshVersion;
-
-    private async Task RefreshPageAsync(AppUser user)
-    {
-        await userService.UpdateUserAsync(user);
-
-        var authState = await authStateTask;
-        await userService.ProvisionAsync(authState.User);
-
-        refreshVersion++;
-        StateHasChanged();
-
-        toastService.ShowSuccess($"{authState.User.Identity?.Name}'s user updated successfully.");
     }
 }
