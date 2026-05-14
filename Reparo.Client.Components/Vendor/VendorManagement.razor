@@ -28,11 +28,12 @@
             <CardContent>
                 <AddressEntry DamageContext="location" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
             </CardContent>
+            <CardFooter>
+                <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Fetch vendors</SfButton>
+            </CardFooter>
         </SfCard>
     </FormTemplate>
-    <FormButtons>
-        <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Fetch vendors</SfButton>
-    </FormButtons>
+    <FormButtons></FormButtons>
 </SfDataForm>
 <SfCard>
     <CardContent EnableSeparator="true">
@@ -98,5 +99,5 @@
     [JSInvokable]
     public async Task OpenMapDialogAsync(string placeId, string vendorName)
     {
-    }    
+    }
 }

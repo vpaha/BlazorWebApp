@@ -38,21 +38,21 @@
         dotNetHelper = helper;
 
         const mapEl = document.getElementById(gmpMapId);
-
-        if (!mapEl)
-            throw new Error(`<gmp-map> not found: ${gmpMapId}`);
+        if (!mapEl) throw new Error(`<gmp-map> not found: ${gmpMapId}`);
 
         if (!mapEl.innerMap)
         {
-            await new Promise(resolve =>
-                mapEl.addEventListener("gmp-ready", resolve, { once: true })
+            await new Promise(resolve => mapEl.addEventListener("gmp-ready", resolve, { once: true })
             );
         }
 
         map = mapEl.innerMap;
+        const hasValidCoordinates = Number.isFinite(lat) && Number.isFinite(lng);
+
+        const center = hasValidCoordinates ? { lat, lng } : { lat: 33.7490, lng: -84.3880 }; // Atlanta fallback
 
         map.setOptions({
-            center: { lat, lng },
+            center,
             zoom,
             mapId: "5a696fac23189433db35035a",
             mapTypeControl: false,
