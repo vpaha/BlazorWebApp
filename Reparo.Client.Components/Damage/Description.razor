@@ -5,7 +5,7 @@
         {
             <div>Damage #@DamageContext.Id reported on <strong>@($"{DamageContext.DateOfLoss:D}")</strong></div>
         }
-        @if (HasAny(DamageContext.Street, DamageContext.City, DamageContext.State, DamageContext.Zip))
+        @if (HasAny(DamageContext.Address.Street, DamageContext.Address.City, DamageContext.Address.State, DamageContext.Address.Zip))
         {
             <div>
                 Address: <i>@AddressLine</i>
@@ -45,10 +45,10 @@
 
     private string AddressLine => string.Join(" ", new[]
         {
-            DamageContext.Street,
-            DamageContext.City,
-            DamageContext.State,
-            DamageContext.Zip
+            DamageContext.Address.Street,
+            DamageContext.Address.City,
+            DamageContext.Address.State,
+            DamageContext.Address.Zip
         }.Where(HasValue));
 
     private bool HasValue(string? value) => !string.IsNullOrWhiteSpace(value);

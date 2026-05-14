@@ -1,42 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-public enum MessageSeverity
+public sealed class LocationAddress
 {
-    Normal = 0,
-    Success = 1,
-    Info = 2,
-    Warning = 3,
-    Error = 4
-}
-
-public sealed class DamageEntrySection
-{
-    public int Id { get; set; }
-    // FK → damage_entries.id
-    public int DamageEntryId { get; set; }
-    // FK → damage_section_types.id
-    public int DamageSectionId { get; set; }
-
-    public string? Entry { get; set; }
-    public DateTimeOffset CreatedAt { get; set; }
-
-    public DamageSectionType? DamageSectionType { get; set; }
-}
-
-public sealed class DamageSectionType
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = default!;
-    public string Description { get; set; } = default!;
-    public bool IsEmergency { get; set; }
-}
-
-public class DamageEntry : IValidatableObject
-{
-    public int Id { get; set; }
-    public DamageStatus StatusId { get; set; }
-    public bool AIReviewCompleted { get; set; }
-    
     [Required(ErrorMessage = "What's the property address? (Street, city, state, or ZIP code)")]
     public string? AddressEntry { get; set; }
 
@@ -51,6 +16,15 @@ public class DamageEntry : IValidatableObject
     public string? GoogleId { get; set; }
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
+}
+
+public class DamageEntry : IValidatableObject
+{
+    public int Id { get; set; }
+    public DamageStatus StatusId { get; set; }
+    public bool AIReviewCompleted { get; set; }
+
+    public LocationAddress Address { get; set; } = new LocationAddress();
 
     public string? InsuranceEntry { get; set; }
 
@@ -85,7 +59,7 @@ public class DamageEntry : IValidatableObject
         {
             yield return new ValidationResult(
                 "Click a button to describe damage",
-                [nameof(Sections)]);
+                new[] { nameof(Sections) });
         }
     }
 
@@ -93,9 +67,12 @@ public class DamageEntry : IValidatableObject
     {
         var parts = new List<string>();
 
-        if (!string.IsNullOrWhiteSpace(AddressEntry)) parts.Add(AddressEntry);
-        if (!string.IsNullOrWhiteSpace(ContactEntry)) parts.Add(ContactEntry);
-        if (!string.IsNullOrWhiteSpace(InsuranceEntry)) parts.Add(InsuranceEntry);
+        if (Address != null)
+        {
+            if (!string.IsNullOrWhiteSpace(Address.AddressEntry)) parts.Add(Address.AddressEntry);
+            if (!string.IsNullOrWhiteSpace(ContactEntry)) parts.Add(ContactEntry);
+            if (!string.IsNullOrWhiteSpace(InsuranceEntry)) parts.Add(InsuranceEntry);
+        }
 
         if (parts.Any() == true) return string.Join(". ", parts);
         return null;

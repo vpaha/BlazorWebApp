@@ -7,16 +7,17 @@
 <SfCard>
     <CardHeader><h2>Vendor management</h2></CardHeader>
     <CardContent EnableSeparator="true">
-        <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top"
+        <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top" OnValidSubmit="UpdateVendors"
                     ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
             <FormValidator>
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidator>
             <FormTemplate>
-                <AddressEntry DamageContext="DamageContext" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
+                <AddressEntry Address="entry.Address" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
+                <SfTextBox Value="@entry.Category" Label="Category" Placeholder="type category name"></SfTextBox>
             </FormTemplate>
             <FormButtons>
-                <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Manage vendors</SfButton>
+                <SfButton type="submit" Disabled="_isValid" IsPrimary="true">Search Vendors</SfButton>
             </FormButtons>
         </SfDataForm>
     </CardContent>
@@ -36,8 +37,14 @@
 </style>
 
 @code {
+    private sealed class AddressEntry
+    {
+        public LocationAddress Address { get; set; } = default!;
+        public string Category { get; set; } = default!;
+    }
+    private AddressEntry entry { get; set; } = new AddressEntry();
+
     public EditContext EditContext { get; set; } = default!;
-    public DamageEntry DamageContext { get; set; } = new();
 
     private bool isRunning { get; set; } = false;
     private bool _isValid;
@@ -46,7 +53,7 @@
 
     protected override void OnInitialized()
     {
-        EditContext = new EditContext(DamageContext);
+        EditContext = new EditContext(entry);
     }
 
     private void AddressChanged(bool isValid)
@@ -61,8 +68,10 @@
 
         //   if (!environment.IsDevelopment())
         // {
-        await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces");
+        await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces", entry.Address.Latitude, entry.Address.Longitude);
         //}
+
+        isRunning = false;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -70,8 +79,7 @@
         if (!firstRender) return;
 
         _objRef = DotNetObjectReference.Create(this);
-
-        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", DamageContext.Latitude, DamageContext.Longitude, 13, _objRef);
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", entry.Address.Latitude, entry.Address.Longitude, 17, _objRef);
     }
 
     [JSInvokable]

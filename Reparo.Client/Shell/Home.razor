@@ -11,13 +11,13 @@
     <meta property="og:description" content="Get property damage repair services. Connect with licensed local contractors and simplify your insurance claim process." />
     <meta property="og:url" content="https://www.propertyclaims.com" />
 
-    @if (!string.IsNullOrWhiteSpace(DamageContext.Region))
+    @if (!string.IsNullOrWhiteSpace(DamageContext.Address.Region))
     {
-        <meta name="geo.region" content="@DamageContext.Region" />
+        <meta name="geo.region" content="@DamageContext.Address.Region" />
     }
-    @if (!string.IsNullOrWhiteSpace(DamageContext.Placename))
+    @if (!string.IsNullOrWhiteSpace(DamageContext.Address.Placename))
     {
-        <meta name="geo.placename" content="@DamageContext.Placename" />
+        <meta name="geo.placename" content="@DamageContext.Address.Placename" />
     }
 </HeadContent>
 
@@ -29,7 +29,7 @@
         </FormValidator>
         <FormTemplate>
             <div class="@(IsDesktopView ? "desktop-view" : "mobile-view")">
-                <AddressEntry DamageContext="DamageContext" AddressChanged="AddressChanged" ShowMap="true"></AddressEntry>
+                <AddressEntry DamageContext="DamageContext.Address" AddressChanged="AddressChanged" ShowMap="true"></AddressEntry>
             </div>
         </FormTemplate>
         <FormButtons>
@@ -43,7 +43,7 @@
     {
         <SfCard role="region">
             <CardContent>
-                <GoogleMap Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude"></GoogleMap>
+                <GoogleMap Latitude="@DamageContext.Address?.Latitude" Longitude="@DamageContext.Address?.Longitude"></GoogleMap>
             </CardContent>
         </SfCard>
     }
