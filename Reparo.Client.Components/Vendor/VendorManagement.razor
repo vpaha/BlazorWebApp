@@ -1,14 +1,10 @@
 ﻿@using Microsoft.Extensions.Hosting;
+@using System.ComponentModel.DataAnnotations
 @inject IJSRuntime jSRuntime
 @inject IHostEnvironment environment
 
 @implements IAsyncDisposable
 
-@if (isRunning)
-{
-    <progress></progress>
-    <div>Looking for general contractors</div>
-}
 <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top"
             ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
     <FormValidator>
@@ -16,17 +12,26 @@
     </FormValidator>
     <FormTemplate>
         <SfCard>
-            <CardHeader><h2>Vendor management</h2></CardHeader>
+            <CardHeader>
+                <h2>Vendor management</h2>
+                @if (isRunning)
+                {
+                    <progress></progress>
+                    <div>Looking for general contractors</div>
+                }
+            </CardHeader>
             <CardContent EnableSeparator="true">
-                <SfTextBox @bind-Value="Category" Placeholder="Category" ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" />
+                <SfDropDownList TItem="string" TValue="string" DataSource="@categories" @bind-Value="category" Width="300px"
+                                Placeholder="Select a category">
+                </SfDropDownList>
             </CardContent>
             <CardContent>
-                <AddressEntry DamageContext="Location" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
+                <AddressEntry DamageContext="location" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
             </CardContent>
         </SfCard>
     </FormTemplate>
     <FormButtons>
-        <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Manage vendors</SfButton>
+        <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Fetch vendors</SfButton>
     </FormButtons>
 </SfDataForm>
 <SfCard>
@@ -42,9 +47,11 @@
 
 @code {
     public EditContext EditContext { get; set; } = default!;
-    
-    DamageEntry Location { get; set; } = new();
-    string Category { get; set; } = string.Empty;
+
+    DamageEntry location { get; set; } = new();
+
+    string? category { get; set; }
+    string[] categories = new[] { "general contractor", "plumber", "electrician", "roofer", "painter" };
 
     private bool isRunning { get; set; } = false;
     private bool _isValid;
@@ -53,7 +60,8 @@
 
     protected override void OnInitialized()
     {
-        EditContext = new EditContext(Location);
+        EditContext = new EditContext(location);
+        category = categories[0];
     }
 
     private void AddressChanged(bool isValid)
@@ -68,9 +76,9 @@
 
         //   if (!environment.IsDevelopment())
         // {
-        await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces", Location.Latitude, Location.Longitude);
-        //}
+        await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces", location.Latitude, location.Longitude, category);
         isRunning = false;
+        //}
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -78,17 +86,17 @@
         if (!firstRender) return;
 
         _objRef = DotNetObjectReference.Create(this);
-        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", Location.Latitude, Location.Longitude, 13, _objRef);
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", location.Latitude, location.Longitude, 13, _objRef);
     }
 
-    [JSInvokable]
-    public async Task OpenMapDialogAsync(string placeId, string vendorName)
-    {
-    }
-    
     public ValueTask DisposeAsync()
     {
         _objRef?.Dispose();
         return ValueTask.CompletedTask;
     }
+
+    [JSInvokable]
+    public async Task OpenMapDialogAsync(string placeId, string vendorName)
+    {
+    }    
 }

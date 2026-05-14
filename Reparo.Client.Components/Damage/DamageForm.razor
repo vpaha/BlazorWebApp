@@ -43,7 +43,7 @@
                                     </div>
                                     <SfDatePicker CssClass="e-small" Width="auto" TValue="DateOnly" @bind-Value="@DamageContext.DateOfLoss" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern"
                                                   FloatLabelType="FloatLabelType.Auto" Placeholder="Loss Date" EnableMask="true" Readonly="IsReadOnly">
-                                        <DatePickerMaskPlaceholder Day="dd" Month="mm" Year="yyyy"></DatePickerMaskPlaceholder>
+                                        <DatePickerMaskPlaceholder Day="dd" Month="MM" Year="yyyy" Hour="hh" Minute="mm"></DatePickerMaskPlaceholder>
                                     </SfDatePicker>
                                     <ValidationMessage For="@(() => DamageContext.DateOfLoss)" />
                                 </CardContent>

@@ -1,0 +1,11 @@
+﻿@page "/vendors"
+@rendermode InteractiveAuto
+@attribute [Authorize(Policy = "Admin")]
+
+<PageTitle>Vendors | Property Claims</PageTitle>
+
+<section class="show-image">
+    <VendorManagement></VendorManagement>
+</section>
+@code {
+}

@@ -90,7 +90,7 @@
         mapInstance.setZoom(15);
     }
 
-    async function searchPlaces(lat, lng)
+    async function searchPlaces(lat, lng, category)
     {
         const { PlaceCtor } = await ensureReady();
 
@@ -103,7 +103,7 @@
         mapInstance.setCenter({ lat, lng });
 
         const { places } = await PlaceCtor.searchByText({
-            textQuery: "general contractor",
+            textQuery: category,
             fields: ["id"],
             locationBias: mapInstance.getCenter(),
             maxResultCount: 12,
