@@ -43,7 +43,7 @@
         </div>
     </CardContent>
 </SfCard>
-<AddressEntry DamageContext="DamageContext.Address" AddressChanged="AddressChanged"></AddressEntry>
+<AddressEntry DamageContext="DamageContext" AddressChanged="AddressChanged"></AddressEntry>
 @code {
     [CascadingParameter(Name = CascadingParams.MediaQuery)] private bool IsDesktopView { get; set; }
     [CascadingParameter] private EditContext EditContext { get; set; } = default!;
@@ -65,7 +65,7 @@
 
     private void AddressChanged(bool isValid)
     {
-        EditContext.NotifyFieldChanged(new FieldIdentifier(DamageContext, nameof(DamageContext.Address.AddressEntry)));
+        EditContext.NotifyFieldChanged(new FieldIdentifier(DamageContext, nameof(DamageContext.AddressEntry)));
     }
 
     private async Task AiProcessAsync1()

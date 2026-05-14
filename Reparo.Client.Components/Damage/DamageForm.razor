@@ -14,21 +14,21 @@
                         <div id="damage-info">
                             <SfCard role="article">
                                 <CardContent>
-                                    <SfTextBox @bind-Value="DamageContext.Address.Street" Width="100%" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly"
+                                    <SfTextBox @bind-Value="DamageContext.Street" Width="100%" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly"
                                                Placeholder="Street" HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "Street address" },{ "autocomplete" , "address-line1" }})" autofocus />
-                                    <ValidationMessage For="@(() => DamageContext.Address.Street)" />
+                                    <ValidationMessage For="@(() => DamageContext.Street)" />
                                     <div style="display:flex;column-gap:5px;">
-                                        <SfTextBox @bind-Value="DamageContext.Address.City" Width="auto" CssClass="e-small" Placeholder="City" FloatLabelType="FloatLabelType.Auto" Readonly="IsReadOnly"
+                                        <SfTextBox @bind-Value="DamageContext.City" Width="auto" CssClass="e-small" Placeholder="City" FloatLabelType="FloatLabelType.Auto" Readonly="IsReadOnly"
                                                    HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "City" },{ "autocomplete", "address-level2" }})" />
-                                        <ValidationMessage For="@(() => DamageContext.Address.City)" />
+                                        <ValidationMessage For="@(() => DamageContext.City)" />
                                         <SfDropDownList TValue="string" Width="auto" CssClass="e-small" TItem="string" Placeholder="State" DataSource="States" Readonly="IsReadOnly"
-                                                        @bind-Value="DamageContext.Address.State" FloatLabelType="FloatLabelType.Auto"
+                                                        @bind-Value="DamageContext.State" FloatLabelType="FloatLabelType.Auto"
                                                         HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "State" },{ "autocomplete", "address-level1" }})" />
-                                        <ValidationMessage For="@(() => DamageContext.Address.State)" />
+                                        <ValidationMessage For="@(() => DamageContext.State)" />
                                     </div>
-                                    <SfTextBox @bind-Value="DamageContext.Address.Zip" Width="auto" Placeholder="Zip code" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly"
+                                    <SfTextBox @bind-Value="DamageContext.Zip" Width="auto" Placeholder="Zip code" CssClass="e-small" FloatLabelType="FloatLabelType.Always" Readonly="IsReadOnly"
                                                HtmlAttributes="@(new Dictionary<string, object>{{ "aria-label", "ZIP code" },{ "autocomplete", "postal-code" },{ "inputmode", "numeric" },{ "pattern", "[0-9]*" }})" />
-                                    <ValidationMessage For="@(() => DamageContext.Address.Zip)" />
+                                    <ValidationMessage For="@(() => DamageContext.Zip)" />
                                 </CardContent>
                             </SfCard>
                             <SfCard role="article">

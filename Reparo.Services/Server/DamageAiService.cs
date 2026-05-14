@@ -77,11 +77,10 @@ public sealed class DamageAiService : IDamageAiService
 
             if (result is not null)
             {
-                entry.Address.Street = result.Street;
-                entry.Address.City = result.City;
-                entry.Address.State = result.State;
-                entry.Address.Zip = result.Zip;
-
+                entry.Street = result.Street;
+                entry.City = result.City;
+                entry.State = result.State;
+                entry.Zip = result.Zip;
                 entry.FullName = result.FullName;
                 entry.Phone = result.Phone;
                 entry.Email = result.Email;

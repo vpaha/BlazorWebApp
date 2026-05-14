@@ -24,17 +24,16 @@ internal static class ModelBuilderExtensions
             e.Property(x => x.StatusId).HasColumnName("status_id").HasDefaultValue(DamageStatus.Reported).IsRequired();
             e.Property(x => x.AIReviewCompleted).HasColumnName("ai_review_completed").HasDefaultValue(false);
 
-            e.Property(x => x.Address.AddressEntry).HasColumnName("address_entry").IsRequired();
+            e.Property(x => x.AddressEntry).HasColumnName("address_entry").IsRequired();
             e.Property(x => x.ContactEntry).HasColumnName("contact_entry").IsRequired();
             e.Property(x => x.InsuranceEntry).HasColumnName("insurance_entry");
 
-            e.Property(x => x.Address.Street).HasColumnName("street");
-            e.Property(x => x.Address.City).HasColumnName("city");
-            e.Property(x => x.Address.State).HasColumnName("state");
-            e.Property(x => x.Address.Zip).HasColumnName("zip");
-            e.Property(x => x.Address.Placename).HasColumnName("placename");
-            e.Property(x => x.Address.Region).HasColumnName("region");
-
+            e.Property(x => x.Street).HasColumnName("street");
+            e.Property(x => x.City).HasColumnName("city");
+            e.Property(x => x.State).HasColumnName("state");
+            e.Property(x => x.Zip).HasColumnName("zip");
+            e.Property(x => x.Placename).HasColumnName("placename");
+            e.Property(x => x.Region).HasColumnName("region");
             e.Property(x => x.InsuranceCarrier).HasColumnName("insurance_carrier");
             e.Property(x => x.PolicyNumber).HasColumnName("policy_number");
             e.Property(x => x.ClaimNumber).HasColumnName("claim_number");
@@ -46,10 +45,10 @@ internal static class ModelBuilderExtensions
             e.Property(x => x.CreatedAt).HasColumnName("created_at").HasColumnType("timestamptz");
             e.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamptz");
 
-            e.Property(x => x.Address.Latitude).HasColumnName("latitude").HasColumnType("double precision");
-            e.Property(x => x.Address.Longitude).HasColumnName("longitude").HasColumnType("double precision");
+            e.Property(x => x.Latitude).HasColumnName("latitude").HasColumnType("double precision");
+            e.Property(x => x.Longitude).HasColumnName("longitude").HasColumnType("double precision");
 
-            e.Property(x => x.Address.GoogleId).HasColumnName("google_id");
+            e.Property(x => x.GoogleId).HasColumnName("google_id");
             e.Property(x => x.UserId).HasColumnName("user_id");
             e.Property(x => x.VendorId).HasColumnName("vendor_id");
 
