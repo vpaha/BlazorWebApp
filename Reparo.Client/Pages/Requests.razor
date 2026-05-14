@@ -48,7 +48,7 @@
                             <div class="spread-across">
                                 <SfButton type="button" OnClick="@(() => OnReview(item))" IconCss="e-icons e-resizer-1"
                                           Content="@(item.AIReviewCompleted?"Reviewed by AI":"Run AI review")" Disabled="@item.AIReviewCompleted"
-                                          CssClass="@(item.AIReviewCompleted?"e-warning e-outline":"e-warning")"
+                                          CssClass="@(item.AIReviewCompleted?"e-outline":"e-warning")"
                                           IconPosition="IconPosition.Right" title="Smart review"></SfButton>
                                 <SfButton type="button" CssClass="@item.GetStatusStyle()" OnClick="@(() => ToggleBlade(item))"
                                           Content="@(isSideBarOpen ? "Hide Sidebar" : item.GetStatusDescription())" IconCss="@(isSideBarOpen ? "e-icons e-eye-slash" : "e-icons e-eye")"
@@ -73,7 +73,7 @@
             {
                 <SfCard role="region">
                     <CardContent>
-                        No damage reports found. Please check back later.
+                        No damage reports found.
                     </CardContent>
                 </SfCard>
             }
