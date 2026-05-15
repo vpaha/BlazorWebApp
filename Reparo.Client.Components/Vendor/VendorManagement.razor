@@ -190,7 +190,7 @@
     {
         isRunning = true;
         vendors.Clear();
-        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category);
+        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, 12);
         isRunning = false;
     }
 
