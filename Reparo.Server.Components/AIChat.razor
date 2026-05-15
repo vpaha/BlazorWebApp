@@ -1,6 +1,4 @@
-﻿@rendermode InteractiveServer
-
-@inject IChatClient client
+﻿@inject IChatClient client
 @inject ToastService toastService
 
 <section class="chat-shell">
@@ -33,12 +31,11 @@
     </SfListView>
     <div>
         <div class="wdr-container" style="padding-bottom: 14px;">
-            <SfSmartTextArea UserRole="User" Placeholder="Start asking" @bind-Value="MessageText"
-                             ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
-                             RowCount="4" ShowSuggestionOnPopup="false">
-            </SfSmartTextArea>
+            <SfTextArea Placeholder="Start asking" @bind-Value="MessageText" ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
+                        RowCount="4">
+            </SfTextArea>
             <div @onclick:preventDefault>
-                <SfSpeechToText @bind-Transcript="MessageText" />
+                <SfSpeechToText @bind-Transcript="MessageText" SpeechRecognitionStopped="OnTranscriptChanged" />
             </div>
         </div>
         <SfButton type="submit" CssClass="e-primary e-block" IconCss="e-icons e-ai-chat" OnClick="CommunicateAsync" title="Ask AI" Content="Get Response" />
@@ -63,8 +60,6 @@
 </style>
 
 @code {
-    [CascadingParameter] private Task<AuthenticationState> authStateTask { get; set; } = default!;
-
     private string MessageText { get; set; } = string.Empty;
     private List<ChatMessageVm> Messages { get; set; } = [];
     private async Task CommunicateAsync()
@@ -79,15 +74,17 @@
         try
         {
             var response = await client.GetResponseAsync(userText);
-            Messages.Insert(0, new ChatMessageVm(response?.ToString() ?? string.Empty, false));
+            Messages.Insert(1, new ChatMessageVm(response?.ToString() ?? string.Empty, false));
         } catch (Exception ex)
         {
             toastService.ShowError(ex.Message);
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    private Task OnTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
     {
+        MessageText = args.Transcript;
+        return Task.CompletedTask;
     }
 
     private sealed record ChatMessageVm(string Text, bool IsUser)
