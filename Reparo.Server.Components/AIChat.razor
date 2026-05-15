@@ -1,41 +1,50 @@
-﻿@inject IChatClient client
+﻿@using Microsoft.AspNetCore.Authorization
+@rendermode InteractiveServer
+
+@inject IChatClient client
 @inject ToastService toastService
 
-<section id="ai-container">
-    <h2>
-        Smart Assistant <SfIcon Name="IconName.AIChat" Size="IconSize.Large" Title="Smart Assist"></SfIcon>
-    </h2>
-    <div class="chat-card">
-        @if (Messages.Count > 0)
-        {
-            @foreach (var message in Messages)
-            {
-                <div>@((MarkupString)message)</div>
-            }
-        }
-    </div>
-    <div style="flex-grow:1"></div>
-    <div class="wdr-container">
-        <SfTextBox @bind-Value="MessageText"
-                   Multiline="true"
-                   Placeholder="Start asking..."
-                   FloatLabelType="FloatLabelType.Always"
-                   ShowClearButton="true"
-                   InputAttributes="@(new Dictionary<string, object>{{ "rows", "8" }})" />
-        <div @onclick:preventDefault>
-            <SfSpeechToText @bind-Transcript="MessageText"/>
+<section class="chat-shell">
+    <SfAppBar ColorMode="AppBarColor.Primary">
+        <SfIcon Size="IconSize.Large" Name="IconName.AIChat" Title="Smart Assistant"></SfIcon>
+        <AppBarSpacer></AppBarSpacer>
+        <div>Smart Assistant</div>
+        <AppBarSpacer></AppBarSpacer>
+    </SfAppBar>
+    <SfListView DataSource="@Messages" TValue="ChatMessageVm" EnableVirtualization="true" CssClass="e-list-template" HeaderTitle="@DateTime.Now.ToLongDateString()"
+                ShowHeader="true" Height="100%">
+        <ListViewTemplates TValue="ChatMessageVm">
+            <Template>
+                <div class='e-list-wrapper e-list-avatar'>
+                    @if (context.IsUser)
+                    {
+                        <span class='e-list-item-header'>userName</span>
+                    }
+                    else
+                    {
+                        <img class='e-avatar e-avatar-circle' src="https://cdn.syncfusion.com/blazor/images/avatar/pic02.png" alt="AI" />
+                    }
+                    @context.CreatedAt.ToString("MM/dd/yyyy hh:mm tt")
+                    <span class='e-list-content @(context.IsUser ? "e-user-message" : "e-ai-message")'>@context.Text</span>
+                </div>
+            </Template>
+        </ListViewTemplates>
+    </SfListView>
+    <div>
+        <div class="wdr-container" style="padding-bottom: 14px;">
+            <SfSmartTextArea UserRole="User" Placeholder="Start asking" @bind-Value="MessageText"
+                             ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
+                             RowCount="4" ShowSuggestionOnPopup="false">
+            </SfSmartTextArea>
+            <div @onclick:preventDefault>
+                <SfSpeechToText @bind-Transcript="MessageText" />
+            </div>
         </div>
+        <SfButton type="submit" CssClass="e-primary e-block" IconCss="e-icons e-ai-chat" OnClick="CommunicateAsync" title="Ask AI" Content="Get Response" />
     </div>
-    <SfButton type="submit"
-              CssClass="e-primary"
-              IconCss="e-icons e-ai-chat"
-              OnClick="CommunicateAsync"
-              title="Ask AI"
-              Content="Get Response" />
 </section>
-
 <style>
-    #ai-container {
+    .chat-shell {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -43,39 +52,52 @@
         gap: 8px;
     }
 
-        #ai-container .chat-card {
-            display: flex;
-            flex-direction: column;
-            max-height: 80%;
-            overflow-y: auto;
-            border-top: 1px solid gray;
-            padding-top: 14px;
-        }
+    .e-user-message {
+        background-color: gainsboro;
+    }
 
-            #ai-container .chat-card > div {
-                padding-bottom: 3px;
-            }
+    .e-ai-message {
+        background-color: lightskyblue;
+    }
 </style>
 
 @code {
-    private string MessageText { get; set; } = string.Empty;
-    private List<string> Messages { get; set; } = [];
+    [CascadingParameter] private Task<AuthenticationState> authStateTask { get; set; } = default!;
 
+    private string MessageText { get; set; } = string.Empty;
+    private List<ChatMessageVm> Messages { get; set; } = [];
     private async Task CommunicateAsync()
     {
-        if (string.IsNullOrWhiteSpace(MessageText))
-        {
-            return;
-        }
+        if (string.IsNullOrWhiteSpace(MessageText)) return;
+
+        var userText = MessageText.Trim();
+
+        Messages.Insert(0, new ChatMessageVm(userText, true));
+        MessageText = string.Empty;
+
         try
         {
-            Messages.Add($"You: <i>{MessageText}</i>");
-            var response = await client.GetResponseAsync(MessageText);
-            Messages.Add($"<strong>AI:</strong> {response}");
-            MessageText = string.Empty;
+            //var response = await client.GetResponseAsync(userText);
+            var response = "fffffffffff";
+
+            Messages.Insert(0, new ChatMessageVm(response?.ToString() ?? string.Empty, false));
         } catch (Exception ex)
         {
             toastService.ShowError(ex.Message);
         }
+    }
+
+    private string userName { set; get; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authStateTask;
+        userName = authState.User?.Identity?.Name ?? "You";
+    }
+
+    
+    private sealed record ChatMessageVm(string Text, bool IsUser)
+    {
+        public DateTime CreatedAt { get; init; } = DateTime.Now;
     }
 }
