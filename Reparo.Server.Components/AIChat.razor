@@ -15,17 +15,19 @@
                 ShowHeader="true" Height="100%">
         <ListViewTemplates TValue="ChatMessageVm">
             <Template>
-                <div class='e-list-wrapper e-list-avatar'>
+                <div class='e-list-wrapper e-list-avatar @(context.IsUser ? "" : "e-ai-message")'>
                     @if (context.IsUser)
                     {
-                        <span class='e-list-item-header'>userName</span>
+                        <span class="e-avatar e-avatar-circle">You</span>
                     }
                     else
                     {
                         <img class='e-avatar e-avatar-circle' src="https://cdn.syncfusion.com/blazor/images/avatar/pic02.png" alt="AI" />
                     }
-                    @context.CreatedAt.ToString("MM/dd/yyyy hh:mm tt")
-                    <span class='e-list-content @(context.IsUser ? "e-user-message" : "e-ai-message")'>@context.Text</span>
+                    <span class="small-time">
+                        @context.CreatedAt.ToString("MM/dd/yyyy hh:mm tt")
+                    </span>
+                    <span class='e-list-content'>@context.Text</span>
                 </div>
             </Template>
         </ListViewTemplates>
@@ -52,12 +54,12 @@
         gap: 8px;
     }
 
-    .e-user-message {
-        background-color: gainsboro;
+    .small-time {
+        font-size: xx-small;
     }
 
     .e-ai-message {
-        background-color: lightskyblue;
+        background-color: #e8f1ff;
     }
 </style>
 
@@ -77,9 +79,7 @@
 
         try
         {
-            //var response = await client.GetResponseAsync(userText);
-            var response = "fffffffffff";
-
+            var response = await client.GetResponseAsync(userText);
             Messages.Insert(0, new ChatMessageVm(response?.ToString() ?? string.Empty, false));
         } catch (Exception ex)
         {
@@ -87,17 +87,12 @@
         }
     }
 
-    private string userName { set; get; } = default!;
-
     protected override async Task OnInitializedAsync()
     {
-        var authState = await authStateTask;
-        userName = authState.User?.Identity?.Name ?? "You";
     }
 
-    
     private sealed record ChatMessageVm(string Text, bool IsUser)
     {
-        public DateTime CreatedAt { get; init; } = DateTime.Now;
+        public DateTime CreatedAt { get; init; } = DateTime.Now.ToLocalTime();
     }
 }
