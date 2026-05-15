@@ -2,7 +2,7 @@
 @inject ToastService toastService
 
 <section class="chat-shell">
-    <SfAppBar ColorMode="AppBarColor.Primary">
+    <SfAppBar ColorMode="AppBarColor.Dark">
         <SfIcon Size="IconSize.Large" Name="IconName.AIChat" Title="Smart Assistant"></SfIcon>
         <AppBarSpacer></AppBarSpacer>
         <div>Smart Assistant</div>
@@ -12,7 +12,7 @@
                 ShowHeader="true" Height="100%">
         <ListViewTemplates TValue="ChatMessageVm">
             <Template>
-                <div class='e-list-wrapper e-list-avatar @(context.IsUser ? "" : "e-ai-message")'>
+                <div class='e-list-wrapper e-list-avatar @(context.IsUser ? "e-ai-message" : "")'>
                     @if (context.IsUser)
                     {
                         <span class="e-avatar e-avatar-circle">You</span>
@@ -32,7 +32,7 @@
     <div>
         <div class="wdr-container" style="padding-bottom: 14px;">
             <SfTextArea Placeholder="Start asking" @bind-Value="MessageText" ShowClearButton="true" FloatLabelType="FloatLabelType.Auto" Width="100%"
-                        RowCount="4">
+                        RowCount="4" @onkeydown="HandleKeyDown">
             </SfTextArea>
             <div @onclick:preventDefault>
                 <SfSpeechToText @bind-Transcript="MessageText" SpeechRecognitionStopped="OnTranscriptChanged" />
@@ -74,7 +74,7 @@
         try
         {
             var response = await client.GetResponseAsync(userText);
-            Messages.Insert(1, new ChatMessageVm(response?.ToString() ?? string.Empty, false));
+            Messages.Insert(0, new ChatMessageVm(response?.ToString() ?? string.Empty, false));
         } catch (Exception ex)
         {
             toastService.ShowError(ex.Message);
@@ -90,5 +90,13 @@
     private sealed record ChatMessageVm(string Text, bool IsUser)
     {
         public DateTime CreatedAt { get; init; } = DateTime.Now.ToLocalTime();
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            await CommunicateAsync();
+        }
     }
 }
