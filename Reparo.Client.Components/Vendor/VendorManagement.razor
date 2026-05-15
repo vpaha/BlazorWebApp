@@ -5,8 +5,7 @@
 
 @implements IAsyncDisposable
 
-<SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top"
-            ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
+<SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top" ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
     <FormValidator>
         <DataAnnotationsValidator></DataAnnotationsValidator>
     </FormValidator>
@@ -14,36 +13,137 @@
         <SfCard>
             <CardHeader>
                 <h2>Vendor management</h2>
-                @if (isRunning)
-                {
-                    <progress></progress>
-                    <div>Looking for general contractors</div>
-                }
             </CardHeader>
             <CardContent EnableSeparator="true">
-                <SfDropDownList TItem="string" TValue="string" DataSource="@categories" @bind-Value="category" Width="300px"
-                                Placeholder="Select a category">
-                </SfDropDownList>
+                <div class="spread-across">
+                    <SfDropDownList TItem="string" TValue="string" DataSource="@categories" @bind-Value="category" Width="300px" FloatLabelType="FloatLabelType.Always"
+                                    Placeholder="Categories">
+                    </SfDropDownList>
+                    <AddressEntry DamageContext="location" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
+                </div>
             </CardContent>
-            <CardContent>
-                <AddressEntry DamageContext="location" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
-            </CardContent>
-            <CardFooter>
-                <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Fetch vendors</SfButton>
-            </CardFooter>
         </SfCard>
     </FormTemplate>
-    <FormButtons></FormButtons>
+    <FormButtons>
+        <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Search Vendors</SfButton>
+    </FormButtons>
 </SfDataForm>
 <SfCard>
     <CardContent EnableSeparator="true">
+        @if (isRunning)
+        {
+            <progress></progress>
+            <div>Looking for @category</div>
+        }
+    </CardContent>
+    <CardContent EnableSeparator="true">
         <gmp-map id="localmap" role="region"></gmp-map>
+    </CardContent>
+    <CardContent EnableSeparator="true">
+        <div class="vendors-container">
+            @foreach (var item in vendors)
+            {
+                <article class="vendor-card">
+                    <div class="vendor-title">@item.Name</div>
+
+                    @if (item.Rating.HasValue)
+                    {
+                        <div class="vendor-rating">
+                            <span>@item.Rating.Value.ToString("0.0")</span>
+                            <span class="star">★</span>
+
+                            @if (item.ReviewCount.HasValue)
+                            {
+                                <span class="reviews">(@item.ReviewCount reviews)</span>
+                            }
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(item.Address))
+                    {
+                        <div class="vendor-line">@item.Address</div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(item.Phone))
+                    {
+                        <div class="vendor-line">@item.Phone</div>
+                    }
+
+                    <div class="vendor-links">
+                        @if (!string.IsNullOrWhiteSpace(item.Website))
+                        {
+                            <a href="@item.Website" target="_blank" rel="noopener noreferrer">
+                                Website
+                            </a>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(item.googleMaps))
+                        {
+                            <a href="@item.googleMaps" target="_blank" rel="noopener noreferrer">
+                                google Maps
+                            </a>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
     </CardContent>
 </SfCard>
 <style>
     #localmap {
         height: 400px;
     }
+
+    .vendors-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .vendor-card {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 0.9rem;
+        line-height: 1.35;
+    }
+
+    .vendor-title {
+        font-weight: 600;
+        color: #202124;
+        margin-bottom: 2px;
+    }
+
+    .vendor-rating {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        color: #5f6368;
+    }
+
+    .star {
+        color: #fbbc04;
+    }
+
+    .reviews,
+    .vendor-line {
+        color: #5f6368;
+    }
+
+    .vendor-links {
+        display: flex;
+        gap: 12px;
+        margin-top: 4px;
+    }
+
+        .vendor-links a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .vendor-links a:hover {
+                text-decoration: underline;
+            }
 </style>
 
 @code {
@@ -57,12 +157,27 @@
     private bool isRunning { get; set; } = false;
     private bool _isValid;
 
+    private List<PlaceDto> vendors { get; set; } = [];
     private DotNetObjectReference<VendorManagement>? _objRef;
 
     protected override void OnInitialized()
     {
         EditContext = new EditContext(location);
         category = categories[0];
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        _objRef = DotNetObjectReference.Create(this);
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", location.Latitude, location.Longitude, 16, _objRef, "OnVendorsMapped");
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        _objRef?.Dispose();
+        return ValueTask.CompletedTask;
     }
 
     private void AddressChanged(bool isValid)
@@ -74,30 +189,22 @@
     private async Task UpdateVendors()
     {
         isRunning = true;
-
-        //   if (!environment.IsDevelopment())
-        // {
-        await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces", location.Latitude, location.Longitude, category);
+        vendors.Clear();
+        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category);
         isRunning = false;
-        //}
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender) return;
-
-        _objRef = DotNetObjectReference.Create(this);
-        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", location.Latitude, location.Longitude, 13, _objRef);
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        _objRef?.Dispose();
-        return ValueTask.CompletedTask;
     }
 
     [JSInvokable]
-    public async Task OpenMapDialogAsync(string placeId, string vendorName)
+    public Task OnVendorsMapped(PlaceDto[]? places)
     {
+        if (places is null || places.Length == 0) return Task.CompletedTask;
+        vendors ??= [];
+        foreach (var place in places)
+        {
+            if (vendors.Any(vendor => vendor.Id == place.Id)) continue;
+            vendors.Add(place);
+        }
+
+        return InvokeAsync(StateHasChanged);
     }
 }

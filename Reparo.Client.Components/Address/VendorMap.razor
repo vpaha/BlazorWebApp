@@ -1,7 +1,7 @@
 ﻿@using Microsoft.Extensions.Hosting;
 
 @inject IJSRuntime jSRuntime
-@inject IHostEnvironment environment
+@inject IHostEnvironment env
 
 <SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <gmp-map id="vndrMap" role="region"></gmp-map>
@@ -17,19 +17,19 @@
     [CascadingParameter(Name = CascadingParams.MediaQuery)] private bool IsDesktopView { get; set; }
     [Parameter] public double? Latitude { get; set; }
     [Parameter] public double? Longitude { get; set; }
-    [Parameter] public string VendorPlaceId { get; set; } = default!;
+    [Parameter] public string? PlaceId { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
 
-        if (!environment.IsDevelopment())
+        if (PlaceId is not null)
         {
-            if (VendorPlaceId != default)
-            {
-                await jSRuntime.InvokeVoidAsync("googleMap.initMap", "vndrMap", Latitude, Longitude);
-                await jSRuntime.InvokeVoidAsync("googleMap.searchPlaceById", VendorPlaceId);
-            }
+            await jSRuntime.InvokeVoidAsync("googleMap.initMap", "vndrMap", Latitude, Longitude);
+            // if (!env.IsDevelopment())
+            // {
+                await jSRuntime.InvokeVoidAsync("googleMap.searchPlaceById", PlaceId);
+            //}
         }
     }
 }

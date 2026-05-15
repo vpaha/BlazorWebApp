@@ -34,11 +34,11 @@ internal static class RouteExtensions
 
         return new LocationDto
         {
+            Id = response.PlaceId,
             Address = response.FormattedAddress,
-            PlaceId = response.PlaceId,
             Latitude = response.Geometry?.Location?.Latitude ?? 0,
             Longitude = response.Geometry?.Location?.Longitude ?? 0,
-            Placename = city + ", " + state,
+            Title = city + ", " + state,
             Region = (country != null && state != null) ? $"{country}-{state}" : null
         };
     }

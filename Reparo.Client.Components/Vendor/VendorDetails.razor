@@ -100,21 +100,7 @@
                 }
             </CardContent>
         </SfCard>
-        @if (!string.IsNullOrWhiteSpace(FormattedAddress))
-        {
-            <SfCard>
-                <CardHeader>
-                    <h3>Address</h3>
-                </CardHeader>
-                <CardContent>
-                    <div>
-                        <strong>Location</strong><br />
-                        @FormattedAddress
-                    </div>
-                </CardContent>
-            </SfCard>
-        }
-        <VendorMap Latitude="@Vendor.Latitude" Longitude="@Vendor.Longitude" VendorPlaceId="@Vendor.PlaceId"></VendorMap>
+        <VendorMap Latitude="@Vendor.Latitude" Longitude="@Vendor.Longitude" PlaceId="@Vendor.PlaceId"></VendorMap>
     }
 </div>
 <style>
@@ -132,16 +118,4 @@
 @code {
     [Parameter]
     public VendorModel Vendor { get; set; } = default!;
-
-    private string FormattedAddress =>
-        string.Join(", ",
-            new[]
-            {
-                Vendor.AddressLine1,
-                Vendor.AddressLine2,
-                Vendor.City,
-                Vendor.State,
-                Vendor.PostalCode,
-                Vendor.Country
-            }.Where(x => !string.IsNullOrWhiteSpace(x)));
 }

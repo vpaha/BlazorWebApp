@@ -2,8 +2,7 @@
 
 @inject IJSRuntime jSRuntime
 @inject SfDialogService dialogService
-@inject NavigationManager nav
-@inject IHostEnvironment environment
+@inject IHostEnvironment env
 
 @implements IAsyncDisposable
 
@@ -20,6 +19,7 @@
     [Parameter] public double? Latitude { get; set; }
     [Parameter] public double? Longitude { get; set; }
     [Parameter] public EventCallback<string> OnSelectionEvent { get; set; }
+    [Parameter] public EventCallback<bool> OnConfirmEvent { get; set; }
 
     private DotNetObjectReference<GoogleMap>? _objRef;
 
@@ -30,21 +30,20 @@
         if (Latitude != null && Longitude != null)
         {
             _objRef = DotNetObjectReference.Create(this);
-
             await jSRuntime.InvokeVoidAsync("googleMap.initMap", "nearbymap", Latitude, Longitude, 16, _objRef);
-            if (!environment.IsDevelopment())
+            if (!env.IsDevelopment())
             {
-                await jSRuntime.InvokeVoidAsync("googleMap.searchPlaces", Latitude, Longitude, "general contractor");
+                await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", "general contractor");
             }
         }
     }
 
     [JSInvokable]
-    public async Task OpenMapDialogAsync(string placeId, string vendorName)
+    public async Task OpenVendor(PlaceDto? place)
     {
         if (!OnSelectionEvent.HasDelegate)
         {
-            bool isConfirm = await dialogService.ConfirmAsync(null, vendorName,
+            bool isConfirm = await dialogService.ConfirmAsync(null, place?.Name,
                 new DialogOptions
                 {
                     CssClass = "popup-dialog",
@@ -58,20 +57,20 @@
                     },
                     AnimationSettings = new DialogAnimationOptions
                     {
-                        Effect = DialogEffect.Zoom
+                        Effect = DialogEffect.FlipXUp
                     },
                     ChildContent = builder =>
                     {
                         builder.OpenComponent<Vendor>(0);
-                        builder.AddAttribute(1, "PlaceId", placeId);
+                        builder.AddAttribute(1, "PlaceId", place?.Id);
                         builder.CloseComponent();
                     }
                 });
-            if (isConfirm) nav.NavigateTo("damage");
+            await OnConfirmEvent.InvokeAsync(isConfirm);
         }
         else
         {
-            await OnSelectionEvent.InvokeAsync(placeId);
+            await OnSelectionEvent.InvokeAsync(place?.Id);
         }
     }
 

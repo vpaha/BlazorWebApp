@@ -203,16 +203,16 @@
 
     private async Task OnSubmit(DamageEntry damage)
     {
-        if (damage.StatusId == DamageStatus.ServiceScheduled) return;
-
         try
         {
             isLoading = true;
 
-            damage.StatusId = DamageStatus.ServiceScheduled;
+            if (damage.StatusId > DamageStatus.VendorAssigned) damage.StatusId = DamageStatus.WorkCompleted;
+            else damage.StatusId = DamageStatus.ServiceScheduled;
+
             await damageRepo.UpdateEntryAsync(damage, CancellationToken.None);
 
-            toastService.ShowSuccess("Damage details updated successfully");
+            toastService.ShowSuccess($"Damage report status updated to {damage.StatusId}.");
         } catch (Exception ex)
         {
             toastService.ShowError(ex.Message);

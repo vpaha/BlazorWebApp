@@ -1,38 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-public sealed class GoogleNearbyResponse
-{
-    [JsonPropertyName("places")]
-    public List<GooglePlace>? Places { get; set; }
-}
-
-public sealed class GooglePlace
-{
-    [JsonPropertyName("id")]
-    public string? Id { get; set; }
-    [JsonPropertyName("latitude")]
-    public double Latitude { get; set; }
-    [JsonPropertyName("longitude")]
-    public double Longitude { get; set; }
-    [JsonPropertyName("address")]
-    public string? Address { get; set; }
-
-    [JsonPropertyName("title")]
-    public string? Title { get; set; }
-    [JsonPropertyName("rating")]
-    public double? Rating { get; set; }
-    [JsonPropertyName("userrating")]
-    public int? UserRating { get; set; }
-    [JsonPropertyName("businessstatus")]
-    public string? BusinessStatus { get; set; }
-    [JsonPropertyName("website")]
-    public string? Website { get; set; }
-    [JsonPropertyName("phonenumber")]
-    public string? PhoneNumber { get; set; }
-    [JsonPropertyName("googlemaps")]
-    public string? GoogleMaps { get; set; }
-}
-
 public sealed class GoogleDisplayName
 {
     public string? Text { get; set; }
@@ -51,24 +18,45 @@ public sealed class NearbyPlacesDto
 
 public sealed class PlaceDto : LocationDto
 {
-    //public double? Rating { get; set; }
-    //public int? UserRatingCount { get; set; }
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
 
-    //public string? BusinessStatus { get; set; }
+    [JsonPropertyName("rating")]
+    public double? Rating { get; set; }
 
-    //public string? Website { get; set; }
-    //public string? Phone { get; set; }
-    //public string? MapsUrl { get; set; }
+    [JsonPropertyName("reviewCount")]
+    public int? ReviewCount { get; set; }
+
+    [JsonPropertyName("phone")]
+    public string? Phone { get; set; }
+
+    [JsonPropertyName("website")]
+    public string? Website { get; set; }
+
+    [JsonPropertyName("googlemaps")]
+    public string? googleMaps { get; set; }    
+
+    [JsonPropertyName("types")]
+    public string[]? Types { get; set; }
 }
 
 public class LocationDto
 {
-    public string? PlaceId { get; set; }
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+
+    [JsonPropertyName("address")]
     public string? Address { get; set; }
 
+    [JsonPropertyName("region")]
     public string? Region { get; set; }
-    public string? Placename { get; set; }
 
+    [JsonPropertyName("placename")]
+    public string? Title { get; set; }
+
+    [JsonPropertyName("latitude")]
     public double Latitude { get; set; }
+
+    [JsonPropertyName("longitude")]
     public double Longitude { get; set; }
 }

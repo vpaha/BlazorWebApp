@@ -2,9 +2,9 @@
     <SfButton type="button"
               OnClick="OnSubmit"
               IconCss="e-icons e-check"
-              CssClass="@(DamageContext.StatusId == DamageStatus.Reported ? "" : "e-outline")"
+              CssClass="@(DamageContext.StatusId > DamageStatus.VendorAssigned ? "" : "e-outline")"
               IconPosition="IconPosition.Right" IsPrimary="true"
-              Content="@(DamageContext.StatusId == DamageStatus.Reported ? "Proceed with Service" : "Scheduled")" title="Proceed with Service">
+              Content="@(DamageContext.StatusId > DamageStatus.VendorAssigned ? "Confirm Service" : "Pending Completion")" title="Proceed with Service">
     </SfButton>
     <SfButton type="button" OnClick="OnChat" IconCss="e-icons e-comment-show" IconPosition="IconPosition.Right" IsPrimary="true"
               CssClass="e-outline"

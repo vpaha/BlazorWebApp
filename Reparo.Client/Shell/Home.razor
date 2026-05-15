@@ -1,6 +1,7 @@
 ﻿@page "/"
 @rendermode InteractiveAuto
 @attribute [AllowAnonymous]
+@inject NavigationManager nav
 
 <PageTitle>Property Damage Repair Services | Insurance Claim Assistance | Property Claims</PageTitle>
 <HeadContent>
@@ -43,7 +44,7 @@
     {
         <SfCard role="region">
             <CardContent>
-                <GoogleMap Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude"></GoogleMap>
+                <GoogleMap Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude" OnConfirmEvent="onConfirmEvent"></GoogleMap>
             </CardContent>
         </SfCard>
     }
@@ -171,5 +172,11 @@
     private async Task TriggerSubmit()
     {
         isMapView = !isMapView;
+    }
+
+    private async Task onConfirmEvent(bool isConfirm)
+    {
+        if (isConfirm) nav.NavigateTo("damage");
+        else isMapView = false;
     }
 }

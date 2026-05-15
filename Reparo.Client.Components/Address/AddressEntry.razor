@@ -5,7 +5,7 @@
 <SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
     <CardContent>
         <div class="wdr-container">
-            <SfTextBox @bind-Value="DamageContext.AddressEntry" Placeholder="Property Address" ShowClearButton="true"
+            <SfTextBox @bind-Value="DamageContext.AddressEntry" Placeholder="Address" ShowClearButton="true"
                        FloatLabelType="FloatLabelType.Auto" OnChange="onChanged" Width="100%" />
             <div @onclick:preventDefault>
                 <SfSpeechToText @bind-Transcript="DamageContext.AddressEntry" SpeechRecognitionStopped="OnTranscriptChanged" />
@@ -66,13 +66,13 @@ else
 
     private async Task OnAddressResolved(LocationDto location)
     {
-        DamageContext.GoogleId = location.PlaceId;
+        DamageContext.GoogleId = location.Id;
         DamageContext.Latitude = location.Latitude;
         DamageContext.Longitude = location.Longitude;
         DamageContext.AddressEntry = location.Address;
 
         DamageContext.Region = location.Region;
-        DamageContext.Placename = location.Placename;
+        DamageContext.Placename = location.Title;
 
         _isMapEnabled = true;
 
