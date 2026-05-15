@@ -44,9 +44,10 @@
                                   EnableMask="true" ShowClearButton="true">
                     <DatePickerMaskPlaceholder Day="dd" Month="MM" Year="yyyy" Hour="hh" Minute="mm"></DatePickerMaskPlaceholder>
                 </SfDateTimePicker>
-                <SfDateRangePicker TValue="DateOnly?" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern"
-                                   Placeholder="Date Range" aria-label="Date Range value" HtmlAttributes=@DateRangeAttributes
-                                   ShowClearButton="true" strictMode="true"
+                <SfDateRangePicker TValue="DateOnly?" HtmlAttributes=@GetDateRangeAttributes()
+                                   Placeholder="Due Date" ID="dueDate"
+                                   ShowClearButton="true" StrictMode="true"
+                                   aria-label="Date Range value"
                                    CssClass="e-small" FloatLabelType="FloatLabelType.Always">
                     <DateRangePickerPresets>
                         <DateRangePickerPreset Label="Last 2 Days" Start="DateTime.Now.AddDays(-2).Date" End="DateTime.Now.Date"></DateRangePickerPreset>
@@ -149,5 +150,10 @@
     {
         await JSRuntime.InvokeVoidAsync("setTheme", theme);
         await _httpClient.PostAsJsonAsync(nav.ToAbsoluteUri("config/theme"), theme);
+    }
+
+    private Dictionary<string, object> GetDateRangeAttributes()
+    {
+        return new Dictionary<string, object> { { "placeholder", CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + " - " + CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern } };
     }
 }
