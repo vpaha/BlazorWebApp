@@ -16,8 +16,9 @@
             </CardHeader>
             <CardContent EnableSeparator="true">
                 <div class="spread-across">
-                    <SfDropDownList TItem="string" TValue="string" DataSource="@categories" @bind-Value="category" Width="300px" FloatLabelType="FloatLabelType.Always"
-                                    Placeholder="Categories">
+                    <SfMessage CssClass="category-header" Variant="MessageVariant.Outlined" ShowIcon="false" Severity="MessageSeverity.Success">Categories</SfMessage>
+                    <SfDropDownList TItem="string" TValue="string" DataSource="@categories" @bind-Value="category" Width="300px" FloatLabelType="FloatLabelType.Never"
+                                    Placeholder="groups" CssClass="e-primary">
                     </SfDropDownList>
                     <AddressEntry DamageContext="location" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
                 </div>
@@ -84,6 +85,9 @@
                             </a>
                         }
                     </div>
+                    <div>
+                        @string.Join(", ", item.Types ?? Array.Empty<string>())
+                    </div>
                 </article>
             }
         </div>
@@ -92,6 +96,10 @@
 <style>
     #localmap {
         height: 400px;
+    }
+
+    .category-header {
+        align-self: normal;
     }
 
     .vendors-container {
@@ -166,14 +174,6 @@
         category = categories[0];
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender) return;
-
-        _objRef = DotNetObjectReference.Create(this);
-        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", location.Latitude, location.Longitude, 16, _objRef, "OnVendorsMapped");
-    }
-
     public ValueTask DisposeAsync()
     {
         _objRef?.Dispose();
@@ -190,6 +190,8 @@
     {
         isRunning = true;
         vendors.Clear();
+        _objRef = DotNetObjectReference.Create(this);
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", location.Latitude, location.Longitude, 16, _objRef, "OnVendorsMapped");
         await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, 12);
         isRunning = false;
     }
