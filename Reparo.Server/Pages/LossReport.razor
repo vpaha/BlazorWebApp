@@ -31,7 +31,7 @@
             <Submission></Submission>
         </div>
     </div>
-    <SfSidebar ID="side-bar-blade" @bind-IsOpen="isSideBarOpen" Width="@(IsDesktopView ? "30vw" : "")"
+    <SfSidebar ID="side-bar-blade" @bind-IsOpen="isSideBarOpen" Width="@(IsDesktopView ? "400px" : "100%")"
                Type="(IsDesktopView ? SidebarType.Push : SidebarType.Over)" Target="#damage-container"
                Position="SidebarPosition.Right">
         <ChildContent>
@@ -44,6 +44,7 @@
         border: solid 1px grey;
         border-radius: 8px;
         padding: 10px 15px 10px 15px;
+        max-height: 500px;
     }
 </style>
 @code {
