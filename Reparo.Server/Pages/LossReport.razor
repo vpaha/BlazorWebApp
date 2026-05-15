@@ -1,5 +1,5 @@
 ﻿@page "/damage"
-@rendermode InteractiveServer
+@rendermode InteractiveAuto
 @attribute [AllowAnonymous]
 
 <PageTitle>Start Property Damage Claim | Repair Estimates & Insurance Claim Assistance | Property Claims</PageTitle>
@@ -28,7 +28,7 @@
     </SfAppBar>
     <div id="damage-container">
         <div class="fade-in">
-            <AISubmission></AISubmission>
+            <Submission></Submission>
         </div>
     </div>
     <SfSidebar ID="side-bar-blade" @bind-IsOpen="isSideBarOpen" Width="@(IsDesktopView ? "30vw" : "")"
