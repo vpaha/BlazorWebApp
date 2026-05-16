@@ -18,6 +18,7 @@ internal static class VendorModelBuilderExtensions
             e.Property(x => x.Email).HasColumnName("email").HasMaxLength(320);
             e.Property(x => x.Phone).HasColumnName("phone").HasMaxLength(50);
             e.Property(x => x.WebsiteUrl).HasColumnName("website_url").HasMaxLength(500);
+            e.Property(x => x.WebsiteUrl).HasColumnName("googlemaps_url").HasMaxLength(500);
             e.Property(x => x.AddressLine1).HasColumnName("address_line1").HasMaxLength(200);
             e.Property(x => x.AddressLine2).HasColumnName("address_line2").HasMaxLength(200);
             e.Property(x => x.City).HasColumnName("city").HasMaxLength(100);

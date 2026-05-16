@@ -70,6 +70,7 @@ public sealed class VendorService : IVendorService
                 // Contact
                 Phone = place.Phone,
                 WebsiteUrl = place.Website,
+                GoogleMaps = place.GoogleMaps,
 
                 // Address
                 AddressLine1 = place.AddressLine1,

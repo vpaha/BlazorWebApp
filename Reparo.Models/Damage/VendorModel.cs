@@ -22,6 +22,7 @@ public sealed class VendorModel
     public string? Phone { get; set; }
 
     public string? WebsiteUrl { get; set; }
+    public string? GoogleMaps { get; set; }
 
     // Address
     public string? AddressLine1 { get; set; }

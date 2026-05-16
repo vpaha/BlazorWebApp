@@ -11,10 +11,10 @@ public sealed class PlaceDto : LocationDto
     [JsonPropertyName("phone")]
     public string? Phone { get; set; }
 
-    [JsonPropertyName("website")]
+    [JsonPropertyName("websiteUrl")]
     public string? Website { get; set; }
 
-    [JsonPropertyName("googleMaps")]
+    [JsonPropertyName("googleMapsUrl")]
     public string? GoogleMaps { get; set; }
 
     [JsonPropertyName("types")]
@@ -32,7 +32,7 @@ public sealed class PlaceDto : LocationDto
 
 public class LocationDto
 {
-    [JsonPropertyName("Id")]
+    [JsonPropertyName("PlaceId")]
     public string? PlaceId { get; set; }
 
     [JsonPropertyName("address")]
