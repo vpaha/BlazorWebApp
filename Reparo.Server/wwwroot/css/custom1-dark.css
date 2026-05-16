@@ -210,6 +210,10 @@ h5 {
   margin-bottom: 20px;
 }
 
+.map-container {
+  padding: 6px;
+}
+
 .e-control,
 .e-css,
 .e-error {

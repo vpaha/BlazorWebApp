@@ -36,47 +36,56 @@ public sealed class VendorService : IVendorService
         return await _context.Set<VendorModel>().AsNoTracking().Where(v => v.IsActive).OrderBy(v => v.UpdatedAt).ToListAsync(cancellationToken);
     }
 
-    public async Task AddVendorAsync(PlaceDto place, CancellationToken cancellationToken = default)
+    public async Task AddVendorAsync(
+    PlaceDto place,
+    CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(place);
-        if (string.IsNullOrWhiteSpace(place.PlaceId)) throw new ArgumentException("Place Id is required.", nameof(place));
 
-        var existingVendor = await _context.Set<VendorModel>().FirstOrDefaultAsync(v => v.PlaceId == place.PlaceId, cancellationToken);
-        if (existingVendor is not null) return;
+        var existingVendor = await _context.Vendors.FirstOrDefaultAsync(x => x.PlaceId == place.PlaceId, cancellationToken);
 
-        var now = DateTimeOffset.UtcNow;
+        if (existingVendor != null) return;
+
         var vendor = new VendorModel
         {
-            Name = place.Title ?? place.Name ?? "Unknown Vendor",
-            //legalName
-            //Description
-            //email
-            //addresslane1
-
+            // Business identity
+            Name = place.Name!,
+            Description = place.Description,
             PlaceId = place.PlaceId,
 
+            //legalName
+
+            // Contact
             Phone = place.Phone,
             WebsiteUrl = place.Website,
 
-            AddressLine1 = place.Address,
-            State = place.Region,
+            // Address
+            AddressLine1 = place.AddressLine1,
+            City = place.City,
+            State = place.State,
+            PostalCode = place.PostalCode,
+            Country = place.Country,
 
+            // Geo
             Latitude = place.Latitude,
             Longitude = place.Longitude,
 
+            // Ratings
             Rating = place.Rating.HasValue ? Convert.ToDecimal(place.Rating.Value) : null,
-
             ReviewCount = place.ReviewCount,
 
-            IsActive = true,
+            // Operational
+            IsActive = place.IsOperational,
             IsVerified = false,
             IsPreferred = false,
 
-            CreatedAt = now,
-            UpdatedAt = now
+            // Audit
+            CreatedAt = DateTimeOffset.UtcNow,
+            UpdatedAt = DateTimeOffset.UtcNow
         };
 
         _context.Vendors.Add(vendor);
+
         await _context.SaveChangesAsync(cancellationToken);
     }
 

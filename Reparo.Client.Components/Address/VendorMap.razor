@@ -3,12 +3,12 @@
 @inject IJSRuntime jSRuntime
 @inject IHostEnvironment env
 
-<SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
-    <gmp-map id="vndrMap" role="region"></gmp-map>
+<SfCard ID="map-container1" CssClass="@(IsDesktopView ? "map-container max-width-400" : "map-container max-width")">
+    <gmp-map role="region"></gmp-map>
 </SfCard>
 
 <style>
-    #vndrMap {
+    #map-container1 {
         height: 400px;
     }
 </style>
@@ -25,7 +25,7 @@
 
         if (PlaceId is not null)
         {
-            await jSRuntime.InvokeVoidAsync("googleMap.initMap", "vndrMap", Latitude, Longitude);
+            await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container1 > gmp-map", Latitude, Longitude);
             if (!env.IsDevelopment())
             {
                 await jSRuntime.InvokeVoidAsync("googleMap.searchPlaceById", PlaceId);

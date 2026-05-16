@@ -6,11 +6,11 @@
 
 @implements IAsyncDisposable
 
-<div class="fade-in">
-    <gmp-map id="nearbymap" role="region"></gmp-map>
-</div>
-<style>
-    #nearbymap {
+<SfCard ID="map-container3" CssClass="map-container fade-in">
+    <gmp-map role="region"></gmp-map>
+</SfCard>
+<style>   
+    #map-container3 {
         height: 400px;
     }
 </style>
@@ -30,7 +30,7 @@
         if (Latitude != null && Longitude != null)
         {
             _objRef = DotNetObjectReference.Create(this);
-            await jSRuntime.InvokeVoidAsync("googleMap.initMap", "nearbymap", Latitude, Longitude, 16, _objRef);
+            await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container3 > gmp-map", Latitude, Longitude, 16, _objRef);
             if (!env.IsDevelopment())
             {
                 await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", "general contractor");

@@ -27,22 +27,28 @@
 
     const getMapOrThrow = () =>
     {
-        if (!map) throw new Error("Map not initialized. Call initMap first.");
+        if (!map)
+            throw new Error("Map not initialized. Call initMap first.");
+
         return map;
     };
 
-    async function initMap(gmpMapId, lat, lng, zoom = 13, helper = null, callback = null, options = {})
+    async function initMap(gmpMapSelector, lat, lng, zoom = 13, helper = null, callback = null, options = {})
     {
         await ensureReady();
+
         dotNetHelper = helper;
         dotNetCallBack = callback;
-        const mapEl = document.getElementById(gmpMapId);
-        if (!mapEl) throw new Error(`<gmp-map> not found: ${gmpMapId}`);
+
+        const mapEl = document.querySelector(gmpMapSelector);
+        if (!mapEl) throw new Error(`<gmp-map> not found: ${gmpMapSelector}`);
 
         if (!mapEl.innerMap)
         {
-            await new Promise(resolve => mapEl.addEventListener("gmp-ready", resolve, { once: true }));
+            await new Promise(resolve =>
+                mapEl.addEventListener("gmp-ready", resolve, { once: true }));
         }
+
         map = mapEl.innerMap;
 
         const hasValidCoordinates =
@@ -62,14 +68,18 @@
             fullscreenControl: false,
             ...options,
         });
+
         map.addListener("click", () =>
         {
             infoWindow?.close();
         });
+
         bounds = new google.maps.LatLngBounds();
+
         infoWindow = new google.maps.InfoWindow({
             headerDisabled: true,
         });
+
         return true;
     }
 
@@ -81,8 +91,11 @@
         } = await ensureReady();
 
         const mapInstance = getMapOrThrow();
+
         clearMarkers();
+
         bounds = new google.maps.LatLngBounds();
+
         mapInstance.setCenter(searchCenter);
 
         const { places } = await PlaceCtor.searchByText({
@@ -91,13 +104,16 @@
                 "id",
                 "displayName",
                 "formattedAddress",
+                "addressComponents",
                 "location",
                 "rating",
                 "userRatingCount",
                 "nationalPhoneNumber",
-                "googleMapsURI",
                 "websiteURI",
-                "types"
+                "googleMapsURI",
+                "businessStatus",
+                "types",
+                "editorialSummary"
             ],
             locationBias: {
                 center: searchCenter,
@@ -106,27 +122,35 @@
             maxResultCount: maxCount
         });
 
-        if (!places?.length) return 0;
+        if (!places?.length)
+            return 0;
+
         for (const place of places)
         {
             addPlaceMarker(place, AdvancedMarkerElementCtor, mapInstance);
         }
+
         if (!bounds.isEmpty())
         {
             mapInstance.fitBounds(bounds);
         }
 
-        const placeDtos = places.filter(place => place?.location).map(toPlaceDto);
+        const placeDtos = places
+            .filter(place => place?.location)
+            .map(toPlaceDto);
+
         if (dotNetHelper && dotNetCallBack)
         {
             await dotNetHelper.invokeMethodAsync(dotNetCallBack, placeDtos);
         }
+
         return placeDtos.length;
     }
 
     function addPlaceMarker(place, AdvancedMarkerElementCtor, mapInstance)
     {
-        if (!place?.location) return null;
+        if (!place?.location)
+            return null;
 
         const marker = new AdvancedMarkerElementCtor({
             map: mapInstance,
@@ -138,23 +162,34 @@
         marker.addListener("gmp-click", async () =>
         {
             infoWindow?.close();
+
             if (dotNetHelper)
             {
-                await dotNetHelper.invokeMethodAsync("OpenVendor", toPlaceDto(place));
+                await dotNetHelper.invokeMethodAsync(
+                    "OpenVendor",
+                    toPlaceDto(place)
+                );
             }
+
             infoWindow.setContent(createPlaceInfoWindow(place));
-            infoWindow.open({ anchor: marker, map: mapInstance });
+
+            infoWindow.open({
+                anchor: marker,
+                map: mapInstance
+            });
+
             mapInstance.panTo(place.location);
         });
 
         markers.push(marker);
+
         bounds?.extend(place.location);
+
         return marker;
     }
 
     async function searchPlaceById(placeId)
     {
-
         const {
             PlaceCtor,
             AdvancedMarkerElementCtor
@@ -178,70 +213,138 @@
                 "id",
                 "displayName",
                 "formattedAddress",
+                "addressComponents",
                 "location",
                 "rating",
                 "userRatingCount",
                 "nationalPhoneNumber",
-                "googleMapsURI",
                 "websiteURI",
-                "types"
+                "googleMapsURI",
+                "businessStatus",
+                "types",
+                "editorialSummary"
             ]
         });
 
         if (!place.location)
             return null;
 
-        const marker = addPlaceMarker(place,AdvancedMarkerElementCtor,mapInstance);
+        const marker = addPlaceMarker(
+            place,
+            AdvancedMarkerElementCtor,
+            mapInstance
+        );
 
         mapInstance.setCenter(place.location);
+
         mapInstance.setZoom(15);
 
         infoWindow?.close();
 
         infoWindow.setContent(createPlaceInfoWindow(place));
 
-        infoWindow.open({anchor: marker,map: mapInstance});
+        infoWindow.open({
+            anchor: marker,
+            map: mapInstance
+        });
 
         return marker;
     }
+
     function createPlaceInfoWindow(place)
     {
         const name = getPlaceName(place);
         const address = place.formattedAddress ?? "";
         const phone = place.nationalPhoneNumber ?? "";
-        const rating = place.rating ? `${place.rating.toFixed(1)} ⭐ (${place.userRatingCount ?? 0} reviews)` : "";
+
+        const rating = place.rating
+            ? `${place.rating.toFixed(1)} ⭐ (${place.userRatingCount ?? 0} reviews)`
+            : "";
+
         const website = place.websiteURI ?? "";
         const mapsUrl = place.googleMapsURI ?? "";
-        return `<div style="min-width:240px">
+
+        return `
+            <div style="min-width:240px">
                 ${name ? `<strong>${name}</strong>` : ""}
                 ${address ? `<div>${address}</div>` : ""}
                 ${phone ? `<div>${phone}</div>` : ""}
                 ${rating ? `<div>${rating}</div>` : ""}
-                ${website ? `<div><a href="${website}"target="_blank" rel="noopener noreferrer">Website</a></div>` : ""}
-                ${mapsUrl ? `<div><a href="${mapsUrl}"target="_blank" rel="noopener noreferrer">Open in Google Maps</a></div>` : ""}
+                ${website
+                ? `<div><a href="${website}" target="_blank" rel="noopener noreferrer">Website</a></div>`
+                : ""}
+                ${mapsUrl
+                ? `<div><a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">Open in Google Maps</a></div>`
+                : ""}
             </div>`;
     }
 
     function toPlaceDto(place)
     {
+        const components = place.addressComponents ?? [];
+
+        const getComponent = (type) =>
+            components.find(c => c.types?.includes(type));
+
         return {
-            id: place.id,
+            placeId: place.id,
+
             name: getPlaceName(place),
-            address: place.formattedAddress,
-            latitude: place.location?.lat(),
-            longitude: place.location?.lng(),
-            rating: place.rating,
-            reviewCount: place.userRatingCount,
-            phone: place.nationalPhoneNumber,
-            website: place.websiteURI,
-            googlemaps: place.googleMapsURI,
-            types: place.types
+
+            description: place.editorialSummary?.text,
+
+            formattedAddress: place.formattedAddress,
+
+            addressLine1:
+                `${getComponent("street_number")?.longText ?? ""} ${getComponent("route")?.longText ?? ""}`.trim(),
+
+            city:
+                getComponent("locality")?.longText ??
+                getComponent("postal_town")?.longText,
+
+            state:
+                getComponent("administrative_area_level_1")?.shortText,
+
+            postalCode:
+                getComponent("postal_code")?.longText,
+
+            country:
+                getComponent("country")?.shortText,
+
+            latitude:
+                place.location?.lat(),
+
+            longitude:
+                place.location?.lng(),
+
+            rating:
+                place.rating,
+
+            reviewCount:
+                place.userRatingCount,
+
+            phone:
+                place.nationalPhoneNumber,
+
+            websiteUrl:
+                place.websiteURI,
+
+            googleMapsUrl:
+                place.googleMapsURI,
+
+            types:
+                place.types,
+
+            isOperational:
+                place.businessStatus === "OPERATIONAL"
         };
     }
 
     function getPlaceName(place)
     {
-        return place.displayName?.text ?? place.displayName ?? "";
+        return place.displayName?.text ??
+            place.displayName ??
+            "";
     }
 
     function clearMarkers()
@@ -250,6 +353,7 @@
         {
             marker.map = null;
         }
+
         markers = [];
     }
 

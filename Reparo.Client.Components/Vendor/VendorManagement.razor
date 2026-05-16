@@ -4,96 +4,92 @@
 @inject IVendorRepo vendorRepo
 @implements IAsyncDisposable
 
-<SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top" ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
-    <FormValidator>
-        <DataAnnotationsValidator></DataAnnotationsValidator>
-    </FormValidator>
-    <FormTemplate>
-        <SfCard>
-            <CardHeader>
-                <h2>Vendor management</h2>
-            </CardHeader>
-            <CardContent EnableSeparator="true">
-                <div class="spread-across">
-                    <SfMessage CssClass="category-header" Variant="MessageVariant.Outlined" ShowIcon="false" Severity="MessageSeverity.Success">Categories</SfMessage>
-                    <SfDropDownList TItem="string" TValue="string" DataSource="@categories" @bind-Value="category" Width="300px" FloatLabelType="FloatLabelType.Never"
-                                    Placeholder="groups" CssClass="e-primary">
-                    </SfDropDownList>
-                    <AddressEntry DamageContext="location" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
-                </div>
-            </CardContent>
-        </SfCard>
-    </FormTemplate>
-    <FormButtons>
-        <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Search Vendors</SfButton>
-    </FormButtons>
-</SfDataForm>
-<SfCard>
-    <CardContent EnableSeparator="true">
-        @if (isRunning)
-        {
-            <progress></progress>
-            <div>Looking for @category</div>
-        }
-    </CardContent>
-    <CardContent EnableSeparator="true">
-        <gmp-map id="localmap" role="region"></gmp-map>
-    </CardContent>
-    <CardContent EnableSeparator="true">
-        <div class="vendors-container">
-            @foreach (var item in vendors)
-            {
-                <article class="vendor-card">
-                    <div class="vendor-title">@item.Name</div>
+<section class="zoom-in">
+    <SfSpinner @bind-Visible="@isLoading" Label=@($"Looking for {category}")>></SfSpinner>
+    <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top" ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
+        <FormValidator>
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+        </FormValidator>
+        <FormTemplate>
+            <SfCard>
+                <CardHeader>
+                    <h2>Vendor management</h2>
+                </CardHeader>
+                <CardContent EnableSeparator="true">
+                    <div class="spread-across">
+                        <SfMessage CssClass="category-header" Variant="MessageVariant.Outlined" ShowIcon="false" Severity="MessageSeverity.Success">Categories</SfMessage>
+                        <SfDropDownList TItem="string" TValue="string" DataSource="@categories" @bind-Value="category" Width="300px" FloatLabelType="FloatLabelType.Never"
+                                        Placeholder="groups" CssClass="e-primary">
+                        </SfDropDownList>
+                        <AddressEntry DamageContext="location" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
+                    </div>
+                </CardContent>
+            </SfCard>
+        </FormTemplate>
+        <FormButtons>
+            <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Search Vendors</SfButton>
+        </FormButtons>
+    </SfDataForm>
+    <SfCard ID="map-container4" CssClass="map-container slide-in">
+        <gmp-map role="region"></gmp-map>
+    </SfCard>
+    <SfCard>
+        <CardContent EnableSeparator="true">
+            <div class="vendors-container">
+                @foreach (var item in vendors)
+                {
+                    <article class="vendor-card">
+                        <div class="vendor-title">@item.Name</div>
 
-                    @if (item.Rating.HasValue)
-                    {
-                        <div class="vendor-rating">
-                            <span>@item.Rating.Value.ToString("0.0")</span>
-                            <span class="star">★</span>
+                        @if (item.Rating.HasValue)
+                        {
+                            <div class="vendor-rating">
+                                <span>@item.Rating.Value.ToString("0.0")</span>
+                                <span class="star">★</span>
 
-                            @if (item.ReviewCount.HasValue)
+                                @if (item.ReviewCount.HasValue)
+                                {
+                                    <span class="reviews">(@item.ReviewCount reviews)</span>
+                                }
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(item.Address))
+                        {
+                            <div class="vendor-line">@item.Address</div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(item.Phone))
+                        {
+                            <div class="vendor-line">@item.Phone</div>
+                        }
+
+                        <div class="vendor-links">
+                            @if (!string.IsNullOrWhiteSpace(item.Website))
                             {
-                                <span class="reviews">(@item.ReviewCount reviews)</span>
+                                <a href="@item.Website" target="_blank" rel="noopener noreferrer">
+                                    Website
+                                </a>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(item.GoogleMaps))
+                            {
+                                <a href="@item.GoogleMaps" target="_blank" rel="noopener noreferrer">
+                                    google Maps
+                                </a>
                             }
                         </div>
-                    }
-
-                    @if (!string.IsNullOrWhiteSpace(item.Address))
-                    {
-                        <div class="vendor-line">@item.Address</div>
-                    }
-
-                    @if (!string.IsNullOrWhiteSpace(item.Phone))
-                    {
-                        <div class="vendor-line">@item.Phone</div>
-                    }
-
-                    <div class="vendor-links">
-                        @if (!string.IsNullOrWhiteSpace(item.Website))
-                        {
-                            <a href="@item.Website" target="_blank" rel="noopener noreferrer">
-                                Website
-                            </a>
-                        }
-
-                        @if (!string.IsNullOrWhiteSpace(item.GoogleMaps))
-                        {
-                            <a href="@item.GoogleMaps" target="_blank" rel="noopener noreferrer">
-                                google Maps
-                            </a>
-                        }
-                    </div>
-                    <div>
-                        @string.Join(", ", item.Types ?? Array.Empty<string>())
-                    </div>
-                </article>
-            }
-        </div>
-    </CardContent>
-</SfCard>
+                        <div>
+                            @string.Join(", ", item.Types ?? Array.Empty<string>())
+                        </div>
+                    </article>
+                }
+            </div>
+        </CardContent>
+    </SfCard>
+</section>
 <style>
-    #localmap {
+    #map-container4 {
         height: 400px;
     }
 
@@ -141,16 +137,6 @@
         gap: 12px;
         margin-top: 4px;
     }
-
-        .vendor-links a {
-            color: #1a73e8;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-            .vendor-links a:hover {
-                text-decoration: underline;
-            }
 </style>
 
 @code {
@@ -161,16 +147,24 @@
     string? category { get; set; }
     string[] categories = new[] { "general contractor", "plumber", "electrician", "roofer", "painter" };
 
-    private bool isRunning { get; set; } = false;
+    private bool isLoading { get; set; } = false;
     private bool _isValid;
 
     private List<PlaceDto> vendors { get; set; } = [];
     private DotNetObjectReference<VendorManagement>? _objRef;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         EditContext = new EditContext(location);
         category = categories[0];
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        _objRef = DotNetObjectReference.Create(this);
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container4 > gmp-map", location.Latitude, location.Longitude, 16, _objRef, "OnVendorsMapped");
     }
 
     public ValueTask DisposeAsync()
@@ -187,12 +181,9 @@
 
     private async Task UpdateVendors()
     {
-        isRunning = true;
-        vendors.Clear();
-        _objRef = DotNetObjectReference.Create(this);
-        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "localmap", location.Latitude, location.Longitude, 16, _objRef, "OnVendorsMapped");
+        isLoading = true;
         await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, 12);
-        isRunning = false;
+        isLoading = false;
     }
 
     [JSInvokable]
@@ -200,15 +191,14 @@
     {
         if (places is null || places.Length == 0) return;
 
-
         vendors ??= [];
         foreach (var place in places)
         {
             if (vendors.Any(vendor => vendor.PlaceId == place.PlaceId)) continue;
             vendors.Add(place);
-
-            await vendorRepo.AddVendorAsync(place);
         }
+
+//        await vendorRepo.AddVendorAsync(place);
         //StateHasChanged();
         return;
     }

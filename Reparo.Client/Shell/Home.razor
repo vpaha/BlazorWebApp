@@ -42,11 +42,7 @@
     </SfDataForm>
     @if (isMapView)
     {
-        <SfCard role="region">
-            <CardContent>
-                <GoogleMap Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude" OnConfirmEvent="onConfirmEvent"></GoogleMap>
-            </CardContent>
-        </SfCard>
+        <GoogleMap Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude" OnConfirmEvent="onConfirmEvent"></GoogleMap>
     }
     else
     {

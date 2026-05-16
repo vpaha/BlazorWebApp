@@ -1,16 +1,23 @@
 ﻿@inject IJSRuntime jSRuntime
 
-<gmp-map id="gmpMap" aria-labelledby="map-label"></gmp-map>
-
+<SfCard ID="map-container2" CssClass="map-container">
+    <gmp-map role="region" aria-labelledby="map-label"></gmp-map>
+    <label id="map-label">@Placename</label>
+</SfCard>
 <style>
-    #gmpMap {
+    #map-container2 {
         height: 160px;
+    }
+
+    #map-label {
+        border-bottom: 1px solid gray;
     }
 </style>
 
 @code {
     [Parameter] public double? Latitude { get; set; }
     [Parameter] public double? Longitude { get; set; }
+    [Parameter] public string Placename { get; set; } = default!;
 
     private double? _latitude;
     private double? _longitude;
@@ -34,6 +41,6 @@
 
         _mapNeedsUpdate = false;
 
-        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "gmpMap", _latitude.Value, _longitude.Value, 16);
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container2 > gmp-map", _latitude.Value, _longitude.Value, 16);
     }
 }

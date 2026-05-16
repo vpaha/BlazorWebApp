@@ -24,19 +24,9 @@
 </SfCard>
 @if (_isMapEnabled)
 {
-    @if (ShowMap)
+    @if (ShowMap && IsDesktopView)
     {
-        <SfCard CssClass="@(IsDesktopView ? "max-width-400" : "max-width")">
-            <CardContent>
-                <label id="map-label">
-                    @DamageContext.Placename
-                </label>
-                @if (IsDesktopView)
-                {
-                    <LocalMap Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude"></LocalMap>
-                }
-            </CardContent>
-        </SfCard>
+        <LocalMap Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude" Placename="@DamageContext.Placename"></LocalMap>
     }
 }
 else
