@@ -66,7 +66,7 @@ else
 
     private async Task OnAddressResolved(LocationDto location)
     {
-        DamageContext.GoogleId = location.Id;
+        DamageContext.GoogleId = location.PlaceId;
         DamageContext.Latitude = location.Latitude;
         DamageContext.Longitude = location.Longitude;
         DamageContext.AddressEntry = location.Address;

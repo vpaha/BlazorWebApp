@@ -204,7 +204,7 @@
         vendors ??= [];
         foreach (var place in places)
         {
-            if (vendors.Any(vendor => vendor.Id == place.Id)) continue;
+            if (vendors.Any(vendor => vendor.PlaceId == place.PlaceId)) continue;
             vendors.Add(place);
 
             await vendorRepo.AddVendorAsync(place);

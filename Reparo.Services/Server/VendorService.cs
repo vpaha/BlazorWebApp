@@ -39,9 +39,9 @@ public sealed class VendorService : IVendorService
     public async Task AddVendorAsync(PlaceDto place, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(place);
-        if (string.IsNullOrWhiteSpace(place.Id)) throw new ArgumentException("Place Id is required.", nameof(place));
+        if (string.IsNullOrWhiteSpace(place.PlaceId)) throw new ArgumentException("Place Id is required.", nameof(place));
 
-        var existingVendor = await _context.Set<VendorModel>().FirstOrDefaultAsync(v => v.PlaceId == place.Id, cancellationToken);
+        var existingVendor = await _context.Set<VendorModel>().FirstOrDefaultAsync(v => v.PlaceId == place.PlaceId, cancellationToken);
         if (existingVendor is not null) return;
 
         var now = DateTimeOffset.UtcNow;
@@ -53,7 +53,7 @@ public sealed class VendorService : IVendorService
             //email
             //addresslane1
 
-            PlaceId = place.Id,
+            PlaceId = place.PlaceId,
 
             Phone = place.Phone,
             WebsiteUrl = place.Website,

@@ -62,7 +62,7 @@
                     ChildContent = builder =>
                     {
                         builder.OpenComponent<Vendor>(0);
-                        builder.AddAttribute(1, "PlaceId", place?.Id);
+                        builder.AddAttribute(1, "PlaceId", place?.PlaceId);
                         builder.CloseComponent();
                     }
                 });
@@ -70,7 +70,7 @@
         }
         else
         {
-            await OnSelectionEvent.InvokeAsync(place?.Id);
+            await OnSelectionEvent.InvokeAsync(place?.PlaceId);
         }
     }
 
