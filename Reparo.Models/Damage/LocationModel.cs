@@ -1,11 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-public sealed class NearbyPlacesDto
-{
-    [JsonPropertyName("places")]
-    public List<PlaceDto> Places { get; set; } = [];
-}
-
 public sealed class PlaceDto : LocationDto
 {
     [JsonPropertyName("name")]
