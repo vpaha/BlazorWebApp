@@ -193,7 +193,7 @@ internal static class RouteExtensions
             return result;
         });
 
-        group.MapGet("vendor-damage-entries",async (HttpContext http,[FromServices] IDamageService repo, CancellationToken ct) =>
+        group.MapGet("vendor-damage-entries", async (HttpContext http, [FromServices] IDamageService repo, CancellationToken ct) =>
             {
                 var vendorId = http.User.GetVendorId();
                 if (vendorId is null) return Results.Unauthorized();
@@ -277,12 +277,10 @@ internal static class RouteExtensions
 
         }).RequireAuthorization("Admin");
 
-        group.MapPost("vendor-add", async ([FromServices] IVendorService repo, [FromBody] PlaceDto[] places, CancellationToken ct) =>
+        group.MapPost("vendors-add", async ([FromServices] IVendorService repo,[FromBody] PlaceDto[] places,CancellationToken ct) =>
         {
-            foreach (var place in places)
-            {
-                await repo.AddVendorAsync(place, ct);
-            }
+            if (places is null || places.Length == 0) return Results.BadRequest("At least one place is required.");
+            await repo.AddVendorsAsync(places, ct);
             return Results.Ok();
         }).RequireAuthorization("Admin");
 

@@ -5,7 +5,7 @@ public interface IVendorService
     Task<VendorModel?> GetVendorByPlaceAsync(string placeId, CancellationToken cancellationToken = default);
     Task<VendorModel?> GetVendorAsync(int vendorId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<VendorModel>> GetVendorListAsync(CancellationToken cancellationToken = default);
-    Task AddVendorAsync(PlaceDto vendor, CancellationToken cancellationToken = default);
+    Task AddVendorsAsync(PlaceDto[] places, CancellationToken cancellationToken = default);
 
     // not used
     //Task<long> AddVendorAsync(VendorModel vendor, CancellationToken cancellationToken = default);
@@ -36,54 +36,73 @@ public sealed class VendorService : IVendorService
         return await _context.Set<VendorModel>().AsNoTracking().Where(v => v.IsActive).OrderBy(v => v.UpdatedAt).ToListAsync(cancellationToken);
     }
 
-    public async Task AddVendorAsync( PlaceDto place,  CancellationToken cancellationToken = default)
+    public async Task AddVendorsAsync(PlaceDto[] places, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(place);
+        ArgumentNullException.ThrowIfNull(places);
 
-        var existingVendor = await _context.Vendors.FirstOrDefaultAsync(x => x.PlaceId == place.PlaceId, cancellationToken);
+        if (places.Length == 0) return;
 
-        if (existingVendor != null) return;
+        var placeIds = places
+            .Where(x => !string.IsNullOrWhiteSpace(x.PlaceId))
+            .Select(x => x.PlaceId!)
+            .Distinct()
+            .ToList();
 
-        var vendor = new VendorModel
-        {
-            // Business identity
-            Name = place.Name!,
-            Description = place.Description,
-            PlaceId = place.PlaceId,
+        var existingPlaceIds = await _context.Vendors
+            .Where(x => x.PlaceId != null && placeIds.Contains(x.PlaceId))
+            .Select(x => x.PlaceId!)
+            .ToListAsync(cancellationToken);
 
-            //legalName
+        var existingSet = existingPlaceIds.ToHashSet();
+        var now = DateTimeOffset.UtcNow;
+        var vendors = places
+            .Where(x =>
+                !string.IsNullOrWhiteSpace(x.PlaceId) &&
+                !existingSet.Contains(x.PlaceId) &&
+                !string.IsNullOrWhiteSpace(x.Name))
+            .Select(place => new VendorModel
+            {
+                // Business identity
+                Name = place.Name!,
+                Description = place.Description,
+                PlaceId = place.PlaceId,
 
-            // Contact
-            Phone = place.Phone,
-            WebsiteUrl = place.Website,
+                // Contact
+                Phone = place.Phone,
+                WebsiteUrl = place.Website,
 
-            // Address
-            AddressLine1 = place.AddressLine1,
-            City = place.City,
-            State = place.State,
-            PostalCode = place.PostalCode,
-            Country = place.Country,
+                // Address
+                AddressLine1 = place.AddressLine1,
+                AddressLine2 = place.AddressLine2,
+                City = place.City,
+                State = place.State,
+                PostalCode = place.PostalCode,
+                Country = place.Country ?? "US",
 
-            // Geo
-            Latitude = place.Latitude,
-            Longitude = place.Longitude,
+                // Geo
+                Latitude = place.Latitude,
+                Longitude = place.Longitude,
 
-            // Ratings
-            Rating = place.Rating.HasValue ? Convert.ToDecimal(place.Rating.Value) : null,
-            ReviewCount = place.ReviewCount,
+                // Ratings
+                Rating = place.Rating.HasValue
+                    ? Convert.ToDecimal(place.Rating.Value)
+                    : null,
+                ReviewCount = place.ReviewCount,
 
-            // Operational
-            IsActive = place.IsOperational,
-            IsVerified = false,
-            IsPreferred = false,
+                // Operational
+                IsActive = place.IsOperational,
+                IsVerified = false,
+                IsPreferred = false,
 
-            // Audit
-            CreatedAt = DateTimeOffset.UtcNow,
-            UpdatedAt = DateTimeOffset.UtcNow
-        };
+                // Audit
+                CreatedAt = now,
+                UpdatedAt = now
+            })
+            .ToList();
 
-        _context.Vendors.Add(vendor);
+        if (vendors.Count == 0) return;
 
+        _context.Vendors.AddRange(vendors);
         await _context.SaveChangesAsync(cancellationToken);
     }
 

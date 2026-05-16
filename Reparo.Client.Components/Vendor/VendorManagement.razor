@@ -163,7 +163,6 @@
         if (!firstRender) return;
 
         _objRef = DotNetObjectReference.Create(this);
-        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container4 > gmp-map", location.Latitude, location.Longitude, 16, _objRef, "OnVendorsMapped");
     }
 
     public ValueTask DisposeAsync()
@@ -181,7 +180,8 @@
     private async Task UpdateVendors()
     {
         isLoading = true;
-        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category);
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container4 > gmp-map", location.Latitude, location.Longitude, 16, _objRef, "OnVendorsMapped");
+        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, 4);
         isLoading = false;
     }
 
@@ -191,8 +191,7 @@
         if (places is not null)
         {
             vendors = places;
-            await vendorRepo.AddVendorAsync(places);
-            //StateHasChanged();
+            await vendorRepo.AddVendorsAsync(places);
         }
         return;
     }
