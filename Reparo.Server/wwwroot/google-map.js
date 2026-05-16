@@ -83,7 +83,7 @@
         return true;
     }
 
-    async function fetchPlaces(category, maxCount = 8)
+    async function fetchPlaces(category, maxCount = 2)
     {
         const {
             PlaceCtor,

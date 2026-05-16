@@ -36,9 +36,7 @@ public sealed class VendorService : IVendorService
         return await _context.Set<VendorModel>().AsNoTracking().Where(v => v.IsActive).OrderBy(v => v.UpdatedAt).ToListAsync(cancellationToken);
     }
 
-    public async Task AddVendorAsync(
-    PlaceDto place,
-    CancellationToken cancellationToken = default)
+    public async Task AddVendorAsync( PlaceDto place,  CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(place);
 
