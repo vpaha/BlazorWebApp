@@ -1,7 +1,7 @@
 ﻿@inject IChatClient client
 @inject ToastService toastService
 
-<section class="chat-shell">
+<section id="chat-shell">
     <SfAppBar ColorMode="AppBarColor.Dark">
         <SfIcon Size="IconSize.Large" Name="IconName.AIChat" Title="Smart Assistant"></SfIcon>
         <AppBarSpacer></AppBarSpacer>
@@ -12,19 +12,19 @@
                 ShowHeader="true" Height="100%">
         <ListViewTemplates TValue="ChatMessageVm">
             <Template>
-                <div class='e-list-wrapper e-list-avatar @(context.IsUser ? "e-ai-message" : "")'>
+                <div class="e-list-wrapper e-list-avatar @(context.IsUser ? "e-ai-message" : "")">
                     @if (context.IsUser)
                     {
                         <span class="e-avatar e-avatar-circle">You</span>
                     }
                     else
                     {
-                        <img class='e-avatar e-avatar-circle' src="https://cdn.syncfusion.com/blazor/images/avatar/pic02.png" alt="AI" />
+                        <img class="e-avatar e-avatar-circle" src="https://cdn.syncfusion.com/blazor/images/avatar/pic02.png" alt="AI" />
                     }
-                    <span class="small-time">
+                    <span style="font-size: xx-small;">
                         @context.CreatedAt.ToString("MM/dd/yyyy hh:mm tt")
                     </span>
-                    <span class='e-list-content'>@context.Text</span>
+                    <span class="e-list-content" style="white-space: normal;">@context.Text</span>
                 </div>
             </Template>
         </ListViewTemplates>
@@ -42,16 +42,12 @@
     </div>
 </section>
 <style>
-    .chat-shell {
+    #chat-shell {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         height: 100%;
         gap: 8px;
-    }
-
-    .small-time {
-        font-size: xx-small;
     }
 
     .e-ai-message {
@@ -61,7 +57,7 @@
 
 @code {
     private string MessageText { get; set; } = string.Empty;
-    private List<ChatMessageVm> Messages { get; set; } = [];
+    private List<ChatMessageVm> Messages { get; set; } = new List<ChatMessageVm>();
     private async Task CommunicateAsync()
     {
         if (string.IsNullOrWhiteSpace(MessageText)) return;
@@ -81,10 +77,10 @@
         }
     }
 
-    private Task OnTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
+    private async Task OnTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
     {
         MessageText = args.Transcript;
-        return Task.CompletedTask;
+        await CommunicateAsync();
     }
 
     private sealed record ChatMessageVm(string Text, bool IsUser)

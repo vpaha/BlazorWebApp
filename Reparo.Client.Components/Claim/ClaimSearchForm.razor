@@ -79,8 +79,9 @@
         }
     }
 
-    void OnTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
+    async Task OnTranscriptChanged(SpeechRecognitionStoppedEventArgs args)
     {
         ClaimFilter.MemId = args.Transcript;
+        await HandleSubmit();
     }
 }

@@ -277,6 +277,12 @@ internal static class RouteExtensions
 
         }).RequireAuthorization("Admin");
 
+        group.MapPost("vendor-add", async ([FromServices] IVendorService repo, [FromBody] PlaceDto place, CancellationToken ct) =>
+        {
+            await repo.AddVendorAsync(place, ct);
+            return Results.Ok();
+        }).RequireAuthorization("Admin");
+
         group.MapGet("user-list", async ([FromServices] IUserService repo, CancellationToken ct) =>
         {
             var entries = await repo.GetUsersAsync(ct);

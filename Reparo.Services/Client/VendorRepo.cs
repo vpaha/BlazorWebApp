@@ -5,6 +5,7 @@ public interface IVendorRepo
     Task<VendorModel> GetVendorAsync(CancellationToken cancellationToken = default);
     Task<VendorModel> GetVendorByPlaceAsync(string placeId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<VendorModel>> GetVendorListAsync(CancellationToken cancellationToken = default);
+    Task AddVendorAsync(PlaceDto vendor, CancellationToken cancellationToken = default);
 }
 
 public sealed class VendorRepo : IVendorRepo
@@ -29,5 +30,10 @@ public sealed class VendorRepo : IVendorRepo
     public async Task<IReadOnlyList<VendorModel>> GetVendorListAsync(CancellationToken cancellationToken = default)
     {
         return await _http.GetFromJsonAsync<IReadOnlyList<VendorModel>>("vendor/vendor-list", cancellationToken) ?? Array.Empty<VendorModel>();
+    }
+
+    public async Task AddVendorAsync(PlaceDto place, CancellationToken cancellationToken = default) { 
+        var response = await _http.PostAsJsonAsync("vendor/vendor-add", place, cancellationToken);
+        response.EnsureSuccessStatusCode();
     }
 }

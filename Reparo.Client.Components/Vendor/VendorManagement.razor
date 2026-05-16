@@ -1,8 +1,7 @@
 ﻿@using Microsoft.Extensions.Hosting;
-@using System.ComponentModel.DataAnnotations
 @inject IJSRuntime jSRuntime
 @inject IHostEnvironment environment
-
+@inject IVendorRepo vendorRepo
 @implements IAsyncDisposable
 
 <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top" ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
@@ -197,16 +196,20 @@
     }
 
     [JSInvokable]
-    public Task OnVendorsMapped(PlaceDto[]? places)
+    public async Task OnVendorsMapped(PlaceDto[]? places)
     {
-        if (places is null || places.Length == 0) return Task.CompletedTask;
+        if (places is null || places.Length == 0) return;
+
+
         vendors ??= [];
         foreach (var place in places)
         {
             if (vendors.Any(vendor => vendor.Id == place.Id)) continue;
             vendors.Add(place);
-        }
 
-        return InvokeAsync(StateHasChanged);
+            await vendorRepo.AddVendorAsync(place);
+        }
+        //StateHasChanged();
+        return;
     }
 }
