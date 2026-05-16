@@ -34,7 +34,7 @@ internal static class RouteExtensions
 
         return new LocationDto
         {
-            Id = response.PlaceId,
+            PlaceId = response.PlaceId,
             Address = response.FormattedAddress,
             Latitude = response.Geometry?.Location?.Latitude ?? 0,
             Longitude = response.Geometry?.Location?.Longitude ?? 0,
