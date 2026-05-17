@@ -31,10 +31,10 @@
         {
             _objRef = DotNetObjectReference.Create(this);
             await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container3 > gmp-map", Latitude, Longitude, 16, _objRef);
-            if (!env.IsDevelopment())
-            {
+            // if (!env.IsDevelopment())
+            // {
                 await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", "general contractor", 12);
-            }
+            //}
         }
     }
 

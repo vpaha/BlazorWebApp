@@ -32,7 +32,6 @@ internal static class VendorModelBuilderExtensions
             e.Property(x => x.Status).HasColumnName("status");
             e.Property(x => x.PrimaryType).HasColumnName("primary_type");
             e.Property(x => x.PrimaryTypeDisplayName).HasColumnName("primary_type_display_name");
-            e.Property(x => x.TravelToYou).HasColumnName("travel_to_you");
             e.Property(x => x.Types).HasColumnName("types");
 
             e.HasIndex(x => x.PlaceId).IsUnique().HasDatabaseName("uq_vendors_place_id");

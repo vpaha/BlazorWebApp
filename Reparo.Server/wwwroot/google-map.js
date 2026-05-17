@@ -103,14 +103,13 @@
             fields: [
                 "id",
                 "displayName",
-                "shortFormattedAddress",
+                "formattedAddress",
                 "addressComponents",
                 "location",
                 "googleMapsURI",
                 "businessStatus",
                 "primaryType",
                 "primaryTypeDisplayName",
-                "pureServiceAreaBusiness",
                 "types"
             ],
             locationBias: {
@@ -133,7 +132,7 @@
             mapInstance.fitBounds(bounds);
         }
 
-        const placeDtos = places.filter(place => place?.location).map(toPlaceDto);
+        const placeDtos = places.map(toPlaceDto);
         if (dotNetHelper && dotNetCallBack)
         {
             await dotNetHelper.invokeMethodAsync(dotNetCallBack, placeDtos);
@@ -150,7 +149,7 @@
         const marker = new AdvancedMarkerElementCtor({
             map: mapInstance,
             position: place.location,
-            title: place.displayName,
+            title: place.displayName?.text ?? place.displayName,
             gmpClickable: true
         });
 
@@ -204,20 +203,18 @@
             fields: [
                 "id",
                 "displayName",
-                "shortFormattedAddress",
+                "formattedAddress",
                 "addressComponents",
                 "location",
                 "googleMapsURI",
                 "businessStatus",
                 "primaryType",
                 "primaryTypeDisplayName",
-                "pureServiceAreaBusiness",
                 "types"
             ]
         });
 
-        if (!place.location)
-            return null;
+        if (!place.location) return null;
 
         const marker = addPlaceMarker(
             place,
@@ -246,8 +243,8 @@
         return `
             <div style="min-width:240px">
                 ${`<strong>${place.displayName}</strong>`}
-                ${`<div>${place.shortFormattedAddress}</div>`}
-                ${`<div>${place.status}</div>`}
+                ${`<div>${place.formattedAddress}</div>`}
+                ${`<div>${place.businessStatus}</div>`}
                 ${`<div><a href="${place.googleMapsURI}" target="_blank" rel="noopener noreferrer">Open in Google Maps</a></div>`}
             </div>`;
     }
@@ -260,7 +257,7 @@
         return {
             placeId: place.id,
             name: place.displayName,
-            formattedAddress: place.shortFormattedAddress,
+            formattedAddress: place.formattedAddress,
             addressLine1: `${getComponent("street_number")?.longText ?? ""} ${getComponent("route")?.longText ?? ""}`.trim(),
             city: getComponent("locality")?.longText ?? getComponent("postal_town")?.longText,
             state: getComponent("administrative_area_level_1")?.shortText,
@@ -270,9 +267,8 @@
             longitude: place.location?.lng(),
             googleMapsUrl: place.googleMapsURI,
             status: place.businessStatus,
-            primaryType: primaryType,
-            primaryTypeDisplayName: place.primaryTypeDisplayName,
-            pureServiceAreaBusiness: place.pureServiceAreaBusiness,
+            primaryType: place.primaryType,
+            primaryTypeDisplayName: place.primaryTypeDisplayName?.text ?? place.primaryTypeDisplayName,
             types: place.types,
         };
     }

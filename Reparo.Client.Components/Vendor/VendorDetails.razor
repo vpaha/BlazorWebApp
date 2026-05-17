@@ -32,9 +32,6 @@
                     @string.Join(", ", Vendor.Types ?? Array.Empty<string>())
                 </div>
                 <div>
-                    <strong>Travel To You</strong> @(Vendor.TravelToYou.HasValue && Vendor.TravelToYou.Value ? "Yes" : "No")
-                </div>
-                <div>
                     <strong>License Number</strong><br />
                     @Vendor.LicenseNumber
                 </div>

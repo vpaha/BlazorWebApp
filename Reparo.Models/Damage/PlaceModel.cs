@@ -17,9 +17,6 @@ public sealed class PlaceDto : LocationDto
     [JsonPropertyName("primaryTypeDisplayName")]
     public string? PrimaryTypeDisplayName { get; set; }
 
-    [JsonPropertyName("pureServiceAreaBusiness")]
-    public bool TravelToYou { get; set; }
-
     [JsonPropertyName("types")]
     public string[]? Types { get; set; }    
 }

@@ -80,7 +80,6 @@ public sealed class VendorService : IVendorService
                 Longitude = place.Longitude,
 
                 Status = place.Status,
-                TravelToYou = place.TravelToYou,
 
                 PrimaryType = place.PrimaryType,
                 PrimaryTypeDisplayName = place.PrimaryTypeDisplayName,

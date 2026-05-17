@@ -23,7 +23,6 @@ public sealed class VendorModel
     public double? Longitude { get; set; }
 
     public string? Status { get; set; }
-    public bool? TravelToYou { get; set; }
 
     public string? PrimaryType { get; set; }
     public string? PrimaryTypeDisplayName { get; set; }

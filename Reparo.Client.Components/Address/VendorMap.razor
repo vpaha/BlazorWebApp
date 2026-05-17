@@ -26,10 +26,10 @@
         if (PlaceId is not null)
         {
             await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container1 > gmp-map", Latitude, Longitude);
-            if (!env.IsDevelopment())
-            {
+//            if (!env.IsDevelopment())
+  //          {
                 await jSRuntime.InvokeVoidAsync("googleMap.searchPlaceById", PlaceId);
-            }
+    //        }
         }
     }
 }
