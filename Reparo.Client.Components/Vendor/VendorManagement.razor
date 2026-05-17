@@ -44,16 +44,13 @@
                         {
                             <div class="vendor-line">@item.Address</div>
                         }
-                        <div class="vendor-links">
+                        <div>
                             @if (!string.IsNullOrWhiteSpace(item.GoogleMaps))
                             {
                                 <a href="@item.GoogleMaps" target="_blank" rel="noopener noreferrer">
-                                    google Maps
+                                    Place Map
                                 </a>
                             }
-                        </div>
-                        <div>
-                            @item.PrimaryType
                         </div>
                         <div>
                             @item.PrimaryTypeDisplayName
@@ -95,26 +92,8 @@
         margin-bottom: 2px;
     }
 
-    .vendor-rating {
-        display: flex;
-        align-items: center;
-        gap: 3px;
-        color: #5f6368;
-    }
-
-    .star {
-        color: #fbbc04;
-    }
-
-    .reviews,
     .vendor-line {
         color: #5f6368;
-    }
-
-    .vendor-links {
-        display: flex;
-        gap: 12px;
-        margin-top: 4px;
     }
 </style>
 @code {

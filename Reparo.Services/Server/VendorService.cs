@@ -86,7 +86,7 @@ public sealed class VendorService : IVendorService
                 Types = place.Types,
 
                 // Operational
-                IsActive = place.Status == "OPEN",
+                IsActive = place.Status == "OPERATIONAL",
                 IsVerified = false,
                 IsPreferred = false,
 
