@@ -8,17 +8,16 @@
         AllowSorting="true"
         ShowColumnMenu="true">
     <GridPageSettings PageSize="GridConstants.RowCount" PageSizes="GridConstants.PageSizes"></GridPageSettings>
-    <GridSearchSettings Fields="@(new[] { nameof(VendorModel.Name), nameof(VendorModel.LegalName), nameof(VendorModel.AddressLine1) })"
+    <GridSearchSettings Fields="@(new[] { nameof(VendorModel.Name), nameof(VendorModel.Address), nameof(VendorModel.PrimaryType) })"
                         Operator="Syncfusion.Blazor.Operator.Contains"
                         IgnoreCase="true"
                         IgnoreAccent="true">
     </GridSearchSettings>
     <GridColumns>
         <GridColumn Field="@nameof(VendorModel.Name)" HeaderText="Name" IsPrimaryKey="true" AllowEditing="false"></GridColumn>
-        <GridColumn Field="@nameof(VendorModel.LegalName)" HeaderText="Legal Name" AllowEditing="false"></GridColumn>
-        <GridColumn Field="@nameof(VendorModel.AddressLine1)" HeaderText="Address"></GridColumn>
-        <GridColumn Field="@nameof(VendorModel.City)" HeaderText="City"></GridColumn>
-        <GridColumn Field="@nameof(VendorModel.Description)" HeaderText="Description"></GridColumn>
+        <GridColumn Field="@nameof(VendorModel.Address)" HeaderText="Address"></GridColumn>
+        <GridColumn Field="@nameof(VendorModel.PrimaryTypeDisplayName)" HeaderText="Primary Type Display Name"></GridColumn>
+        <GridColumn Field="@nameof(VendorModel.PrimaryType)" HeaderText="Primary Type"></GridColumn>
     </GridColumns>
     <GridEvents TValue="VendorModel" RowSelected="OnRowSelected"></GridEvents>
 </SfGrid>

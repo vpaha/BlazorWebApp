@@ -64,17 +64,12 @@ public sealed class VendorService : IVendorService
             {
                 // Business identity
                 Name = place.Name!,
-                Description = place.Description,
                 PlaceId = place.PlaceId,
-
-                // Contact
-                Phone = place.Phone,
-                WebsiteUrl = place.Website,
                 GoogleMaps = place.GoogleMaps,
 
                 // Address
+                Address = place.Address,
                 AddressLine1 = place.AddressLine1,
-                AddressLine2 = place.AddressLine2,
                 City = place.City,
                 State = place.State,
                 PostalCode = place.PostalCode,
@@ -84,14 +79,15 @@ public sealed class VendorService : IVendorService
                 Latitude = place.Latitude,
                 Longitude = place.Longitude,
 
-                // Ratings
-                Rating = place.Rating.HasValue
-                    ? Convert.ToDecimal(place.Rating.Value)
-                    : null,
-                ReviewCount = place.ReviewCount,
+                Status = place.Status,
+                TravelToYou = place.TravelToYou,
+
+                PrimaryType = place.PrimaryType,
+                PrimaryTypeDisplayName = place.PrimaryTypeDisplayName,
+                Types = place.Types,
 
                 // Operational
-                IsActive = place.IsOperational,
+                IsActive = place.Status == "OPEN",
                 IsVerified = false,
                 IsPreferred = false,
 

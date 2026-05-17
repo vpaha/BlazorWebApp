@@ -40,44 +40,23 @@
                 {
                     <article class="vendor-card">
                         <div class="vendor-title">@item.Name</div>
-
-                        @if (item.Rating.HasValue)
-                        {
-                            <div class="vendor-rating">
-                                <span>@item.Rating.Value.ToString("0.0")</span>
-                                <span class="star">★</span>
-
-                                @if (item.ReviewCount.HasValue)
-                                {
-                                    <span class="reviews">(@item.ReviewCount reviews)</span>
-                                }
-                            </div>
-                        }
-
                         @if (!string.IsNullOrWhiteSpace(item.Address))
                         {
                             <div class="vendor-line">@item.Address</div>
                         }
-
-                        @if (!string.IsNullOrWhiteSpace(item.Phone))
-                        {
-                            <div class="vendor-line">@item.Phone</div>
-                        }
-
                         <div class="vendor-links">
-                            @if (!string.IsNullOrWhiteSpace(item.Website))
-                            {
-                                <a href="@item.Website" target="_blank" rel="noopener noreferrer">
-                                    Website
-                                </a>
-                            }
-
                             @if (!string.IsNullOrWhiteSpace(item.GoogleMaps))
                             {
                                 <a href="@item.GoogleMaps" target="_blank" rel="noopener noreferrer">
                                     google Maps
                                 </a>
                             }
+                        </div>
+                        <div>
+                            @item.PrimaryType
+                        </div>
+                        <div>
+                            @item.PrimaryTypeDisplayName
                         </div>
                         <div>
                             @string.Join(", ", item.Types ?? Array.Empty<string>())

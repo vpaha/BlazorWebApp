@@ -7,30 +7,15 @@
     @if (Vendor is not null)
     {
         <SfAppBar role="region">
-            <h2>Vendor information and contact details</h2>
+            <h2>Vendor information</h2>
         </SfAppBar>
         <SfCard>
             <CardHeader>
-                <h3>Business Information</h3>
+                <h3>
+                    @Vendor.Name
+                </h3>
             </CardHeader>
             <CardContent>
-                <div>
-                    @Vendor.Name
-                </div>
-                @if (!string.IsNullOrWhiteSpace(Vendor.LegalName))
-                {
-                    <div>
-                        <strong>Legal Name</strong><br />
-                        @Vendor.LegalName
-                    </div>
-                }
-                @if (!string.IsNullOrWhiteSpace(Vendor.Description))
-                {
-                    <div>
-                        <strong>Description</strong><br />
-                        @Vendor.Description
-                    </div>
-                }
                 @if (!string.IsNullOrWhiteSpace(Vendor.LicenseNumber))
                 {
                     <div>
@@ -38,6 +23,21 @@
                         @Vendor.LicenseNumber
                     </div>
                 }
+                <div>
+                    <strong>Primary Type</strong><br />
+                    @Vendor.PrimaryTypeDisplayName
+                </div>
+                <div>
+                    <strong>Types</strong><br />
+                    @string.Join(", ", Vendor.Types ?? Array.Empty<string>())
+                </div>
+                <div>
+                    <strong>Travel To You</strong> @(Vendor.TravelToYou.HasValue && Vendor.TravelToYou.Value ? "Yes" : "No")
+                </div>
+                <div>
+                    <strong>License Number</strong><br />
+                    @Vendor.LicenseNumber
+                </div>
             </CardContent>
         </SfCard>
         <SfCard>
@@ -45,6 +45,9 @@
                 <h3>Vendor Status</h3>
             </CardHeader>
             <CardContent>
+                <div>
+                    <strong>Status</strong> @Vendor.Status
+                </div>
                 <div>
                     <strong>Active</strong> @(Vendor.IsActive ? "Yes" : "No")
                 </div>
@@ -54,49 +57,22 @@
                 <div>
                     <strong>Preferred</strong> @(Vendor.IsPreferred ? "Yes" : "No")
                 </div>
-                @if (Vendor.Rating.HasValue)
-                {
-                    <div>
-                        <strong>Rating</strong> @Vendor.Rating.Value.ToString("0.0")
-                    </div>
-                }
-                @if (Vendor.ReviewCount.HasValue)
-                {
-                    <div>
-                        <strong>Review Count</strong> @Vendor.ReviewCount
-                    </div>
-                }
             </CardContent>
         </SfCard>
         <SfCard>
             <CardHeader>
-                <h3>Contact</h3>
+                <h3>Address</h3>
             </CardHeader>
             <CardContent>
-                @if (!string.IsNullOrWhiteSpace(Vendor.Email))
+                <div>
+                    <strong>Address</strong><br />
+                    @Vendor.Address
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Vendor.GoogleMaps))
                 {
-                    <div>
-                        <strong>Email</strong><br />
-                        <a href="@($"mailto:{Vendor.Email}")">@Vendor.Email</a>
-                    </div>
-                }
-                @if (!string.IsNullOrWhiteSpace(Vendor.Phone))
-                {
-                    <div>
-                        <strong>Phone</strong><br />
-                        <a href="@($"tel:{Vendor.Phone}")">@Vendor.Phone</a>
-                    </div>
-                }
-                @if (!string.IsNullOrWhiteSpace(Vendor.WebsiteUrl))
-                {
-                    <div>
-                        <strong>Website</strong><br />
-                        <a href="@Vendor.WebsiteUrl"
-                               target="_blank"
-                               rel="noopener noreferrer">
-                            @Vendor.WebsiteUrl
-                        </a>
-                    </div>
+                    <a href="@Vendor.GoogleMaps" target="_blank" rel="noopener noreferrer">
+                        @Vendor.GoogleMaps
+                    </a>
                 }
             </CardContent>
         </SfCard>

@@ -103,17 +103,15 @@
             fields: [
                 "id",
                 "displayName",
-                "formattedAddress",
+                "shortFormattedAddress",
                 "addressComponents",
                 "location",
-                "rating",
-                "userRatingCount",
-                "nationalPhoneNumber",
-                "websiteURI",
                 "googleMapsURI",
                 "businessStatus",
-                "types",
-                "editorialSummary"
+                "primaryType",
+                "primaryTypeDisplayName",
+                "pureServiceAreaBusiness",
+                "types"
             ],
             locationBias: {
                 center: searchCenter,
@@ -135,10 +133,7 @@
             mapInstance.fitBounds(bounds);
         }
 
-        const placeDtos = places
-            .filter(place => place?.location)
-            .map(toPlaceDto);
-
+        const placeDtos = places.filter(place => place?.location).map(toPlaceDto);
         if (dotNetHelper && dotNetCallBack)
         {
             await dotNetHelper.invokeMethodAsync(dotNetCallBack, placeDtos);
@@ -155,7 +150,7 @@
         const marker = new AdvancedMarkerElementCtor({
             map: mapInstance,
             position: place.location,
-            title: getPlaceName(place),
+            title: place.displayName,
             gmpClickable: true
         });
 
@@ -165,10 +160,7 @@
 
             if (dotNetHelper)
             {
-                await dotNetHelper.invokeMethodAsync(
-                    "OpenVendor",
-                    toPlaceDto(place)
-                );
+                await dotNetHelper.invokeMethodAsync("OpenVendor", toPlaceDto(place));
             }
 
             infoWindow.setContent(createPlaceInfoWindow(place));
@@ -212,17 +204,15 @@
             fields: [
                 "id",
                 "displayName",
-                "formattedAddress",
+                "shortFormattedAddress",
                 "addressComponents",
                 "location",
-                "rating",
-                "userRatingCount",
-                "nationalPhoneNumber",
-                "websiteURI",
                 "googleMapsURI",
                 "businessStatus",
-                "types",
-                "editorialSummary"
+                "primaryType",
+                "primaryTypeDisplayName",
+                "pureServiceAreaBusiness",
+                "types"
             ]
         });
 
@@ -253,98 +243,38 @@
 
     function createPlaceInfoWindow(place)
     {
-        const name = getPlaceName(place);
-        const address = place.formattedAddress ?? "";
-        const phone = place.nationalPhoneNumber ?? "";
-
-        const rating = place.rating
-            ? `${place.rating.toFixed(1)} ⭐ (${place.userRatingCount ?? 0} reviews)`
-            : "";
-
-        const website = place.websiteURI ?? "";
-        const mapsUrl = place.googleMapsURI ?? "";
-
         return `
             <div style="min-width:240px">
-                ${name ? `<strong>${name}</strong>` : ""}
-                ${address ? `<div>${address}</div>` : ""}
-                ${phone ? `<div>${phone}</div>` : ""}
-                ${rating ? `<div>${rating}</div>` : ""}
-                ${website
-                ? `<div><a href="${website}" target="_blank" rel="noopener noreferrer">Website</a></div>`
-                : ""}
-                ${mapsUrl
-                ? `<div><a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">Open in Google Maps</a></div>`
-                : ""}
+                ${`<strong>${place.displayName}</strong>`}
+                ${`<div>${place.shortFormattedAddress}</div>`}
+                ${`<div>${place.status}</div>`}
+                ${`<div><a href="${place.googleMapsURI}" target="_blank" rel="noopener noreferrer">Open in Google Maps</a></div>`}
             </div>`;
     }
 
     function toPlaceDto(place)
     {
         const components = place.addressComponents ?? [];
-
-        const getComponent = (type) =>
-            components.find(c => c.types?.includes(type));
+        const getComponent = (type) => components.find(c => c.types?.includes(type));
 
         return {
             placeId: place.id,
-
-            name: getPlaceName(place),
-
-            description: place.editorialSummary?.text,
-
-            formattedAddress: place.formattedAddress,
-
-            addressLine1:
-                `${getComponent("street_number")?.longText ?? ""} ${getComponent("route")?.longText ?? ""}`.trim(),
-
-            city:
-                getComponent("locality")?.longText ??
-                getComponent("postal_town")?.longText,
-
-            state:
-                getComponent("administrative_area_level_1")?.shortText,
-
-            postalCode:
-                getComponent("postal_code")?.longText,
-
-            country:
-                getComponent("country")?.shortText,
-
-            latitude:
-                place.location?.lat(),
-
-            longitude:
-                place.location?.lng(),
-
-            rating:
-                place.rating,
-
-            reviewCount:
-                place.userRatingCount,
-
-            phone:
-                place.nationalPhoneNumber,
-
-            websiteUrl:
-                place.websiteURI,
-
-            googleMapsUrl:
-                place.googleMapsURI,
-
-            types:
-                place.types,
-
-            isOperational:
-                place.businessStatus === "OPERATIONAL"
+            name: place.displayName,
+            formattedAddress: place.shortFormattedAddress,
+            addressLine1: `${getComponent("street_number")?.longText ?? ""} ${getComponent("route")?.longText ?? ""}`.trim(),
+            city: getComponent("locality")?.longText ?? getComponent("postal_town")?.longText,
+            state: getComponent("administrative_area_level_1")?.shortText,
+            postalCode: getComponent("postal_code")?.longText,
+            country: getComponent("country")?.shortText,
+            latitude: place.location?.lat(),
+            longitude: place.location?.lng(),
+            googleMapsUrl: place.googleMapsURI,
+            status: place.businessStatus,
+            primaryType: primaryType,
+            primaryTypeDisplayName: place.primaryTypeDisplayName,
+            pureServiceAreaBusiness: place.pureServiceAreaBusiness,
+            types: place.types,
         };
-    }
-
-    function getPlaceName(place)
-    {
-        return place.displayName?.text ??
-            place.displayName ??
-            "";
     }
 
     function clearMarkers()
