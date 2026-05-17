@@ -71,6 +71,7 @@ else
 
     private async Task onChanged()
     {
+        await VerifyLocation();
         await AddressChanged.InvokeAsync(true);
     }
 
