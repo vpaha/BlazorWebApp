@@ -244,7 +244,7 @@
             <div style="min-width:240px">
                 ${`<strong>${place.displayName}</strong>`}
                 ${`<div>${place.formattedAddress}</div>`}
-                ${`<div>${place.businessStatus}</div>`}
+                ${`<div><i>${place.primaryTypeDisplayName}</i></div>`}
                 ${`<div><a href="${place.googleMapsURI}" target="_blank" rel="noopener noreferrer">Open in Google Maps</a></div>`}
             </div>`;
     }
