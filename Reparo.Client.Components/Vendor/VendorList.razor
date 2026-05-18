@@ -2,23 +2,146 @@
 
 <SfGrid TValue="VendorModel"
         DataSource="@appVendors"
+        Width="100%"
         Toolbar="@(new List<string> { "Search" })"
         AllowPaging="true"
         AllowReordering="true"
         AllowSorting="true"
-        ShowColumnMenu="true">
-    <GridPageSettings PageSize="GridConstants.RowCount" PageSizes="GridConstants.PageSizes"></GridPageSettings>
-    <GridSearchSettings Fields="@(new[] { nameof(VendorModel.Name), nameof(VendorModel.Address), nameof(VendorModel.PrimaryType) })"
-                        Operator="Syncfusion.Blazor.Operator.Contains"
-                        IgnoreCase="true"
-                        IgnoreAccent="true">
+        ShowColumnMenu="true">    
+    <GridPageSettings PageSize="GridConstants.RowCount"
+                      PageSizes="GridConstants.PageSizes">
+    </GridPageSettings>
+    <GridSearchSettings Fields="@(new[]
+                    {
+        nameof(VendorModel.Name),
+        nameof(VendorModel.PlaceId),
+        nameof(VendorModel.GoogleMaps),
+        nameof(VendorModel.Address),
+        nameof(VendorModel.AddressLine1),
+        nameof(VendorModel.City),
+        nameof(VendorModel.State),
+        nameof(VendorModel.PostalCode),
+        nameof(VendorModel.Country),
+        nameof(VendorModel.Status),
+        nameof(VendorModel.PrimaryType),
+        nameof(VendorModel.PrimaryTypeDisplayName),
+        nameof(VendorModel.LicenseNumber)
+    })"
+        Operator="Syncfusion.Blazor.Operator.Contains"
+        IgnoreCase="true"
+        IgnoreAccent="true">
     </GridSearchSettings>
     <GridColumns>
-        <GridColumn Field="@nameof(VendorModel.Name)" HeaderText="Name" IsPrimaryKey="true" AllowEditing="false"></GridColumn>
-        <GridColumn Field="@nameof(VendorModel.Address)" HeaderText="Address"></GridColumn>
-        <GridColumn Field="@nameof(VendorModel.PrimaryTypeDisplayName)" HeaderText="Primary Type Display Name"></GridColumn>
+        <GridColumn Field="@nameof(VendorModel.Id)" HeaderText="ID" IsPrimaryKey="true" AllowEditing="false" Width="90"></GridColumn>
+        <GridColumn Field="@nameof(VendorModel.Name)"
+                    HeaderText="Name"
+                    Width="220">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.PlaceId)"
+                    HeaderText="Place ID"
+                    Width="180">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.GoogleMaps)"
+                    HeaderText="Google Maps"
+                    Width="220">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.Address)"
+                    HeaderText="Address"
+                    Width="220">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.AddressLine1)"
+                    HeaderText="Address Line 1"
+                    Width="220">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.City)"
+                    HeaderText="City"
+                    Width="150">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.State)"
+                    HeaderText="State"
+                    Width="120">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.PostalCode)"
+                    HeaderText="Postal Code"
+                    Width="140">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.Country)"
+                    HeaderText="Country"
+                    Width="120">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.Latitude)"
+                    HeaderText="Latitude"
+                    Format="N6"
+                    TextAlign="TextAlign.Right"
+                    Width="140">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.Longitude)"
+                    HeaderText="Longitude"
+                    Format="N6"
+                    TextAlign="TextAlign.Right"
+                    Width="140">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.Status)"
+                    HeaderText="Status"
+                    Width="140">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.PrimaryType)"
+                    HeaderText="Primary Type"
+                    Width="180">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.PrimaryTypeDisplayName)"
+                    HeaderText="Primary Type Display Name"
+                    Width="240">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.Types)"
+                    HeaderText="Types"
+                    Width="260">
+            <Template>
+                @{
+                    var vendor = (context as VendorModel);
+                    var types = vendor?.Types is { Length: > 0 }
+                        ? string.Join(", ", vendor.Types)
+                        : string.Empty;
+                }
+
+                @types
+            </Template>
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.IsActive)"
+                    HeaderText="Active"
+                    DisplayAsCheckBox="true"
+                    Width="120">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.IsVerified)"
+                    HeaderText="Verified"
+                    DisplayAsCheckBox="true"
+                    Width="120">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.IsPreferred)"
+                    HeaderText="Preferred"
+                    DisplayAsCheckBox="true"
+                    Width="130">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.LicenseNumber)"
+                    HeaderText="License Number"
+                    Width="180">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.CreatedAt)"
+                    HeaderText="Created At"
+                    Format="MM/dd/yyyy hh:mm tt"
+                    Type="ColumnType.DateTime"
+                    Width="190">
+        </GridColumn>
+        <GridColumn Field="@nameof(VendorModel.UpdatedAt)"
+                    HeaderText="Updated At"
+                    Format="MM/dd/yyyy hh:mm tt"
+                    Type="ColumnType.DateTime"
+                    Width="190">
+        </GridColumn>
     </GridColumns>
-    <GridEvents TValue="VendorModel" RowSelected="OnRowSelected"></GridEvents>
+    <GridEvents TValue="VendorModel"
+                RowSelected="OnRowSelected">
+    </GridEvents>
 </SfGrid>
 @code {
     [Parameter]

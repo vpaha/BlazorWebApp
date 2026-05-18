@@ -1,7 +1,10 @@
 ﻿@using Microsoft.Extensions.Hosting;
+
 @inject IJSRuntime jSRuntime
 @inject IHostEnvironment environment
 @inject IVendorRepo vendorRepo
+@inject SfDialogService dialogService
+
 @implements IAsyncDisposable
 
 <section class="zoom-in">
@@ -17,17 +20,18 @@
                 </CardHeader>
                 <CardContent EnableSeparator="true">
                     <div class="spread-across">
-                        <SfMessage CssClass="category-header" Variant="MessageVariant.Outlined" ShowIcon="false" Severity="MessageSeverity.Success">Categories:</SfMessage>
+                        <SfButton type="button" IsPrimary="true" OnClick="ShowPlaces" IconCss="e-icons e-kpi" IconPosition="IconPosition.Right">Vendor list</SfButton>
                         <SfDropDownList TItem="string" TValue="string" DataSource="@categories" @bind-Value="category" Width="300px" FloatLabelType="FloatLabelType.Never"
                                         Placeholder="groups" CssClass="e-primary">
                         </SfDropDownList>
+                        <SfMessage CssClass="category-header" Variant="MessageVariant.Text" ShowIcon="false" Severity="MessageSeverity.Success">Selected category: @category</SfMessage>
                         <AddressEntry DamageContext="location" AddressChanged="AddressChanged" ShowMap="false"></AddressEntry>
                     </div>
                 </CardContent>
             </SfCard>
         </FormTemplate>
         <FormButtons>
-            <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdateVendors">Search Vendors</SfButton>
+            <SfButton type="submit" Disabled="_isValid" IsPrimary="true" OnClick="UpdatePlaces">Explore vendors</SfButton>
         </FormButtons>
     </SfDataForm>
     <SfCard ID="map-container4" CssClass="map-container slide-in">
@@ -35,30 +39,10 @@
     </SfCard>
     <SfCard>
         <CardContent EnableSeparator="true">
-            <div class="vendors-container">
-                @foreach (var item in vendors)
+            <div class="places-container">
+                @foreach (var item in places)
                 {
-                    <article class="vendor-card">
-                        <div class="vendor-title">@item.Name</div>
-                        @if (!string.IsNullOrWhiteSpace(item.Address))
-                        {
-                            <div class="vendor-line">@item.Address</div>
-                        }
-                        <div>
-                            @if (!string.IsNullOrWhiteSpace(item.GoogleMaps))
-                            {
-                                <a href="@item.GoogleMaps" target="_blank" rel="noopener noreferrer">
-                                    Place Map
-                                </a>
-                            }
-                        </div>
-                        <div>
-                            @item.PrimaryTypeDisplayName
-                        </div>
-                        <div>
-                            @string.Join(", ", item.Types ?? Array.Empty<string>())
-                        </div>
-                    </article>
+                    <PlaceCard item="item"></PlaceCard>
                 }
             </div>
         </CardContent>
@@ -73,7 +57,7 @@
         align-self: normal;
     }
 
-    .vendors-container {
+    .places-container {
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -107,7 +91,7 @@
     private bool isLoading { get; set; } = false;
     private bool _isValid;
 
-    private PlaceDto[] vendors { get; set; } = [];
+    private PlaceDto[] places { get; set; } = [];
     private DotNetObjectReference<VendorManagement>? _objRef;
 
     protected override async Task OnInitializedAsync()
@@ -135,22 +119,42 @@
         if (!isValid) EditContext.Validate();
     }
 
-    private async Task UpdateVendors()
+    private async Task UpdatePlaces()
     {
         isLoading = true;
-        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container4 > gmp-map", location.Latitude, location.Longitude, 16, _objRef, "OnVendorsMapped");
-        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, 4);
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container4 > gmp-map", location.Latitude, location.Longitude, 16, _objRef, "OnPlacesMapped");
+        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, 60);
         isLoading = false;
     }
 
     [JSInvokable]
-    public async Task OnVendorsMapped(PlaceDto[]? places)
+    public async Task OnPlacesMapped(PlaceDto[]? placesDto)
     {
-        if (places is not null)
+        if (placesDto is not null)
         {
-            vendors = places;
-            await vendorRepo.AddVendorsAsync(places);
+            places = placesDto;
+            await vendorRepo.AddVendorsAsync(placesDto);
         }
         return;
+    }
+
+    private async Task ShowPlaces()
+    {
+        await dialogService.AlertAsync(null, "Vendor list", new DialogOptions
+        {
+            CssClass = "popup-dialog",
+            ShowCloseIcon = true,
+            Height = "90vh",
+
+            PrimaryButtonOptions = new DialogButtonOptions
+            {
+                Content = "Close", IconCss = "e-icons e-close"
+            },
+            ChildContent = builder =>
+            {
+                builder.OpenComponent<VendorList>(0);
+                builder.CloseComponent();
+            }
+        });
     }
 }

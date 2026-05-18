@@ -3,10 +3,10 @@
 
 <section id="chat-shell">
     <SfAppBar ColorMode="AppBarColor.Dark">
-        <SfIcon Size="IconSize.Large" Name="IconName.AIChat" Title="Smart Assistant"></SfIcon>
         <AppBarSpacer></AppBarSpacer>
         <div>Smart Assistant</div>
         <AppBarSpacer></AppBarSpacer>
+        <SfIcon Size="IconSize.Large" Name="IconName.AIChat" Title="Smart Assistant"></SfIcon>
     </SfAppBar>
     <SfListView DataSource="@Messages" TValue="ChatMessageVm" EnableVirtualization="true" CssClass="e-list-template" HeaderTitle="@DateTime.Now.ToLongDateString()"
                 ShowHeader="true" Height="100%">

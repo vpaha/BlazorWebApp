@@ -1,0 +1,25 @@
+﻿<article class="vendor-card">
+    <div class="vendor-title">@item.Name</div>
+    @if (!string.IsNullOrWhiteSpace(item.Address))
+    {
+        <div class="vendor-line">@item.Address</div>
+    }
+    <div>
+        @if (!string.IsNullOrWhiteSpace(item.GoogleMaps))
+        {
+            <a href="@item.GoogleMaps" target="_blank" rel="noopener noreferrer">
+                Place Map
+            </a>
+        }
+    </div>
+    <div>
+        @item.PrimaryTypeDisplayName
+    </div>
+    <div>
+        @string.Join(", ", item.Types ?? Array.Empty<string>())
+    </div>
+</article>
+
+@code {
+    [Parameter] public PlaceDto item { get; set; } = default!;
+}
