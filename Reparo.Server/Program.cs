@@ -348,11 +348,12 @@ public partial class Program
         var cultures = new CultureData();
 
         var cultureList = cultures.CultureList;
-        cultureList.First(c => c.Name == "en-US").DateTimeFormat.ShortDatePattern = "MM/dd/yyyy";
+        var culture = cultures.CultureList.First(c => c.Name == cultures.DefaultCulture.Name);
+        culture.DateTimeFormat.ShortDatePattern = "MM/dd/yyyy";
 
         builder.Services.Configure<RequestLocalizationOptions>(options =>
         {
-            options.DefaultRequestCulture = new RequestCulture(cultures.DefaultCulture);
+            options.DefaultRequestCulture = new RequestCulture(culture);
             options.SupportedCultures = cultureList;
             options.SupportedUICultures = cultureList;
 

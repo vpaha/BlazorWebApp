@@ -8,17 +8,17 @@
                 <div>@prop.Name: @prop.GetValue(claim)</div>
             }
         </CardContent>
-        <CardContent EnableSeparator="true">
+        <CardFooter>
             <input type="button" class="e-success e-outline" value="Attachments" onclick="Attachment('@claim.ClaimId')" />
-        </CardContent>
+        </CardFooter>
     </SfCard>
 }
 <style>
-    #claim-container .e-card-content {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+    #claim-container {
+        border: 1px solid gray;
         padding: 5px;
+        height: 100%;
+        justify-content: unset;
     }
 </style>
 <script>

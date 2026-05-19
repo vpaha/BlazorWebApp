@@ -57,31 +57,11 @@ main > section {
     padding-top: 8px;
 }
 
-.e-sidebar {
-    border-left: 1px solid #0d6efd;
-    border-right: 1px solid #0d6efd;
-    border-top: 1px solid #0d6efd;
-    border-bottom: 1px solid grey;
-    border-radius: 5px;
-    padding: 10px;
-}
-
-.grid-stretch {
-    padding: 10px;
-    display: flex;
-}
-
-.grid-stretch .e-grid {
+.e-grid {
     border: solid 1px white;
     border-radius: 8px;
     padding: 10px;
     display: inherit;
-    flex-direction: column;
-    flex-basis: 100%;
-}
-
-.grid-stretch .e-gridcontent {
-    flex-basis: inherit;
 }
 
 h1, h2, h3, h4, h5 {

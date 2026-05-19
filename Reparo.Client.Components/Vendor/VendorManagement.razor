@@ -122,8 +122,8 @@
     private async Task UpdatePlaces()
     {
         isLoading = true;
-        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container4 > gmp-map", location.Latitude, location.Longitude, 16, _objRef, "OnPlacesMapped");
-        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, 60);
+        await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container4 > gmp-map", location.Latitude, location.Longitude, 16);
+        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, 60, _objRef, "OnPlacesMapped");
         isLoading = false;
     }
 

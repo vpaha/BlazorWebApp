@@ -30,10 +30,10 @@
         if (Latitude != null && Longitude != null)
         {
             _objRef = DotNetObjectReference.Create(this);
-            await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container3 > gmp-map", Latitude, Longitude, 16, _objRef);
+            await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container3 > gmp-map", Latitude, Longitude, 16);
             if (!env.IsDevelopment())
             {
-                await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", "general contractor", 12);
+                await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", "general contractor", 12, _objRef);
             }
         }
     }

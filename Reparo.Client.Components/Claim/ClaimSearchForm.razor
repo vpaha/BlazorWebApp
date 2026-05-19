@@ -1,46 +1,51 @@
-﻿<SfDataForm EditContext="FormContext" OnValidSubmit="HandleSubmit"
-            ButtonsAlignment="FormButtonsAlignment.Center" LabelPosition="FormLabelPosition.Top">
-    <FormValidator>
-        <DataAnnotationsValidator></DataAnnotationsValidator>
-    </FormValidator>
-    <FormTemplate>
-        <div id="form-container">
-            <SfTextBox @bind-Value="ClaimFilter.ProvId" CssClass="e-small" Placeholder="Provider ID/Name" ShowClearButton="true"
-                       FloatLabelType="FloatLabelType.Always" autofocus />
-            <div class="validation-message">
-                <ValidationMessage For="@(() => ClaimFilter.ProvId)" />
-            </div>
-            <div class="wdr-container">
-                <SfTextBox @bind-Value="ClaimFilter.MemId" CssClass="e-small" Placeholder="Member ID/Name" ShowClearButton="true"
-                           FloatLabelType="FloatLabelType.Always" />
-                <div @onclick:preventDefault>
-                    <SfSpeechToText @bind-Transcript="ClaimFilter.MemId" SpeechRecognitionStopped="OnTranscriptChanged" />
+﻿<SfCard ID="form-container" role="region">
+    <CardContent>
+        <SfDataForm EditContext="FormContext" OnValidSubmit="HandleSubmit"
+                    ButtonsAlignment="FormButtonsAlignment.Center" LabelPosition="FormLabelPosition.Top">
+            <FormValidator>
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+            </FormValidator>
+            <FormTemplate>
+                <SfTextBox @bind-Value="ClaimFilter.ProvId" CssClass="e-small" Placeholder="Provider ID/Name" ShowClearButton="true"
+                           FloatLabelType="FloatLabelType.Always" autofocus />
+                <div class="validation-message">
+                    <ValidationMessage For="@(() => ClaimFilter.ProvId)" />
                 </div>
-            </div>
-            <div class="validation-message">
-                <ValidationMessage For="@(() => ClaimFilter.MemId)" />
-            </div>
+                <div class="wdr-container">
+                    <SfTextBox @bind-Value="ClaimFilter.MemId" CssClass="e-small" Placeholder="Member ID/Name" ShowClearButton="true"
+                               FloatLabelType="FloatLabelType.Always" />
+                    <div @onclick:preventDefault>
+                        <SfSpeechToText @bind-Transcript="ClaimFilter.MemId" SpeechRecognitionStopped="OnTranscriptChanged" />
+                    </div>
+                </div>
+                <div class="validation-message">
+                    <ValidationMessage For="@(() => ClaimFilter.MemId)" />
+                </div>
+            </FormTemplate>
+            <FormButtons>
+                <SfButton type="submit" aria-label="Search Claims" CssClass="e-primary" Disabled="@(IsFormValid == false)" IconCss="e-icons e-circle-check" IconPosition="IconPosition.Left">Search</SfButton>
+                <SfButton type="reset" aria-label="Clear" CssClass="e-outline" OnClick="@HandleReset">Clear</SfButton>
+            </FormButtons>
+        </SfDataForm>
+    </CardContent>
+    <CardContent EnableSeparator="true">
+        <div id="hint-container">
+            <div>QCSPR000094</div>
+            <div>QMXPR0041017</div>
+            <div>QMP000002299176</div>
         </div>
-    </FormTemplate>
-    <FormButtons>
-        <SfButton type="submit" aria-label="Search Claims" CssClass="e-primary" Disabled="@(IsFormValid == false)" IconCss="e-icons e-circle-check" IconPosition="IconPosition.Left">Search</SfButton>
-        <SfButton type="reset" aria-label="Clear" CssClass="e-outline" OnClick="@HandleReset">Clear</SfButton>
-    </FormButtons>
-</SfDataForm>
-<div id="hint-container">
-    <div>QCSPR000094</div>
-    <div>QMXPR0041017</div>
-    <div>QMP000002299176</div>
-</div>
+    </CardContent>
+</SfCard>
 <style>
     #form-container {
+        border: 1px solid gray;
         padding: 5px;
+
+        height: 100%;
+        justify-content: unset;
     }
 
     #hint-container {
-        border-top-width: 1px;
-        border-top-style: solid;
-        padding-top: 10px;
         display: flex;
         gap: 15px;
         color: gray;

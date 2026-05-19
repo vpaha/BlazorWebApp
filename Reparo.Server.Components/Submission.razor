@@ -2,54 +2,56 @@
 @inject ToastService toastService
 @inject IDamageRepo damageRepo
 
-@if (EditContext is not null)
-{
-    <CascadingValue Value="EditContext" IsFixed="false">
-        <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top"
-                    ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
-            <FormValidator>
-                <DataAnnotationsValidator></DataAnnotationsValidator>
-            </FormValidator>
-            <FormTemplate>
-                <SfStepper ID="stepper-container" ActiveStep="currentStep" Orientation="StepperOrientation.Horizontal"
-                           LabelPosition="StepperLabelPosition.Bottom" StepClicked="@StepClicked">
-                    <ChildContent>
-                        <StepperSteps>
-                            <StepperStep @ref="stepperStep1" Label="Damage" IconCss="sf-icon-transport"></StepperStep>
-                            <StepperStep @ref="stepperStep3" Label="Connect" IconCss="sf-icon-success"></StepperStep>
-                        </StepperSteps>
-                    </ChildContent>
-                </SfStepper>
-                <div id="subm-container">
-                    @if (currentStep == 0)
-                    {
-                        foreach (var item in DamageContext.Sections)
+<div class="fade-in">
+    @if (EditContext is not null)
+    {
+        <CascadingValue Value="EditContext" IsFixed="false">
+            <SfDataForm EditContext="@EditContext" LabelPosition="FormLabelPosition.Top"
+                        ButtonsAlignment="FormButtonsAlignment.Center" EnableFloatingLabel="true">
+                <FormValidator>
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                </FormValidator>
+                <FormTemplate>
+                    <SfStepper ID="stepper-container" ActiveStep="currentStep" Orientation="StepperOrientation.Horizontal"
+                               LabelPosition="StepperLabelPosition.Bottom" StepClicked="@StepClicked">
+                        <ChildContent>
+                            <StepperSteps>
+                                <StepperStep @ref="stepperStep1" Label="Damage" IconCss="sf-icon-transport"></StepperStep>
+                                <StepperStep @ref="stepperStep3" Label="Connect" IconCss="sf-icon-success"></StepperStep>
+                            </StepperSteps>
+                        </ChildContent>
+                    </SfStepper>
+                    <div id="subm-container">
+                        @if (currentStep == 0)
                         {
-                            <AITrade DamageSection="item"></AITrade>
+                            foreach (var item in DamageContext.Sections)
+                            {
+                                <AITrade DamageSection="item"></AITrade>
+                            }
                         }
-                    }
-                    else if (currentStep == 1)
-                    {
-                        <AIConnection DamageContext="DamageContext"></AIConnection>
-                    }
-                    <SfCard role="article" CssClass="zoom-in">
-                        <CardContent>
-                            <VendorSearch DamageContext="DamageContext"></VendorSearch>
-                        </CardContent>
-                        <CardContent EnableSeparator="true">
-                            <ValidationSummary></ValidationSummary>
-                        </CardContent>
-                    </SfCard>
-                </div>
-            </FormTemplate>
-            <FormButtons>
-                <SfButton type="submit" CssClass="e-primary" OnClick="TriggerSubmit" Content="Submit the Report" IconCss="e-icons e-circle-check" IconPosition="IconPosition.Left" title="Submit the Report">
-                </SfButton>
-                <SfButton type="reset" title="Clear Fields" CssClass="e-outline">Clear</SfButton>
-            </FormButtons>
-        </SfDataForm>
-    </CascadingValue>
-}
+                        else if (currentStep == 1)
+                        {
+                            <AIConnection DamageContext="DamageContext"></AIConnection>
+                        }
+                        <SfCard role="article" CssClass="zoom-in">
+                            <CardContent>
+                                <VendorSearch DamageContext="DamageContext"></VendorSearch>
+                            </CardContent>
+                            <CardContent EnableSeparator="true">
+                                <ValidationSummary></ValidationSummary>
+                            </CardContent>
+                        </SfCard>
+                    </div>
+                </FormTemplate>
+                <FormButtons>
+                    <SfButton type="submit" CssClass="e-primary" OnClick="TriggerSubmit" Content="Submit the Report" IconCss="e-icons e-circle-check" IconPosition="IconPosition.Left" title="Submit the Report">
+                    </SfButton>
+                    <SfButton type="reset" title="Clear Fields" CssClass="e-outline">Clear</SfButton>
+                </FormButtons>
+            </SfDataForm>
+        </CascadingValue>
+    }
+</div>
 <style>
     #subm-container {
         padding-left: 2px;

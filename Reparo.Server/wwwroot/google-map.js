@@ -33,12 +33,9 @@
         return map;
     };
 
-    async function initMap(gmpMapSelector, lat, lng, zoom = 13, helper = null, callback = null, options = {})
+    async function initMap(gmpMapSelector, lat, lng, zoom = 13, options = {})
     {
         await ensureReady();
-
-        dotNetHelper = helper;
-        dotNetCallBack = callback;
 
         const mapEl = document.querySelector(gmpMapSelector);
         if (!mapEl) throw new Error(`<gmp-map> not found: ${gmpMapSelector}`);
@@ -83,8 +80,11 @@
         return true;
     }
 
-    async function fetchPlaces(category, maxCount = 2)
+    async function fetchPlaces(category, maxCount = 2, helper = null, callback = null)
     {
+        dotNetHelper = helper;
+        dotNetCallBack = callback;
+
         const {
             PlaceCtor,
             AdvancedMarkerElementCtor
@@ -161,15 +161,12 @@
             {
                 await dotNetHelper.invokeMethodAsync("OpenVendor", toPlaceDto(place));
             }
-
-            infoWindow.setContent(createPlaceInfoWindow(place));
-
-            infoWindow.open({
-                anchor: marker,
-                map: mapInstance
-            });
-
-            mapInstance.panTo(place.location);
+            else
+            {
+                infoWindow.setContent(createPlaceInfoWindow(place));
+                infoWindow.open({ anchor: marker, map: mapInstance });
+                mapInstance.panTo(place.location);
+            }
         });
 
         markers.push(marker);

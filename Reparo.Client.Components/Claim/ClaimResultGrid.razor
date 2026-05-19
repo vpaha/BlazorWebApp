@@ -1,55 +1,62 @@
 @inject IClaimService claimService
 
-@if (apiConflictMessages.Count > 0)
-{
-    <div id="error-container">
-        @foreach (var message in apiConflictMessages)
-        {
-            <SfMessage Variant="MessageVariant.Outlined" Severity="Syncfusion.Blazor.Notifications.MessageSeverity.Error" ShowIcon="false" ShowCloseIcon="true">
-                @message
-            </SfMessage>
-        }
-    </div>
-}
-<SfGrid TValue="ClaimSearchResponse" @ref="claimGrid"
-        Toolbar="@(new List<string>() { "Search" })"
-        AllowPaging="true" AllowReordering="true" AllowSorting="true" AllowFiltering="true" ShowColumnMenu="true"
-        DataSource="@Claims">
-    <GridPageSettings PageSize="GridConstants.RowCount" PageSizes="@GridConstants.PageSizes"></GridPageSettings>
-    <GridSearchSettings Fields="@(new[] { nameof(ClaimSearchResponse.ClaimId), nameof(ClaimSearchResponse.ProvName), nameof(ClaimSearchResponse.MemberName) })"
-                        Operator="Syncfusion.Blazor.Operator.Contains"
-                        IgnoreCase="true"
-                        IgnoreAccent="true">
-    </GridSearchSettings>
-    <GridTemplates>
-        <EmptyRecordTemplate>
-            <div>No records found.</div>
-        </EmptyRecordTemplate>
-    </GridTemplates>
-    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
-    <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple" CheckboxOnly="true" PersistSelection="true"></GridSelectionSettings>
-    <GridColumns>
-        <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="50"></GridColumn>
-        <GridColumn Width="200px" Field=@nameof(ClaimSearchResponse.Status) HeaderText="Status" Type="ColumnType.None" AllowEditing=false TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center">
-            <Template>
-                @{
-                    var item = (context as ClaimSearchResponse);
-                    var status = item?.Status;
-                    <SfButton IconCss="e-icons e-critical-path" IconPosition="IconPosition.Right" CssClass="@GetStatusCssClass(item)" type="button" aria-label="@($"Claim status: {status}")" OnClick="@(() => ShowTheRecord(item))">@status</SfButton>
-                }
-            </Template>
-        </GridColumn>
-        <GridColumn Field=@nameof(ClaimSearchResponse.ClaimId) HeaderText="Claim" Type="ColumnType.String" IsPrimaryKey="true"></GridColumn>
-        <GridColumn Field=@nameof(ClaimSearchResponse.ProvName) HeaderText="Provider" Type="ColumnType.String" AllowEditing="false"></GridColumn>
-        <GridColumn Field=@nameof(ClaimSearchResponse.MemId) HeaderText="Mem Id" Type="ColumnType.String" AllowEditing="false"></GridColumn>
-        <GridColumn Field=@nameof(ClaimSearchResponse.StartDate) HeaderText="DOS" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern" Type="ColumnType.Date" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center"></GridColumn>
-        <GridColumn Field=@nameof(ClaimSearchResponse.TotalPaid) HeaderText="Amount Paid" Type="ColumnType.Decimal" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Format="C"></GridColumn>
-        <GridColumn Field=@nameof(ClaimSearchResponse.TotalAmt) HeaderText="Total Charges" Type="ColumnType.Decimal" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Format="C"></GridColumn>
-    </GridColumns>
-</SfGrid>
+<div id="grid-container">
+    <SfGrid TValue="ClaimSearchResponse" @ref="claimGrid" Height="100%"
+            Toolbar="@(new List<string>() { "Search" })"
+            AllowPaging="true" AllowReordering="true" AllowSorting="true" AllowFiltering="true" ShowColumnMenu="true"
+            DataSource="@Claims">
+        <GridPageSettings PageSize="GridConstants.RowCount" PageSizes="@GridConstants.PageSizes"></GridPageSettings>
+        <GridSearchSettings Fields="@(new[] { nameof(ClaimSearchResponse.ClaimId), nameof(ClaimSearchResponse.ProvName), nameof(ClaimSearchResponse.MemberName) })"
+                            Operator="Syncfusion.Blazor.Operator.Contains"
+                            IgnoreCase="true"
+                            IgnoreAccent="true">
+        </GridSearchSettings>
+        <GridTemplates>
+            <EmptyRecordTemplate>
+                <div>No records found.</div>
+            </EmptyRecordTemplate>
+        </GridTemplates>
+        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
+        <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple" CheckboxOnly="true" PersistSelection="true"></GridSelectionSettings>
+        <GridColumns>
+            <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="50"></GridColumn>
+            <GridColumn Width="200px" Field=@nameof(ClaimSearchResponse.Status) HeaderText="Status" Type="ColumnType.None" AllowEditing=false TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center">
+                <Template>
+                    @{
+                        var item = (context as ClaimSearchResponse);
+                        var status = item?.Status;
+                        <SfButton IconCss="e-icons e-critical-path" IconPosition="IconPosition.Right" CssClass="@GetStatusCssClass(item)" type="button" aria-label="@($"Claim status: {status}")" OnClick="@(() => ShowTheRecord(item))">@status</SfButton>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.ClaimId) HeaderText="Claim" Type="ColumnType.String" IsPrimaryKey="true"></GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.ProvName) HeaderText="Provider" Type="ColumnType.String" AllowEditing="false"></GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.MemId) HeaderText="Mem Id" Type="ColumnType.String" AllowEditing="false"></GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.StartDate) HeaderText="DOS" Format="@CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern" Type="ColumnType.Date" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center"></GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.TotalPaid) HeaderText="Amount Paid" Type="ColumnType.Decimal" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Format="C"></GridColumn>
+            <GridColumn Field=@nameof(ClaimSearchResponse.TotalAmt) HeaderText="Total Charges" Type="ColumnType.Decimal" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Format="C"></GridColumn>
+        </GridColumns>
+    </SfGrid>
+    @if (apiConflictMessages.Count > 0)
+    {
+        <div id="error-container">
+            @foreach (var message in apiConflictMessages)
+            {
+                <SfMessage Variant="MessageVariant.Outlined" Severity="Syncfusion.Blazor.Notifications.MessageSeverity.Error" ShowIcon="false" ShowCloseIcon="true">
+                    @message
+                </SfMessage>
+            }
+        </div>
+    }
+</div>
 <style>
     #error-container {
         padding: 5px;
+    }
+    
+    #grid-container {
+        padding: 10px;
+        height: 100%;
     }
 </style>
 
