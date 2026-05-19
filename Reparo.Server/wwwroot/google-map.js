@@ -171,6 +171,8 @@
         if (!placeId)
             return null;
 
+        dotNetHelper = null;
+
         const {
             PlaceCtor,
             AdvancedMarkerElementCtor
