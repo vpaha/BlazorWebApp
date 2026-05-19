@@ -1,7 +1,6 @@
 ﻿@using Microsoft.Extensions.Hosting;
 
 @inject IJSRuntime jSRuntime
-@inject IHostEnvironment env
 
 <SfCard ID="map-container1" CssClass="@(IsDesktopView ? "map-container max-width-400" : "map-container max-width")">
     <gmp-map role="region"></gmp-map>
@@ -26,10 +25,7 @@
         if (PlaceId is not null)
         {
             await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container1 > gmp-map", Latitude, Longitude);
-            if (!env.IsDevelopment())
-            {
-                await jSRuntime.InvokeVoidAsync("googleMap.searchPlaceById", PlaceId);
-            }
+            await jSRuntime.InvokeVoidAsync("googleMap.searchPlaceById", PlaceId);
         }
     }
 }

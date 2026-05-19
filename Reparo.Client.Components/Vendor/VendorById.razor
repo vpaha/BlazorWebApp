@@ -1,0 +1,9 @@
+﻿<section class="fade-in">
+    <VendorDetails Vendor="Vendor"></VendorDetails>
+    <VendorMap Latitude="@Vendor.Latitude" Longitude="@Vendor.Longitude" PlaceId="@Vendor.PlaceId"></VendorMap>
+</section>
+
+@code {
+    [Parameter] public VendorModel Vendor { get; set; } = default!;
+    private bool isLoading { get; set; } = true;
+}

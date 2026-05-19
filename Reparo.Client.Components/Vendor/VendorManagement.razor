@@ -123,8 +123,10 @@
     {
         isLoading = true;
         await jSRuntime.InvokeVoidAsync("googleMap.initMap", "#map-container4 > gmp-map", location.Latitude, location.Longitude, 16);
-        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, 60, _objRef, "OnPlacesMapped");
-        isLoading = false;
+
+        int maxResults = 2;
+        if (!environment.IsDevelopment()) maxResults = 60;
+        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, maxResults, _objRef, "OnPlacesMapped");
     }
 
     [JSInvokable]

@@ -3,23 +3,37 @@
     let map = null;
     let readyPromise = null;
     let bounds = null;
-    let markers = [];
     let infoWindow = null;
     let dotNetHelper = null;
-    let dotNetCallBack = null;
     let searchCenter = null;
+
+    const markersByPlaceId = new Map();
+    const placesById = new Map();
+
+    const placeFields = [
+        "id",
+        "displayName",
+        "formattedAddress",
+        "addressComponents",
+        "location",
+        "googleMapsURI",
+        "businessStatus",
+        "primaryType",
+        "primaryTypeDisplayName",
+        "types"
+    ];
+
+    const defaultCenter = { lat: 33.7490, lng: -84.3880 };
 
     const ensureReady = () =>
     {
         readyPromise ??= Promise.all([
             google.maps.importLibrary("maps"),
             google.maps.importLibrary("marker"),
-            google.maps.importLibrary("geocoding"),
-            google.maps.importLibrary("places"),
-        ]).then(([, markerLib, geocodingLib, placesLib]) => ({
+            google.maps.importLibrary("places")
+        ]).then(([, markerLib, placesLib]) => ({
             AdvancedMarkerElementCtor: markerLib.AdvancedMarkerElement,
-            GeocoderCtor: geocodingLib.Geocoder,
-            PlaceCtor: placesLib.Place,
+            PlaceCtor: placesLib.Place
         }));
 
         return readyPromise;
@@ -33,12 +47,16 @@
         return map;
     };
 
-    async function initMap(gmpMapSelector, lat, lng, zoom = 13, options = {})
+    async function initMap(gmpMapSelector, lat, lng, zoom = 13, helper = null, options = {})
     {
-        await ensureReady();
+        const { } = await ensureReady();
+
+        dotNetHelper = helper;
 
         const mapEl = document.querySelector(gmpMapSelector);
-        if (!mapEl) throw new Error(`<gmp-map> not found: ${gmpMapSelector}`);
+
+        if (!mapEl)
+            throw new Error(`<gmp-map> not found: ${gmpMapSelector}`);
 
         if (!mapEl.innerMap)
         {
@@ -48,13 +66,9 @@
 
         map = mapEl.innerMap;
 
-        const hasValidCoordinates =
-            Number.isFinite(lat) &&
-            Number.isFinite(lng);
-
-        searchCenter = hasValidCoordinates
+        searchCenter = hasValidCoordinates(lat, lng)
             ? { lat, lng }
-            : { lat: 33.7490, lng: -84.3880 };
+            : defaultCenter;
 
         map.setOptions({
             center: searchCenter,
@@ -63,27 +77,24 @@
             mapTypeControl: false,
             streetViewControl: false,
             fullscreenControl: false,
-            ...options,
+            ...options
         });
 
-        map.addListener("click", () =>
-        {
-            infoWindow?.close();
-        });
+        map.addListener("click", () => infoWindow?.close());
 
         bounds = new google.maps.LatLngBounds();
 
         infoWindow = new google.maps.InfoWindow({
-            headerDisabled: true,
+            headerDisabled: true
         });
 
         return true;
     }
 
-    async function fetchPlaces(category, maxCount = 2, helper = null, callback = null)
+    async function fetchPlaces(category, maxCount = 10, helper = null)
     {
-        dotNetHelper = helper;
-        dotNetCallBack = callback;
+        if (helper)
+            dotNetHelper = helper;
 
         const {
             PlaceCtor,
@@ -100,18 +111,7 @@
 
         const { places } = await PlaceCtor.searchByText({
             textQuery: category,
-            fields: [
-                "id",
-                "displayName",
-                "formattedAddress",
-                "addressComponents",
-                "location",
-                "googleMapsURI",
-                "businessStatus",
-                "primaryType",
-                "primaryTypeDisplayName",
-                "types"
-            ],
+            fields: placeFields,
             locationBias: {
                 center: searchCenter,
                 radius: 15000
@@ -120,109 +120,116 @@
         });
 
         if (!places?.length)
-            return 0;
+            return [];
 
         for (const place of places)
         {
             addPlaceMarker(place, AdvancedMarkerElementCtor, mapInstance);
         }
 
-        if (!bounds.isEmpty())
-        {
-            mapInstance.fitBounds(bounds);
-        }
+        fitMapToBounds(mapInstance);
 
-        const placeDtos = places.map(toPlaceDto);
-        if (dotNetHelper && dotNetCallBack)
-        {
-            await dotNetHelper.invokeMethodAsync(dotNetCallBack, placeDtos);
-        }
-
-        return placeDtos.length;
+        return places.map(toPlaceDto);
     }
 
     function addPlaceMarker(place, AdvancedMarkerElementCtor, mapInstance)
     {
-        if (!place?.location)
+        if (!place?.id || !place?.location)
             return null;
+
+        placesById.set(place.id, place);
 
         const marker = new AdvancedMarkerElementCtor({
             map: mapInstance,
             position: place.location,
-            title: place.displayName?.text ?? place.displayName,
+            title: getDisplayText(place.displayName),
             gmpClickable: true
         });
 
-        marker.addListener("gmp-click", async () =>
+        marker.addListener("gmp-click", () =>
         {
-            infoWindow?.close();
-
-            if (dotNetHelper)
-            {
-                await dotNetHelper.invokeMethodAsync("OpenVendor", toPlaceDto(place));
-            }
-            else
-            {
-                infoWindow.setContent(createPlaceInfoWindow(place));
-                infoWindow.open({ anchor: marker, map: mapInstance });
-                mapInstance.panTo(place.location);
-            }
+            openInfoWindow(place, marker, mapInstance);
         });
 
-        markers.push(marker);
-
+        markersByPlaceId.set(place.id, marker);
         bounds?.extend(place.location);
 
         return marker;
     }
 
-    async function searchPlaceById(placeId)
+    async function searchPlaceById(placeId, keepExistingMarkers = false)
     {
+        if (!placeId)
+            return null;
+
         const {
             PlaceCtor,
             AdvancedMarkerElementCtor
         } = await ensureReady();
 
-        if (!placeId)
-            return null;
-
         const mapInstance = getMapOrThrow();
 
-        clearMarkers();
+        if (keepExistingMarkers && markersByPlaceId.has(placeId))
+        {
+            focusPlace(placeId);
+            return markersByPlaceId.get(placeId);
+        }
+
+        if (!keepExistingMarkers)
+            clearMarkers();
 
         bounds = new google.maps.LatLngBounds();
 
-        const place = new PlaceCtor({
-            id: placeId
-        });
+        const place = new PlaceCtor({ id: placeId });
 
         await place.fetchFields({
-            fields: [
-                "id",
-                "displayName",
-                "formattedAddress",
-                "addressComponents",
-                "location",
-                "googleMapsURI",
-                "businessStatus",
-                "primaryType",
-                "primaryTypeDisplayName",
-                "types"
-            ]
+            fields: placeFields
         });
 
-        if (!place.location) return null;
+        if (!place.location)
+            return null;
 
         const marker = addPlaceMarker(
             place,
             AdvancedMarkerElementCtor,
-            mapInstance
-        );
+            mapInstance);
 
-        mapInstance.setCenter(place.location);
+        focusPlace(placeId);
 
-        mapInstance.setZoom(15);
+        return marker;
+    }
 
+    function focusPlace(placeId, zoom = 15)
+    {
+        const place = placesById.get(placeId);
+        const marker = markersByPlaceId.get(placeId);
+
+        if (!place || !marker || !map)
+            return false;
+
+        map.panTo(place.location);
+        map.setZoom(zoom);
+
+        openInfoWindow(place, marker, map);
+
+        return true;
+    }
+
+    async function openVendorByPlaceId(placeId)
+    {
+        const place = placesById.get(placeId);
+
+        if (!place) return false;
+
+        await dotNetHelper.invokeMethodAsync(
+            "OpenVendor",
+            toPlaceDto(place));
+
+        return true;
+    }
+
+    function openInfoWindow(place, marker, mapInstance)
+    {
         infoWindow?.close();
 
         infoWindow.setContent(createPlaceInfoWindow(place));
@@ -232,59 +239,140 @@
             map: mapInstance
         });
 
-        return marker;
+        mapInstance.panTo(place.location);
     }
 
     function createPlaceInfoWindow(place)
     {
+        const placeId = escapeHtml(place.id);
+        const name = escapeHtml(getDisplayText(place.displayName));
+        const address = escapeHtml(place.formattedAddress);
+        const type = escapeHtml(getDisplayText(place.primaryTypeDisplayName));
+        const googleMapsUrl = escapeAttribute(place.googleMapsURI);
+
+        const vendorButton = dotNetHelper
+            ? `
+            <button type="button"
+                    onclick="window.googleMap.openVendorByPlaceId('${placeId}')">
+                Vendor Information
+            </button>`
+            : "";
+
         return `
-            <div style="min-width:240px">
-                ${`<strong>${place.displayName}</strong>`}
-                ${`<div>${place.formattedAddress}</div>`}
-                ${`<div><i>${place.primaryTypeDisplayName}</i></div>`}
-                ${`<div><a href="${place.googleMapsURI}" target="_blank" rel="noopener noreferrer">Open in Google Maps</a></div>`}
-            </div>`;
+        <div style="min-width:240px">
+            <strong>${name}</strong>
+
+            <div>${address}</div>
+
+            <div>
+                <i>${type}</i>
+            </div>
+
+            <div style="margin-top:10px">
+                ${vendorButton}
+
+                <a href="${googleMapsUrl}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   style="margin-left:${dotNetHelper ? "8px" : "0"}">
+                    Open in Google Maps
+                </a>
+            </div>
+        </div>`;
     }
 
     function toPlaceDto(place)
     {
         const components = place.addressComponents ?? [];
-        const getComponent = (type) => components.find(c => c.types?.includes(type));
+
+        const getComponent = type =>
+            components.find(c => c.types?.includes(type));
 
         return {
             placeId: place.id,
-            name: place.displayName,
+            name: getDisplayText(place.displayName),
             formattedAddress: place.formattedAddress,
-            addressLine1: `${getComponent("street_number")?.longText ?? ""} ${getComponent("route")?.longText ?? ""}`.trim(),
-            city: getComponent("locality")?.longText ?? getComponent("postal_town")?.longText,
-            state: getComponent("administrative_area_level_1")?.shortText,
-            postalCode: getComponent("postal_code")?.longText,
-            country: getComponent("country")?.shortText,
-            latitude: place.location?.lat(),
-            longitude: place.location?.lng(),
-            googleMapsUrl: place.googleMapsURI,
-            status: place.businessStatus,
-            primaryType: place.primaryType,
-            primaryTypeDisplayName: place.primaryTypeDisplayName?.text ?? place.primaryTypeDisplayName,
-            types: place.types,
+            addressLine1:
+                `${getComponent("street_number")?.longText ?? ""} ${getComponent("route")?.longText ?? ""}`.trim(),
+            city:
+                getComponent("locality")?.longText ??
+                getComponent("postal_town")?.longText,
+            state:
+                getComponent("administrative_area_level_1")?.shortText,
+            postalCode:
+                getComponent("postal_code")?.longText,
+            country:
+                getComponent("country")?.shortText,
+            latitude:
+                place.location?.lat(),
+            longitude:
+                place.location?.lng(),
+            googleMapsUrl:
+                place.googleMapsURI,
+            status:
+                place.businessStatus,
+            primaryType:
+                place.primaryType,
+            primaryTypeDisplayName:
+                getDisplayText(place.primaryTypeDisplayName),
+            types:
+                place.types
         };
     }
 
     function clearMarkers()
     {
-        for (const marker of markers)
+        infoWindow?.close();
+
+        for (const marker of markersByPlaceId.values())
         {
             marker.map = null;
         }
 
-        markers = [];
+        markersByPlaceId.clear();
+        placesById.clear();
+    }
+
+    function fitMapToBounds(mapInstance)
+    {
+        if (!bounds || bounds.isEmpty())
+            return;
+
+        mapInstance.fitBounds(bounds);
+    }
+
+    function hasValidCoordinates(lat, lng)
+    {
+        return Number.isFinite(lat) && Number.isFinite(lng);
+    }
+
+    function getDisplayText(value)
+    {
+        return value?.text ?? value ?? "";
+    }
+
+    function escapeHtml(value)
+    {
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    function escapeAttribute(value)
+    {
+        return escapeHtml(value);
     }
 
     return {
         ensureReady,
         initMap,
         fetchPlaces,
+        searchPlaceById,
+        focusPlace,
         clearMarkers,
-        searchPlaceById
+        openVendorByPlaceId
     };
 })();

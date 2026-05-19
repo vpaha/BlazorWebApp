@@ -42,7 +42,7 @@
     </SfDataForm>
     @if (isMapView)
     {
-        <GoogleMap Latitude="@DamageContext.Latitude" Longitude="@DamageContext.Longitude" OnConfirmEvent="onConfirmEvent"></GoogleMap>
+        <GoogleMap DamageContext="DamageContext" OnSelectionEvent="SelectedVendor" />
     }
     else
     {
@@ -115,7 +115,6 @@
             </SfCard>
         </div>
     }
-
 </section>
 <style>
     #home-section .desktop-view {
@@ -170,8 +169,8 @@
         isMapView = !isMapView;
     }
 
-    private async Task onConfirmEvent(bool isConfirm)
+    private async Task SelectedVendor()
     {
-        if (isConfirm) nav.NavigateTo("damage");
+        nav.NavigateTo("damage");
     }
 }

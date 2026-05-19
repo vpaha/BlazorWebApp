@@ -1,8 +1,5 @@
 ﻿@rendermode InteractiveAuto
 
-@inject IVendorRepo vendorRepo
-@inject ToastService toastService
-
 <div id="vendor-page" class="fade-in">
     @if (Vendor is not null)
     {
@@ -73,7 +70,6 @@
                 }
             </CardContent>
         </SfCard>
-        <VendorMap Latitude="@Vendor.Latitude" Longitude="@Vendor.Longitude" PlaceId="@Vendor.PlaceId"></VendorMap>
     }
 </div>
 <style>
