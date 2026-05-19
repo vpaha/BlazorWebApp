@@ -214,6 +214,8 @@
             await damageRepo.UpdateEntryAsync(damage, CancellationToken.None);
 
             toastService.ShowSuccess($"Damage report status updated to {damage.StatusId}.");
+
+            StateHasChanged();
         } catch (Exception ex)
         {
             toastService.ShowError(ex.Message);
