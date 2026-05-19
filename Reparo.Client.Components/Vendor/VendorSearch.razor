@@ -32,7 +32,7 @@ else
 
     private async Task ShowVendor()
     {
-        await dialogService.AlertAsync(null, DamageContext.Vendor?.Name, new DialogOptions
+        await dialogService.AlertAsync(null, "Vendor information", new DialogOptions
         {
             CssClass = "popup-dialog",
             ShowCloseIcon = true,
