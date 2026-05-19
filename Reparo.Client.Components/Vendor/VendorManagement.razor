@@ -126,7 +126,8 @@
 
         int maxResults = 2;
         if (!environment.IsDevelopment()) maxResults = 60;
-        await jSRuntime.InvokeVoidAsync("googleMap.fetchPlaces", category, maxResults, _objRef, "OnPlacesMapped");
+        await jSRuntime.InvokeVoidAsync("googleMap.loadPlaces", category, maxResults, _objRef, "OnPlacesMapped");
+        isLoading = false;
     }
 
     [JSInvokable]
@@ -137,7 +138,6 @@
             places = placesDto;
             await vendorRepo.AddVendorsAsync(placesDto);
         }
-        return;
     }
 
     private async Task ShowPlaces()
